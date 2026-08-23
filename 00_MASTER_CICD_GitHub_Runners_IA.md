@@ -1,13 +1,5 @@
 # Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA
 
-**Documento:** 00_MASTER.md  
-**Versão:** 0.1.0  
-**Status:** Documento mestre / índice global  
-**Plataforma principal:** Linux Ubuntu, Docker, GitHub, Node.js e PHP  
-**Abordagem:** CI/CD, testes automatizados, self-hosted runners e desenvolvimento assistido por IA
-
----
-
 ## 1. Objetivo do projeto
 
 Este guia será construído incrementalmente como uma referência prática para implantação de um pipeline profissional de desenvolvimento, testes e entrega contínua.
