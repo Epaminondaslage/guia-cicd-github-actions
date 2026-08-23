@@ -108,15 +108,9 @@ Uso de branches para desenvolvimento isolado.
 
 Exemplo:
 
-```text
-main
- |
- +--- feature/login
- |
- +--- fix/dashboard
- |
- +--- feature/relatorios
-```
+<p align="center">
+  <img src="img3.png" alt="Anatomia de branches: main como branch estável, com feature/login, fix/dashboard e feature/relatorios derivadas dela, cada uma com propósito e exemplos de entrega" width="720">
+</p>
 
 #### Capítulo 01.5 — Merge
 
@@ -264,22 +258,9 @@ Diferença entre GitHub-hosted e self-hosted.
 
 #### Capítulo 04.2 — Arquitetura recomendada
 
-```text
-GitHub
-   |
-   | HTTPS
-   v
-Self-Hosted Runner
-Ubuntu Linux
-   |
-   +--> Docker
-   +--> Node.js
-   +--> PHP
-   +--> Composer
-   +--> npm
-   +--> Playwright
-   +--> ferramentas de teste
-```
+<p align="center">
+  <img src="img4.png" alt="Arquitetura do self-hosted runner: GitHub conecta via HTTPS a um runner Ubuntu Linux, que expõe Docker, Node.js, PHP, Composer, npm, Playwright e ferramentas de teste" width="640">
+</p>
 
 #### Capítulo 04.3 — Requisitos de hardware
 
