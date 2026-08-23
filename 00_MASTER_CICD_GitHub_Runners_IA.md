@@ -469,6 +469,11 @@ Critérios objetivos para aprovação.
 
 Este volume documentará o fluxo de desenvolvimento assistido por agentes.
 
+<p align="center">
+  <img src="img/img11_light.png#gh-light-mode-only" alt="Ciclo de desenvolvimento assistido por IA: necessidade, brainstorm, entrevista de requisitos, SPEC, revisão humana, plano, revisão humana do plano, branch, implementação assistida, testes locais, revisão humana do código, PR, CI+E2E, merge, DEV, aprovação e PROD, agrupados em descoberta/requisitos, planejamento, implementação, validação e entrega" width="720">
+  <img src="img/img11_dark.png#gh-dark-mode-only" alt="Ciclo de desenvolvimento assistido por IA: necessidade, brainstorm, entrevista de requisitos, SPEC, revisão humana, plano, revisão humana do plano, branch, implementação assistida, testes locais, revisão humana do código, PR, CI+E2E, merge, DEV, aprovação e PROD, agrupados em descoberta/requisitos, planejamento, implementação, validação e entrega" width="720">
+</p>
+
 #### Capítulo 08.1 — Da ideia à especificação
 
 Transformação de uma necessidade em requisitos claros.
