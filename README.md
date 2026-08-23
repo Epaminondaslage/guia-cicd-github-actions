@@ -11,8 +11,8 @@ Guia  cobrindo fundamentos de Git, GitHub Actions, runners self-hosted, Docker n
 Este guia adota IA no desenvolvimento de forma deliberada, não pelo hype: agentes aceleram a escrita de código, mas nunca substituem a responsabilidade humana pelo que é aprovado e enviado a produção. Na prática isso significa spec e plano revisados antes de codar, revisão humana obrigatória do diff linha a linha antes do merge, e agentes distintos para escrever e para revisar — os mesmos princípios de qualquer boa prática de engenharia, aplicados também ao código que a IA ajuda a gerar. O detalhamento completo está no [Volume 08 — Desenvolvimento com Spec + IA](volumes/08_DESENVOLVIMENTO_SPEC_IA.md), incluindo uma comparação direta entre vibe coding descontrolado e o fluxo adotado aqui.
 
 <p align="center">
-  <img src="img/img11_light.png#gh-light-mode-only" alt="Ciclo de desenvolvimento assistido por IA: necessidade, brainstorm, entrevista de requisitos, SPEC, revisão humana, plano, revisão humana do plano, branch, implementação assistida, testes locais, revisão humana do código, PR, CI+E2E, merge, DEV, aprovação e PROD" width="720">
-  <img src="img/img11_dark.png#gh-dark-mode-only" alt="Ciclo de desenvolvimento assistido por IA: necessidade, brainstorm, entrevista de requisitos, SPEC, revisão humana, plano, revisão humana do plano, branch, implementação assistida, testes locais, revisão humana do código, PR, CI+E2E, merge, DEV, aprovação e PROD" width="720">
+  <img src="img/img12_light.png#gh-light-mode-only" alt="Diagrama ilustrativo de vibe coding controlado com boas práticas" width="512">
+  <img src="img/img12_dark.png#gh-dark-mode-only" alt="Diagrama ilustrativo de vibe coding controlado com boas práticas" width="512">
 </p>
 
 
