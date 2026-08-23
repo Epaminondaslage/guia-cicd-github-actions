@@ -212,11 +212,7 @@ Criar:
 git switch -c feature/dashboard
 ```
 
-ou:
-
-```bash
-git checkout -b feature/dashboard
-```
+`git checkout -b feature/dashboard` ainda funciona e aparece com frequência em projetos mais antigos, mas `git switch` é o comando recomendado desde o Git 2.23: `checkout` acumula responsabilidades demais (trocar de branch, restaurar arquivos, criar branch) e isso facilita erros. Prefira `git switch` para trocar/criar branch e `git restore` para arquivos (seção 27).
 
 Listar:
 
@@ -229,6 +225,8 @@ Trocar:
 ```bash
 git switch main
 ```
+
+Um ponto importante: `git switch` (assim como `git checkout`) troca a branch **na mesma Working Tree**. Se houver alterações em andamento na branch atual, o Git pode recusar a troca ou exigir stash antes. Para trabalhar em duas branches ao mesmo tempo sem esse atrito, veja `git worktree` na seção 10.
 
 ---
 
@@ -299,6 +297,47 @@ Cada branch pode gerar uma PR independente.
 Posteriormente as PRs podem ser integradas uma por uma.
 
 Não é necessário fazer merge imediatamente após abrir uma PR.
+
+### Trabalhando em várias branches ao mesmo tempo: `git worktree`
+
+`git switch`/`git checkout` trocam de branch dentro do mesmo diretório de trabalho. Isso é suficiente quando existe apenas uma tarefa em andamento, mas na prática é comum precisar:
+
+- revisar uma PR urgente enquanto uma feature está pela metade e sem condições de commit;
+- comparar o comportamento de duas branches lado a lado;
+- rodar testes de uma branch enquanto se continua editando outra.
+
+Trocar de branch nesse cenário normalmente força um `git stash` (seção 28), o que funciona, mas é um passo extra e uma fonte comum de esquecimento (stash que fica perdido, aplicado na branch errada, etc.).
+
+`git worktree` resolve isso criando **um diretório de trabalho adicional**, ligado ao mesmo repositório `.git`, cada um com sua própria branch fora ativa:
+
+```bash
+git worktree add ../projeto-hotfix fix/login-timeout
+```
+
+O comando acima cria o diretório `../projeto-hotfix` já com a branch `fix/login-timeout` fora ativa, sem tocar na Working Tree onde a feature em andamento está.
+
+```text
+projeto/              (branch: feature/dashboard, em andamento)
+projeto-hotfix/        (branch: fix/login-timeout)
+```
+
+Ambos compartilham o mesmo histórico e o mesmo `.git`; commits feitos em um refletem no `git log --all` do outro.
+
+Listar as worktrees ativas:
+
+```bash
+git worktree list
+```
+
+Remover uma worktree quando o trabalho termina:
+
+```bash
+git worktree remove ../projeto-hotfix
+```
+
+(ou apagar o diretório e rodar `git worktree prune` para limpar a referência).
+
+Na prática, para quem trabalha com múltiplas branches simultaneamente — inclusive quando parte do trabalho é conduzido por IA, tema da seção 44 — `git worktree add` costuma ser preferível a `git checkout`/`git switch` puro: evita stash, evita misturar mudanças de contextos diferentes na mesma Working Tree e permite rodar builds/testes de branches distintas em paralelo.
 
 ---
 
@@ -702,6 +741,8 @@ git stash pop
 ```
 
 Útil para uma troca rápida de contexto, mas não deve substituir commits adequados.
+
+Quando a troca de contexto é frequente (por exemplo, revisar outra branch enquanto a atual está em andamento), considere `git worktree` (seção 10) em vez de `stash`: evita o risco de aplicar um stash na branch errada e permite manter os dois contextos abertos ao mesmo tempo.
 
 ---
 

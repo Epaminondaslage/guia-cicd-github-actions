@@ -38,6 +38,17 @@ docker push registry/app:tag
 docker rmi IMAGE
 ```
 
+## Build multi-stage e Buildx
+```bash
+docker build -f Dockerfile --target build -t app:build .
+docker buildx create --use --name ci-builder
+docker buildx inspect --bootstrap
+docker buildx build --platform linux/amd64,linux/arm64 -t registry/app:tag --push .
+docker buildx build --cache-from type=registry,ref=registry/app:cache --cache-to type=registry,ref=registry/app:cache,mode=max -t registry/app:tag --push .
+```
+
+Multi-stage (`FROM ... AS build` seguido de `FROM ... AS final` copiando com `COPY --from=build`) reduz o tamanho final da imagem e é o padrão recomendado para builds em CI.
+
 ## Volumes
 ```bash
 docker volume ls
@@ -61,6 +72,8 @@ docker compose logs -f
 docker compose pull
 docker compose build
 docker compose restart
+docker compose up -d --build
+docker compose exec SERVICO sh
 docker compose down
 docker compose down -v
 ```
@@ -75,9 +88,11 @@ docker compose -p ci-123 -f compose.test.yml down -v
 ```bash
 docker container prune -f
 docker image prune -f
+docker builder prune -f
+docker system df -v
 ```
 
-Não execute `docker system prune -a --volumes` em host compartilhado sem entender o impacto.
+Não execute `docker system prune -a --volumes` nem `docker builder prune -a` em host compartilhado (ex.: runner self-hosted com múltiplos jobs concorrentes) sem entender o impacto: remove cache de build e imagens não referenciadas por qualquer container, mesmo de outros pipelines.
 
 ## Registry
 ```bash

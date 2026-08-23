@@ -39,21 +39,35 @@ gh issue close 81
 ## Workflows e Actions
 ```bash
 gh workflow list
-gh workflow view
-gh workflow run NOME
-gh run list
-gh run view RUN_ID
+gh workflow view NOME
+gh workflow run NOME.yml -f input1=valor
+gh workflow enable NOME
+gh workflow disable NOME
+gh run list --workflow NOME.yml
+gh run view RUN_ID --log
+gh run view RUN_ID --log-failed
 gh run watch RUN_ID
 gh run rerun RUN_ID
+gh run rerun RUN_ID --failed
+gh run cancel RUN_ID
+gh run download RUN_ID
 ```
 
-## Secrets
+## Secrets e Variables
 ```bash
 gh secret list
 gh secret set NOME
+gh secret set NOME --body "valor"
+gh secret set NOME --env production
+gh secret set NOME --org ORG --visibility all
+gh secret delete NOME
+
+gh variable list
+gh variable set NOME --body "valor"
+gh variable delete NOME
 ```
 
-Nunca passe secrets em histórico de shell quando puder usar entrada segura.
+Nunca passe secrets em texto puro na linha de comando quando puder usar entrada via stdin/prompt (`gh secret set NOME < arquivo` ou digitando interativamente). `gh secret set` nunca expõe o valor de volta — apenas confirma a criação/atualização.
 
 ## Releases
 ```bash
@@ -72,8 +86,8 @@ Use `gh api` com cuidado, especialmente em endpoints de escrita.
 ## Fluxo prático
 ```bash
 git push -u origin feature/x
-gh pr create
-gh pr checks
+gh pr create --fill
+gh pr checks --watch
 ```
 
 **Fim do Apêndice B**

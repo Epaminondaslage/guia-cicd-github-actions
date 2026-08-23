@@ -2,7 +2,7 @@
 
 **Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 12_INFRAESTRUTURA_SERVIDOR_CICD.md  
-**Versão:** 0.1.0
+**Versão:** 0.2.0
 
 ---
 
@@ -43,7 +43,10 @@ Um runner pode operar em:
 ```text
 máquina física
 VM
+container (Docker)
+LXC/LXD
 cloud VM
+Kubernetes (via Actions Runner Controller)
 ```
 
 Para começar, VM é uma escolha forte por:
@@ -52,6 +55,26 @@ Para começar, VM é uma escolha forte por:
 - snapshots;
 - facilidade de reconstrução;
 - limites de recursos.
+
+## 2.1 Trade-offs de isolamento (VM vs container vs LXC)
+
+O nível de isolamento necessário depende do que o runner vai executar:
+
+```text
+VM (KVM/QEMU)     -> isolamento forte: kernel próprio, hypervisor separa hardware
+LXC/container      -> isolamento fraco/médio: kernel compartilhado com o host
+Docker-in-Docker   -> risco adicional: runner dentro de container que sobe outros containers
+```
+
+Pontos críticos:
+
+- container e LXC compartilham o kernel do host — uma fuga de container (container breakout) compromete o host inteiro, não apenas o job;
+- VM isola o kernel, reduzindo o raio de explosão de uma falha ou exploração no job;
+- self-hosted runners **nunca** devem rodar workflows de PRs de forks externos sem revisão manual (`pull_request_target` e execução automática em fork são vetores clássicos de exec arbitrário) — trate isso como controle de segurança, não como detalhe de infraestrutura;
+- se o repositório aceita contribuições externas, prefira runners efêmeros em VM descartável por job, ou GitHub-hosted runners para PRs de fork e self-hosted apenas para o repositório interno/branches protegidas;
+- LXC privilegiado (`privileged: true`) para dar acesso ao Docker do host anula praticamente todo o isolamento — evite; se precisar de Docker dentro do LXC, prefira `keyctl`/nesting controlado ou mova a carga para VM.
+
+Resumindo o trade-off: LXC/container ganham em densidade e velocidade de provisionamento; VM ganha em segurança quando o conteúdo do job não é 100% confiável.
 
 ---
 
@@ -70,21 +93,32 @@ Prefira separação lógica ou física.
 
 # 4. Dimensionamento
 
-CI simples:
+Referências de partida por tipo de carga (ajuste com métricas reais do seu pipeline):
 
 ```text
-2-4 vCPU
-4-8 GB RAM
-SSD
+Lint/testes unitários simples (Node/PHP pequenos):
+  2 vCPU / 4 GB RAM / 20-40 GB SSD
+
+Build + testes unitários médios (monorepo, várias linguagens):
+  4 vCPU / 8 GB RAM / 60-100 GB SSD/NVMe
+
+CI + E2E (Playwright/Cypress, browsers headless):
+  4-8 vCPU / 8-16 GB RAM / 100-200 GB NVMe
+  (cada browser headless facilmente consome 500MB-1GB+ de RAM por worker)
+
+Build de imagens Docker pesadas / matrizes paralelas:
+  8+ vCPU / 16-32 GB RAM / 200+ GB NVMe
+  (múltiplas camadas simultâneas competem por I/O e CPU)
+
+Deploy runner (só orquestra SSH/API, não builda):
+  1-2 vCPU / 2 GB RAM / 20 GB SSD
 ```
 
-CI + E2E:
+Notas de dimensionamento:
 
-```text
-4-8+ vCPU
-8-16+ GB RAM
-SSD/NVMe
-```
+- RAM costuma ser o gargalo real em E2E com browsers, não CPU;
+- disco cresce mais rápido do que se espera por causa de camadas Docker acumuladas e artifacts de teste (vídeos/screenshots de E2E);
+- se usar runners efêmeros (ver seção 54), cada job parte de uma imagem/snapshot limpo — isso simplifica dimensionamento porque não há acúmulo entre execuções, mas exige que o provisionamento (clone de VM, pull de imagem de container) seja rápido o bastante para não virar gargalo de fila.
 
 Meça antes de ampliar.
 
@@ -96,11 +130,14 @@ Builds e Docker consomem disco.
 
 Planeje:
 
-- workspace;
-- Docker layers;
-- browsers;
-- artifacts temporários;
+- workspace (`_work/`);
+- Docker layers e cache de build (BuildKit cache, `docker builder prune` periódico);
+- cache de dependências (`~/.npm`, `~/.composer/cache`, `~/.cache/pip`, cache de camadas do Actions `actions/cache`);
+- browsers (Playwright/Cypress podem baixar centenas de MB por versão de browser);
+- artifacts temporários (vídeos, screenshots, coverage);
 - logs.
+
+Sem limpeza periódica, o disco de um runner de build tende a crescer continuamente — agende `docker system prune` (com critério, nunca `--volumes` sem revisar) e rotação de workspace antigo.
 
 ---
 
@@ -109,6 +146,8 @@ Planeje:
 E2E e builds se beneficiam de I/O rápido.
 
 Disco lento pode parecer problema de CPU.
+
+NVMe é preferível a SATA SSD quando a carga envolve muitas operações pequenas e simultâneas — é o caso típico de `docker build` com muitas camadas, `npm install`/`composer install` com milhares de arquivos pequenos, e suítes de E2E gravando vídeo/screenshot em paralelo. Nesses cenários, IOPS e latência importam mais que throughput sequencial.
 
 ---
 
@@ -207,13 +246,28 @@ Ubuntu pode usar UFW ou nftables conforme política.
 
 Runner normalmente precisa principalmente de tráfego de saída HTTPS para GitHub.
 
+Regras mínimas de saída (outbound) para um runner funcional:
+
+```text
+443/tcp -> github.com, api.github.com, *.actions.githubusercontent.com
+443/tcp -> ghcr.io, registry-1.docker.io, *.docker.io (se usar Docker Hub)
+443/tcp -> repositórios de pacotes usados (npm registry, packagist, pypi, apt mirrors)
+53/udp,tcp -> resolvers DNS internos/externos
+123/udp -> NTP
+22/tcp -> apenas se o pipeline usar Git sobre SSH ou deploy via SSH
+```
+
+Não é necessário liberar entrada (inbound) de internet — o runner sempre inicia a conexão (ver seção 16). Se a organização usa uma lista de permissões restritiva, consulte a lista oficial de ranges/domínios do GitHub Actions e mantenha atualizada, pois pode mudar.
+
 ---
 
 # 16. Runner não precisa de porta pública
 
-O runner inicia conexão com o GitHub.
+O runner inicia conexão com o GitHub (long poll / WebSocket sobre HTTPS), não o contrário — não existe "webhook chegando" no runner em si.
 
 Não abra porta de internet apenas para "receber jobs".
+
+Isso vale mesmo para Actions Runner Controller (ARC) no Kubernetes: o listener do ARC também inicia conexão de saída para o GitHub; não é necessário expor endpoint público para o cluster receber jobs.
 
 ---
 
@@ -222,6 +276,22 @@ Não abra porta de internet apenas para "receber jobs".
 Hosts internos devem possuir nomes previsíveis.
 
 Evite espalhar IPs hardcoded por scripts.
+
+## 17.1 Redundância de resolver
+
+Configure ao menos dois resolvers DNS, com ordem de fallback clara:
+
+```text
+resolver primário   -> ex.: DNS interno/autoritativo da rede
+resolver secundário -> ex.: resolver externo confiável (1.1.1.1, 8.8.8.8) ou secundário interno
+```
+
+Cuidados práticos:
+
+- em `/etc/resolv.conf` (ou no backend usado, `systemd-resolved`/`netplan`), a ordem dos `nameserver` importa como fallback, não como balanceamento — o primeiro que não responder faz o cliente tentar o próximo, com timeout;
+- se o resolver primário for um serviço rodando em container (ex.: dentro de um LXC/VM que hospeda o próprio DNS interno), um restart desse container derruba a resolução até o fallback assumir — teste esse cenário deliberadamente;
+- ao reconfigurar DNS em containers/LXC, o `docker restart` do daemon costuma ser necessário para que os containers em execução peguem a nova configuração de rede;
+- falha de DNS intermitente é uma causa comum e subestimada de jobs de CI falhando de forma não determinística (timeout ao resolver registry, npm registry, etc.) — antes de suspeitar de "flakiness" do teste, descarte problema de DNS.
 
 ---
 
@@ -594,6 +664,47 @@ network
 
 Uma falha pode afetar todos.
 
+## 54.1 Runners persistentes vs efêmeros
+
+Boa prática atual (2025/2026): preferir **runners efêmeros** (`--ephemeral` no registro do runner) em vez de runners persistentes de longa duração.
+
+```text
+runner persistente -> registra uma vez, roda N jobs indefinidamente
+runner efêmero      -> registra, roda exatamente 1 job, desregistra e é destruído
+```
+
+Motivos para preferir efêmero:
+
+- elimina resíduo entre jobs (variáveis de ambiente, arquivos deixados, processos zumbis, estado do Docker) — cada job começa limpo;
+- reduz a superfície de ataque: um job malicioso ou comprometido não deixa persistência no runner para o próximo job herdar;
+- combina bem com IaC (seção 31): o runner "nasce" de uma imagem/template já validado e morre depois de um job, então provisionamento vira o ponto central de manutenção em vez do runner individual.
+
+O custo é operacional: cada job paga o tempo de provisionamento (subir VM/container, registrar, baixar runner). Isso é mitigado com templates/imagens pré-aquecidas ou com Actions Runner Controller (ver 54.2).
+
+## 54.2 Actions Runner Controller (ARC) e runner scale sets
+
+Para quem já opera Kubernetes, o **Actions Runner Controller (ARC)** é a alternativa oficial da GitHub a manter VMs/LXC de runner manualmente. Ele gerencia **runner scale sets**: grupos de runners efêmeros provisionados sob demanda como pods, escalando de zero conforme a fila de jobs.
+
+```text
+GitHub Actions -> fila de jobs
+       |
+       v
+ARC controller (no cluster)
+       |
+       v
+runner scale set -> cria/destrói pods efêmeros conforme demanda
+```
+
+Vantagens do ARC frente a runners manuais em VM/LXC:
+
+- escala automaticamente com a fila (scale to zero quando ocioso, reduzindo custo em cloud);
+- isolamento por pod/job por padrão (efêmero nativo);
+- integra com o mesmo tooling de observabilidade/deploy já usado para as demais cargas em Kubernetes.
+
+Trade-off: exige operar um cluster Kubernetes (complexidade adicional) e ainda herda os mesmos cuidados de isolamento de container discutidos na seção 2.1 — pods não são VMs; para cargas que exigem isolamento de kernel forte (ex.: build de PRs de forks não confiáveis), combine com runtimes com sandbox reforçado (gVisor/Kata Containers) ou mantenha essa carga fora do ARC, em VM dedicada.
+
+Para infraestrutura pequena/local (ex.: um host Proxmox único), VMs ou LXC gerenciados manualmente (ou via Ansible/Terraform) seguem sendo uma opção mais simples do que introduzir Kubernetes só para rodar runners.
+
 ---
 
 # 55. Runner por VM
@@ -605,6 +716,8 @@ VM ci
 VM e2e
 VM deploy
 ```
+
+Isso continua válido com runners efêmeros: cada tipo de carga pode ter seu próprio template/imagem base (VM ou container), dimensionado conforme a seção 4, e provisionado sob demanda.
 
 ---
 
@@ -767,15 +880,32 @@ Se queue time domina pipeline, scale out pode ser mais eficiente.
 
 ---
 
-# 73. Runner labels e capacity
+# 73. Runner labels, grupos e capacity
 
-Distribua workloads:
+Labels distribuem workloads para o hardware certo:
 
 ```text
 ci
 e2e
 deploy
 ```
+
+O workflow escolhe o runner certo combinando labels no `runs-on`:
+
+```yaml
+runs-on: [self-hosted, linux, e2e]
+```
+
+## 73.1 Runner groups
+
+Em organizações com múltiplos repositórios/produtos, **runner groups** (recurso de nível organização/enterprise) controlam quais repositórios podem usar quais runners — isso é o mecanismo correto para garantir que um runner de um produto nunca seja acionável por workflows de outro produto, análogo ao isolamento de fila/banco/container que já se pratica entre produtos na aplicação.
+
+```text
+grupo "produto-a-runners" -> só repositórios do produto A
+grupo "produto-b-runners" -> só repositórios do produto B
+```
+
+Combine labels (o tipo de carga: ci/e2e/deploy) com grupos (quem pode acessar) em vez de depender só de labels — labels sozinhas não impedem que outro repositório da mesma organização "peça" aquele runner se ele estiver num grupo compartilhado.
 
 ---
 
@@ -834,6 +964,10 @@ Mantenha inventário versionado sem secrets.
 - [ ] patches.
 - [ ] logs.
 - [ ] least privilege.
+- [ ] runner efêmero quando possível.
+- [ ] PRs de forks externos não rodam automaticamente em self-hosted.
+- [ ] runner group restringe o runner ao(s) repositório(s) do produto correto.
+- [ ] DNS com resolver secundário configurado e testado.
 
 ---
 

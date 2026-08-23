@@ -79,6 +79,59 @@ Não utilize TAB.
 runs-on: [self-hosted, linux, ci]
 ```
 
+## env, jobs, needs e matrix
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: production
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20, 22]
+      fail-fast: false
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+```
+
+## secrets no workflow
+```yaml
+steps:
+  - name: Deploy
+    env:
+      TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+    run: ./deploy.sh
+```
+
+## Outputs entre steps e jobs
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      versao: ${{ steps.gerar.outputs.versao }}
+    steps:
+      - id: gerar
+        run: echo "versao=1.2.3" >> "$GITHUB_OUTPUT"
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Versão ${{ needs.build.outputs.versao }}"
+```
+
+`$GITHUB_OUTPUT` substitui o antigo `::set-output` (removido/desativado pelo GitHub); sempre redirecione para o arquivo indicado pela variável de ambiente, nunca faça hardcode do caminho.
+
 ## Objetos inline
 Possíveis em YAML, mas estruturas expandidas costumam ser mais legíveis em workflows.
 

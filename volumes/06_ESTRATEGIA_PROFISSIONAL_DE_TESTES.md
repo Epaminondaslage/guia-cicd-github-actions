@@ -90,7 +90,15 @@ A solução não é apenas adicionar CPU.
        Unitários
 ```
 
-A maior quantidade de testes deve estar na base.
+A pirâmide descreve tanto o volume de testes em cada camada quanto a ordem de prioridade:
+
+```text
+mais testes unitários
+menos testes de integração
+poucos testes E2E
+```
+
+Ou seja: a base (unitários) deve concentrar a maior parte da suíte, integração vem em quantidade intermediária, e E2E fica reservado para os fluxos que realmente precisam validar o sistema de ponta a ponta. Não é uma regra estética — é consequência direta do custo e da velocidade de cada camada.
 
 Características:
 
@@ -99,6 +107,21 @@ Características:
 | Unitário | Alta | Alto | Baixo |
 | Integração | Média | Médio | Médio |
 | E2E | Baixa | Baixo | Alto |
+
+## Variações modernas
+
+Algumas equipes adotam o **testing trophy** (Kent C. Dodds), que redistribui o peso relativo dando mais espaço à integração — sob a tese de que testes de integração capturam mais bugs reais por esforço investido, especialmente em aplicações com bastante lógica de composição entre componentes:
+
+```text
+        E2E
+    /---------\
+   Integração
+ /-------------\
+   Unitários
+static/tipagem
+```
+
+Isso não contradiz a pirâmide: a base ampla e o topo estreito continuam valendo. A diferença é apenas onde fica o "meio-de-campo" — quanto peso dar a integração versus unitário puro. A escolha depende do tipo de aplicação: sistemas com regras de negócio complexas e isoladas tendem a pirâmide clássica; aplicações com bastante integração entre camadas (frontend orientado a componentes, por exemplo) tendem a se beneficiar do trophy. Em qualquer variação, o topo (E2E) permanece o mais caro e o mais escasso.
 
 ---
 
@@ -197,7 +220,7 @@ Validam colaboração entre componentes.
 Exemplos:
 
 ```text
-API + MariaDB
+API + MySQL
 Service + Redis
 Backend + MQTT
 Repository + banco
@@ -217,7 +240,7 @@ CI
  v
 docker compose
  |
- +-- MariaDB
+ +-- MySQL
  +-- Redis
  +-- Mosquitto
  |
@@ -228,7 +251,33 @@ integration tests
 down -v
 ```
 
-Isso evita dependência de infraestrutura compartilhada.
+Isso evita dependência de infraestrutura compartilhada. Também é possível usar o recurso nativo de `services` do GitHub Actions em vez de `docker compose`, quando o job já roda em runner Linux:
+
+```yaml
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: app_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -proot"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm run migrate:test
+      - run: npm run test:integration
+```
+
+O `--health-cmd` é importante: sem ele o job pode tentar conectar antes do MySQL terminar de subir.
 
 ---
 
@@ -543,6 +592,79 @@ Exemplo conceitual:
 npx playwright test --shard=1/4
 ```
 
+## Exemplo completo de workflow (GitHub Actions)
+
+Um workflow atual e completo para Playwright, cobrindo instalação de browsers, execução contra um ambiente efêmero, sharding e artifacts de falha:
+
+```yaml
+name: e2e
+
+on:
+  pull_request:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: app_e2e
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -proot"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # instala os browsers e as dependências de sistema necessárias
+      - run: npx playwright install --with-deps
+
+      - run: npm run migrate:test
+        env:
+          DATABASE_URL: mysql://root:root@127.0.0.1:3306/app_e2e
+
+      # sobe a aplicação como ambiente efêmero, isolado desta execução
+      - run: npm run start:test &
+      - run: npx wait-on http://localhost:3000
+
+      - run: npx playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}
+        env:
+          BASE_URL: http://localhost:3000
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-${{ matrix.shard }}
+          path: playwright-report/
+          retention-days: 7
+```
+
+Pontos importantes desse exemplo:
+
+- `npx playwright install --with-deps` instala browsers e as bibliotecas de sistema (libgtk, libnss etc.) exigidas pelo runner Linux — sem `--with-deps` o job falha ou fica incompleto em runners "limpos";
+- o `matrix.shard` combinado com `strategy.job-total` divide a suíte automaticamente entre os jobs paralelos;
+- o `services.mysql` com `--health-cmd` garante que o banco esteja pronto antes dos testes;
+- a aplicação sobe como processo efêmero do próprio job — nada roda contra DEV ou PROD;
+- o upload de artifact roda mesmo se o job falhar (`if: ${{ !cancelled() }}`), preservando `playwright-report/` (que inclui trace, screenshot e vídeo quando configurados — ver seção 70).
+
+Um passo de merge dos relatórios de shard (`npx playwright merge-reports`) pode ser adicionado em um job subsequente quando for necessário visualizar a suíte completa em um único relatório HTML.
+
 ---
 
 # 24. Runner único
@@ -588,12 +710,20 @@ execução 3 PASS
 
 Causas comuns:
 
-- race condition;
-- timeout;
+- **dependência de ordem de execução** — teste B assume que teste A já rodou antes e deixou algo pronto;
+- **dados compartilhados entre testes** — dois testes leem/escrevem o mesmo registro e um pisa no outro;
+- **timing/race condition** — o teste segue antes do estado assíncrono (rede, fila, animação) realmente se estabilizar;
+- **dependência de estado externo** — API de terceiro, relógio do sistema, rede instável, horário de execução;
 - seletor instável;
-- dado compartilhado;
-- dependência externa;
-- ordem de testes.
+- ambiente não determinístico (paralelismo mal configurado, recursos compartilhados).
+
+## Mitigação
+
+- **isolamento de dados por teste**: cada teste cria e usa seus próprios registros (ver seção 31), nunca reaproveita dado de outro teste;
+- **setup dentro do próprio teste** (ou dentro do `try`/fixture do teste), nunca em estado global mutável compartilhado entre casos — isso evita que um teste anterior deixe resíduo que quebra o próximo;
+- **retries com cautela**: um retry pode ajudar a coletar evidência (trace, log) de uma falha intermitente, mas nunca deve ser usado para "empurrar" um teste genuinamente quebrado para verde; o relatório deve deixar visível que houve retry (ver seção 72);
+- **ambiente determinístico**: mesma versão de browser, mesmo timezone, mesmo seed de dados aleatórios, sem depender do horário real do relógio (ver seções 78-80);
+- rodar a suíte em ordem aleatória periodicamente para expor dependências ocultas entre testes (ver seção 35).
 
 ---
 
@@ -607,7 +737,7 @@ rerun
 
 até passar, o CI perde credibilidade.
 
-Flaky test deve gerar investigação.
+Flaky test deve gerar investigação, não apenas nova tentativa.
 
 ---
 
@@ -763,6 +893,20 @@ Isso pode acelerar cleanup.
 
 Depende do framework e do comportamento testado.
 
+Em MySQL, essa estratégia tem uma limitação importante: `ALTER TABLE`/DDL faz commit implícito e não pode ficar dentro da transaction de teste; e código que usa múltiplas conexões (por exemplo, um worker separado) não enxerga dados de uma transaction ainda não commitada em outra conexão. Nesses casos, transaction-per-test não serve e a alternativa é:
+
+```text
+schema/banco de teste dedicado
+ |
+ v
+truncar tabelas afetadas no início do teste (ou usar dados com identificador único)
+ |
+ v
+nunca reaproveitar linha criada por outro teste
+```
+
+A regra que nunca pode ser quebrada: **um teste não deve gravar em uma tabela compartilhada com outros testes sem isolar seus próprios dados** — seja por transaction+rollback, seja por identificador único (seção 31), seja por schema isolado por execução/worker. Um teste que insere um registro fixo (`id = 1`, `email = 'teste@teste.com'`) e outro teste lê ou apaga esse mesmo registro é a causa mais comum de flakiness em suíte de integração com banco real.
+
 ---
 
 # 37. Mock
@@ -915,6 +1059,12 @@ Nightly -> Chromium + Firefox + WebKit
 
 se o requisito de compatibilidade permitir.
 
+Instalação seletiva por browser também é possível quando só um é necessário no job:
+
+```bash
+npx playwright install --with-deps chromium
+```
+
 ---
 
 # 46. Testes de performance
@@ -1013,9 +1163,43 @@ Pode existir:
 mínimo 80%
 ```
 
-Mas não use um número arbitrário sem contexto.
+Mas não use um número arbitrário sem contexto, e não persiga 100%.
 
-Priorize código crítico.
+Metas mais realistas:
+
+```text
+código crítico (pagamento, autenticação, regras de negócio) -> cobertura alta, próxima de 90-100%
+código de suporte (utilitários, camadas finas)             -> cobertura moderada
+UI decorativa, scripts descartáveis                          -> baixa prioridade
+```
+
+Priorize código crítico. Um gate de 80% aplicado uniformemente ao projeto inteiro tende a gerar testes artificiais só para "bater o número" — o que é pior do que não ter a métrica.
+
+## Ferramentas de coverage por stack
+
+```text
+Node.js/TypeScript -> Vitest (coverage via V8, integra c8) ou Jest (Istanbul embutido)
+                       nyc como runner standalone do Istanbul quando necessário
+PHP                -> PHPUnit com driver Xdebug ou PCOV (PCOV é bem mais rápido em CI)
+```
+
+Exemplo com Vitest:
+
+```json
+{
+  "scripts": {
+    "test:coverage": "vitest run --coverage"
+  }
+}
+```
+
+Exemplo com PHPUnit + PCOV no CI:
+
+```bash
+php -d pcov.enabled=1 vendor/bin/phpunit --coverage-text
+```
+
+O relatório de coverage deve ser um insumo para revisão (onde faltam testes), não um fim em si mesmo.
 
 ---
 

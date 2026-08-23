@@ -2,7 +2,7 @@
 
 **Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 10_SEGURANCA_DO_PIPELINE.md  
-**Versão:** 0.1.0  
+**Versão:** 0.2.0  
 **Pré-requisitos:** Volumes 01 a 09
 
 ---
@@ -101,11 +101,11 @@ artifact
 
 Proteções fundamentais:
 
-- MFA;
-- senha única;
-- recovery codes seguros;
-- sessões revisadas;
-- tokens antigos removidos.
+- MFA (obrigatório para quem administra o repositório ou a organização);
+- senha única (gerenciador de senhas, nunca reaproveitada);
+- recovery codes seguros (fora do repositório, fora do disco compartilhado);
+- sessões revisadas periodicamente (Settings → Sessions);
+- tokens antigos removidos (Personal Access Tokens e SSH keys não usados há meses).
 
 ---
 
@@ -113,7 +113,9 @@ Proteções fundamentais:
 
 Nunca criar token com escopo maior apenas por conveniência.
 
-Separe:
+Prefira **fine-grained Personal Access Tokens** (escopo por repositório e por permissão) a *classic tokens* (escopo amplo, praticamente "tudo ou nada").
+
+Separe por finalidade:
 
 ```text
 read
@@ -122,69 +124,101 @@ deploy
 admin
 ```
 
+Defina expiração. Um token sem data de expiração é uma dívida técnica de segurança.
+
 ---
 
 # 7. GITHUB_TOKEN
 
-Declare permissões:
+O `GITHUB_TOKEN` é gerado automaticamente pelo GitHub para cada execução de workflow e expira ao final do job. Ele **não** deve ser confundido com um PAT.
+
+Desde 2023, novos repositórios podem ter o padrão configurado como somente leitura (`Settings → Actions → Workflow permissions`), mas isso é configuração de repositório/organização — não assuma, **declare explicitamente** no workflow.
+
+Boa prática: definir `permissions` no nível do **workflow** com o mínimo comum, e elevar apenas no **job** que realmente precisa:
 
 ```yaml
 permissions:
   contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # só este job precisa criar release/tag
+    steps:
+      - run: echo "cria release"
 ```
 
-Expanda somente quando necessário.
+Sem o bloco `permissions:`, o comportamento herda o padrão da organização/repositório — que pode ser mais permissivo do que o pipeline precisa. Não deixe implícito.
 
 ---
 
 # 8. Secrets
 
-Armazene credenciais no mecanismo adequado.
+Armazene credenciais em **GitHub Secrets** (repositório, ambiente ou organização) — nunca em texto plano no código.
 
 Nunca em:
 
 ```text
-Git
+Git (arquivos versionados)
 README
 Dockerfile
 logs
 SPEC
-prompt
+prompt (chat com IA)
+comentário de PR
 ```
+
+Isso vale mesmo para repositórios privados: privado não é sinônimo de seguro, e qualquer colaborador com acesso de leitura passa a ter acesso ao segredo.
 
 ---
 
 # 9. Rotação
 
-Se secret for exposto:
+Se um secret for exposto — versionado por engano, colado em log, colado em um prompt de IA — o procedimento correto é:
 
 ```text
-1. revogar
-2. substituir
-3. investigar uso
-4. remover do histórico quando necessário
+1. revogar a credencial exposta imediatamente
+2. gerar uma nova credencial (rotacionar)
+3. investigar uso indevido (logs de acesso, billing, atividade anômala)
+4. remover do histórico do git quando aplicável (git filter-repo, BFG)
 ```
 
-Não basta apagar o arquivo atual.
+Ponto crítico: **remover do histórico não neutraliza o vazamento**. `git filter-repo` e o BFG Repo-Cleaner reescrevem o histórico local e podem forçar um novo push, mas não apagam cópias que já foram clonadas, indexadas por scrapers automatizados (existem bots que varrem GitHub em busca de segredos em tempo real) ou cacheadas por serviços de terceiros. Uma vez exposto, o segredo deve ser tratado como comprometido — a única mitigação real é a **rotação**. Limpar o histórico é higiene depois da rotação, não substituto dela.
 
 ---
 
 # 10. Environment secrets
 
-Separe:
+Use **GitHub Environments** (`Settings → Environments`) para segregar:
 
 ```text
 development
+staging
 production
 ```
 
-Secret de produção não deve ser disponibilizado ao CI de PR.
+Cada Environment pode ter:
+
+- secrets próprios, isolados dos demais;
+- *required reviewers* (aprovação humana antes do job rodar);
+- *deployment branches* (só `main`/`release/*` pode disparar deploy no ambiente);
+- *wait timer*.
+
+Secret de produção não deve ser disponibilizado ao CI de PR nem a jobs que rodam a partir de forks — um workflow disparado por `pull_request` de um fork não tem acesso aos secrets do Environment por padrão, e essa proteção não deve ser contornada sem necessidade real.
 
 ---
 
 # 11. SSH
 
-Use chaves dedicadas.
+Use chaves dedicadas por finalidade (deploy, backup, monitoramento).
 
 Evite:
 
@@ -192,7 +226,9 @@ Evite:
 chave pessoal do administrador
 ```
 
-como chave de deploy.
+como chave de deploy. Se a pessoa sai da equipe ou troca de notebook, a chave de deploy não deve precisar ser trocada junto.
+
+A chave de deploy deve ter escopo mínimo (deploy key do repositório específico, ou usuário dedicado com permissões restritas no host de destino), nunca a chave usada para acesso administrativo geral.
 
 ---
 
@@ -204,7 +240,9 @@ Exemplo:
 deploy
 ```
 
-Permissões mínimas.
+Permissões mínimas: acesso de escrita apenas ao diretório da aplicação, nunca root.
+
+Um usuário de deploy dedicado (não-root) que executa `git pull` e reinicia o serviço reduz drasticamente o raio de explosão de uma chave SSH vazada ou de um comando de deploy malformado.
 
 ---
 
@@ -224,7 +262,7 @@ NOPASSWD: ALL
 
 Proteja contra MITM.
 
-Mantenha `known_hosts`.
+Mantenha `known_hosts` versionado ou provisionado, e nunca use `StrictHostKeyChecking=no` em pipelines de produção só para "resolver" um prompt interativo.
 
 ---
 
@@ -331,25 +369,48 @@ Uma linha:
 uses: vendor/action@v1
 ```
 
-executa código externo.
+executa código externo com acesso ao contexto do job, incluindo secrets injetados nas etapas anteriores.
 
-Avalie reputação, manutenção e permissões.
+Avalie reputação, manutenção e permissões antes de adicionar uma Action ao pipeline.
 
 ---
 
 # 23. Pinning
 
-Em ambientes de segurança elevada, fixe Action por SHA.
+Em ambientes de segurança elevada, fixe Action por SHA de commit, não por tag:
 
-Tags podem mudar.
+```yaml
+uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3  # v4.1.1
+```
+
+Tags (`@v4`, `@v4.1.1`) podem ser movidas pelo mantenedor da Action — inclusive de forma maliciosa, em caso de comprometimento da conta do mantenedor. SHA de commit é imutável.
 
 ---
 
-# 24. Dependabot
+# 24. Atualização de dependências (Dependabot / Renovate)
 
-Use para dependências e Actions conforme estratégia.
+Automatize a atualização de dependências e de Actions de terceiros com **Dependabot** (nativo do GitHub) ou **Renovate** (mais configurável, roda como app ou self-hosted).
 
-Atualização deve passar por PR + CI.
+Configuração mínima com Dependabot (`.github/dependabot.yml`):
+
+```yaml
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+```
+
+Pontos de atenção:
+
+- toda atualização deve passar por PR + CI, nunca merge automático sem checks;
+- separe atualizações de patch/minor (baixo risco, podem ter merge mais leve) de major (revisão manual);
+- Dependabot também cobre `github-actions` como ecossistema — mantenha as próprias Actions atualizadas, não só `package.json`/`composer.json`.
 
 ---
 
@@ -384,21 +445,29 @@ Use:
 npm ci
 ```
 
-no CI.
+no CI. `npm ci` instala exatamente o que está no lockfile e falha se `package.json`/`package-lock.json` estiverem dessincronizados — diferente de `npm install`, que pode atualizar o lockfile silenciosamente.
 
 ---
 
 # 28. Composer
 
-Use `composer.lock` e instalação reproduzível.
+Use `composer.lock` e instalação reproduzível (`composer install --no-dev` em produção, sem `composer update` no pipeline de deploy).
 
 ---
 
-# 29. Dependency scanning
+# 29. Dependency scanning (SCA)
 
-Adote ferramenta que identifique vulnerabilidades conhecidas.
+Adote uma ferramenta de *Software Composition Analysis* que identifique vulnerabilidades conhecidas (CVEs) em dependências diretas e transitivas. Opções comuns:
 
-Defina política por severidade.
+```text
+Dependabot alerts (nativo GitHub, gratuito)
+npm audit / npm audit signatures
+Trivy (também cobre dependências, não só imagem)
+Grype (Anchore)
+Snyk
+```
+
+Defina política por severidade (ver seção 94).
 
 ---
 
@@ -426,33 +495,29 @@ Automatize busca por:
 - passwords;
 - credentials.
 
-GitHub possui mecanismos próprios e existem ferramentas open source.
+GitHub possui **secret scanning** nativo (ativado por padrão em repositórios públicos, disponível para privados conforme plano) e **push protection** (bloqueia o push antes que o segredo entre no histórico). Habilite ambos em `Settings → Code security`. Isso não substitui a rotação (seção 9) quando algo escapa — só reduz a chance de escapar.
 
 ---
 
 # 32. Gitleaks
 
-Gitleaks é opção open source para secret scanning.
-
-Pode executar em CI.
+Gitleaks é opção open source para secret scanning, roda bem como step de CI ou como pre-commit hook local.
 
 ---
 
 # 33. TruffleHog
 
-Outra ferramenta conhecida para descoberta de secrets.
-
-Avalie integração conforme projeto.
+Outra ferramenta conhecida para descoberta de secrets, com verificação ativa de validade de algumas credenciais encontradas (não só padrão de string).
 
 ---
 
-# 34. Static Analysis
+# 34. Static Analysis (SAST)
 
 JavaScript/TypeScript:
 
-- ESLint;
+- ESLint (com plugins de segurança, ex. `eslint-plugin-security`);
 - Semgrep;
-- CodeQL em contextos aplicáveis.
+- CodeQL.
 
 PHP:
 
@@ -460,21 +525,50 @@ PHP:
 - Psalm;
 - Semgrep.
 
+**CodeQL** é a ferramenta de SAST nativa do GitHub (gratuita para repositórios públicos, incluída no GitHub Advanced Security para privados). Exemplo mínimo de workflow:
+
+```yaml
+name: CodeQL
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 3 * * 1'
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+    strategy:
+      matrix:
+        language: ['javascript-typescript']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+      - uses: github/codeql-action/analyze@v3
+```
+
 ---
 
 # 35. Semgrep
 
-Permite regras de análise estática e possui opção open source.
+Permite regras de análise estática e possui opção open source (`semgrep --config auto` ou registro de regras próprio).
 
-Útil para padrões de segurança específicos.
+Útil para padrões de segurança específicos do projeto, além dos padrões genéricos de linguagem.
 
 ---
 
 # 36. Container scan
 
-Imagens devem ser analisadas.
+Imagens devem ser analisadas antes de ir para o registry de produção.
 
-Ferramentas open source incluem Trivy.
+Ferramentas open source incluem Trivy e Grype.
 
 ---
 
@@ -482,18 +576,35 @@ Ferramentas open source incluem Trivy.
 
 Pode verificar:
 
-- imagens;
+- imagens de container;
 - filesystem;
-- dependências;
-- configurações.
+- dependências (SCA);
+- configurações (Dockerfile, Kubernetes manifests, Terraform).
 
-Integre gradualmente.
+Exemplo de step de CI:
+
+```yaml
+- name: Scan de imagem
+  uses: aquasecurity/trivy-action@0.28.0
+  with:
+    image-ref: 'registro/app:${{ github.sha }}'
+    severity: 'CRITICAL,HIGH'
+    exit-code: '1'
+```
+
+Integre gradualmente: comece só reportando (`exit-code: '0'`), depois passe a bloquear por severidade.
 
 ---
 
-# 38. Base images
+# 38. Grype
 
-Prefira imagens oficiais/confiáveis.
+Alternativa/complemento ao Trivy, também open source (Anchore), focada em SCA de imagens e SBOMs — combina bem com Syft (seção 52), do mesmo projeto.
+
+---
+
+# 39. Base images
+
+Prefira imagens oficiais/confiáveis (`node:20-slim`, `php:8.3-fpm`, imagens publicadas por mantenedores reconhecidos).
 
 Evite:
 
@@ -505,7 +616,7 @@ sem auditoria.
 
 ---
 
-# 39. Imagens mínimas
+# 40. Imagens mínimas
 
 Menor imagem pode reduzir superfície, mas não sacrifique depuração/compatibilidade sem motivo.
 
@@ -513,13 +624,17 @@ Segurança é mais que tamanho.
 
 ---
 
-# 40. Non-root container
+# 41. Non-root container
 
-Aplicação deve rodar como usuário não-root sempre que viável.
+Aplicação deve rodar como usuário não-root sempre que viável:
+
+```dockerfile
+USER node
+```
 
 ---
 
-# 41. Privileged container
+# 42. Privileged container
 
 Evite:
 
@@ -531,19 +646,19 @@ sem necessidade forte.
 
 ---
 
-# 42. Capabilities
+# 43. Capabilities
 
-Remova capabilities desnecessárias.
-
----
-
-# 43. Read-only
-
-Considere filesystem read-only para serviços compatíveis.
+Remova capabilities desnecessárias (`--cap-drop=ALL` e adicione de volta só o estritamente necessário).
 
 ---
 
-# 44. Network segmentation
+# 44. Read-only
+
+Considere filesystem read-only para serviços compatíveis (`read_only: true` no Compose, com volumes explícitos para o que precisa gravar).
+
+---
+
+# 45. Network segmentation
 
 CI não precisa acessar toda LAN.
 
@@ -557,21 +672,21 @@ PROD network
 
 ---
 
-# 45. Firewall
+# 46. Firewall
 
 Permita somente tráfego necessário.
 
 ---
 
-# 46. Egress
+# 47. Egress
 
 Controle de saída também é relevante para ambientes críticos.
 
-Código comprometido pode tentar exfiltrar secrets.
+Código comprometido (dependência maliciosa, Action comprometida) pode tentar exfiltrar secrets via requisição de rede. Bloquear egress não previsto é uma defesa em profundidade, não uma solução isolada.
 
 ---
 
-# 47. Registry
+# 48. Registry
 
 Separe permissões:
 
@@ -580,47 +695,70 @@ CI -> push
 PROD -> pull
 ```
 
----
-
-# 48. Imagens imutáveis
-
-Use tags por SHA/digest.
-
-Isso reduz ambiguidade.
+Um runner de deploy comprometido não deveria conseguir sobrescrever imagens no registry.
 
 ---
 
-# 49. Artifact integrity
+# 49. Imagens imutáveis
 
-Uma evolução é assinar artifacts/imagens.
+Use tags por SHA/digest (`registro/app@sha256:...`), não apenas `latest` ou uma tag mutável.
 
----
-
-# 50. Cosign
-
-Sigstore Cosign é uma ferramenta open source popular para assinatura/verificação de containers/artifacts.
-
-Pode ser incorporada em fase avançada.
+Isso reduz ambiguidade sobre o que está de fato rodando em cada ambiente.
 
 ---
 
-# 51. SBOM
+# 50. Artifact integrity
 
-Gere inventário dos componentes.
-
-Ferramentas como Syft podem ajudar.
+Uma evolução é assinar artifacts/imagens, de forma que o ambiente de destino só aceite artefatos com origem verificável.
 
 ---
 
-# 52. Syft
+# 51. Cosign / Sigstore
 
-Gera SBOM para imagens/filesystems.
+**Cosign** (projeto Sigstore) é a ferramenta open source de referência para assinatura e verificação de imagens de container e outros artefatos.
 
-Pode combinar com scanners.
+Fluxo típico com *keyless signing* (usa OIDC do próprio GitHub Actions, sem gerenciar chave privada):
+
+```yaml
+permissions:
+  id-token: write   # necessário para o OIDC do cosign keyless
+  contents: read
+  packages: write
+
+steps:
+  - uses: sigstore/cosign-installer@v3
+  - name: Assinar imagem
+    run: cosign sign --yes registro/app@${{ steps.build.outputs.digest }}
+```
+
+E, no lado do deploy, verificar antes de rodar:
+
+```bash
+cosign verify \
+  --certificate-identity-regexp "https://github.com/ORG/REPO/.github/workflows/.*" \
+  --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+  registro/app@sha256:...
+```
+
+Isso fecha o ciclo: a imagem só é aceita em produção se foi assinada pelo próprio workflow confiável do repositório.
 
 ---
 
-# 53. Provenance
+# 52. SBOM
+
+Gere inventário dos componentes de cada imagem/build (*Software Bill of Materials*) — útil para responder rapidamente "estamos expostos à CVE X?" sem precisar re-escanear tudo.
+
+---
+
+# 53. Syft
+
+Gera SBOM para imagens/filesystems em formatos padronizados (SPDX, CycloneDX).
+
+Pode combinar com Grype/Trivy para checar o SBOM gerado contra bases de vulnerabilidade.
+
+---
+
+# 54. Provenance
 
 Registre:
 
@@ -629,71 +767,120 @@ repo
 commit
 workflow
 builder
-artifact
+artifact digest
 ```
 
-Ajuda investigação.
+O GitHub oferece **artifact attestations** nativas (`actions/attest-build-provenance`), que geram e assinam metadados de proveniência sem precisar orquestrar Sigstore manualmente:
+
+```yaml
+permissions:
+  id-token: write
+  contents: read
+  attestations: write
+
+steps:
+  - uses: actions/attest-build-provenance@v1
+    with:
+      subject-path: 'dist/app.tar.gz'
+```
+
+Ajuda investigação e responde "esse artefato realmente veio deste pipeline?".
 
 ---
 
-# 54. Branch protection
+# 55. OIDC para autenticação com nuvem
+
+Ao integrar o pipeline com AWS, Azure ou GCP (deploy de infraestrutura, push para registry gerenciado, etc.), **prefira OIDC a credenciais estáticas de longa duração**.
+
+Com credenciais estáticas (`AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` guardadas como secret), qualquer vazamento do secret dá acesso indefinido até rotação manual. Com OIDC, o GitHub Actions emite um token de curta duração assinado, o provedor de nuvem valida esse token contra uma *trust policy* (que amarra o acesso a um repositório e branch/environment específicos) e concede credenciais temporárias só para aquela execução.
+
+Exemplo com AWS:
+
+```yaml
+permissions:
+  id-token: write   # obrigatório para o OIDC
+  contents: read
+
+steps:
+  - uses: actions/checkout@v4
+  - uses: aws-actions/configure-aws-credentials@v4
+    with:
+      role-to-assume: arn:aws:iam::123456789012:role/deploy-role
+      aws-region: us-east-1
+  - run: aws s3 sync ./dist s3://meu-bucket
+```
+
+Sem `secrets.AWS_ACCESS_KEY_ID` nenhum. A *trust policy* do lado da AWS (IAM) restringe qual repositório/branch pode assumir a role — o equivalente existe para Azure (`azure/login` com Federated Credentials) e GCP (Workload Identity Federation).
+
+Quando o provedor de nuvem não suportar OIDC, ao menos: credencial com escopo mínimo, em Environment secret, com rotação programada.
+
+---
+
+# 56. Branch protection
 
 `main` protegida:
 
-- PR obrigatório;
-- checks;
-- review conforme política;
+- PR obrigatório (nenhum push direto, nem de admins, se a política assim exigir);
+- *required status checks* (CI precisa passar — lint, testes, scans — antes do merge ser permitido);
+- *required reviews* (ao menos um revisor aprovando; considerar exigir revisão de code owner);
 - sem force push;
-- resolução de conversas.
+- sem exclusão da branch;
+- resolução de conversas obrigatória antes do merge.
+
+Configuração em `Settings → Branches → Branch protection rules`. Vale revisar também **rulesets** (mecanismo mais novo do GitHub, permite aplicar a múltiplos branches/tags com um único conjunto de regras).
 
 ---
 
-# 55. CODEOWNERS
+# 57. CODEOWNERS
 
-Arquivos sensíveis podem exigir responsável específico.
+Arquivos sensíveis podem exigir responsável específico como revisor obrigatório.
 
-Exemplos:
+Exemplos (`.github/CODEOWNERS`):
 
 ```text
-.github/workflows/
-Dockerfile
-infra/
-scripts/deploy/
+.github/workflows/ @time-plataforma
+Dockerfile         @time-plataforma
+infra/             @time-plataforma
+scripts/deploy/    @time-plataforma
 ```
+
+Combine com "Require review from Code Owners" na branch protection — sem isso, o CODEOWNERS é só documentação.
 
 ---
 
-# 56. Workflow changes
+# 58. Workflow changes
 
 Mudanças em workflows merecem revisão rigorosa porque podem alterar:
 
 - permissions;
-- secrets;
+- secrets acessíveis;
 - deploy;
-- runner.
+- runner utilizado.
+
+Um workflow malicioso ou mal revisado pode, por exemplo, exfiltrar secrets adicionando um step de `curl` para um endpoint externo.
 
 ---
 
-# 57. Pull request target
+# 59. Pull request target
 
-Eventos privilegiados devem ser usados com extremo cuidado.
+O evento `pull_request_target` roda com o contexto (e os secrets) do repositório base, mesmo para PRs vindos de forks — diferente de `pull_request`, que roda com contexto restrito.
 
-Nunca execute checkout/código não confiável com secrets privilegiados sem compreender semântica.
+Isso é privilegiado por design e deve ser usado com extremo cuidado. Nunca faça checkout do código do PR (`ref: ${{ github.event.pull_request.head.sha }}`) e execute esse código com secrets disponíveis em um workflow disparado por `pull_request_target` — é o padrão clássico de comprometimento via PR malicioso.
 
 ---
 
-# 58. Forks
+# 60. Forks
 
 Política deve definir se contribuições externas:
 
-- rodam em GitHub-hosted;
-- exigem aprovação;
-- não recebem secrets;
-- nunca rodam em runner interno.
+- rodam em GitHub-hosted runners (nunca self-hosted);
+- exigem aprovação de um mantenedor antes de rodar (`Settings → Actions → Fork pull request workflows`);
+- não recebem secrets de Environment;
+- nunca rodam em runner interno com acesso à LAN.
 
 ---
 
-# 59. Logs
+# 61. Logs
 
 Secrets podem vazar por:
 
@@ -704,40 +891,40 @@ printenv
 echo
 ```
 
-Evite imprimir ambientes completos.
+Evite imprimir ambientes completos. O GitHub mascara valores que batem exatamente com um secret registrado, mas isso não cobre secrets transformados (base64, concatenados, parcialmente impressos).
 
 ---
 
-# 60. Masking
+# 62. Masking
 
-Não confie apenas em mascaramento automático.
+Não confie apenas no mascaramento automático do GitHub Actions.
 
-A melhor defesa é não imprimir.
+A melhor defesa é não imprimir o secret em lugar nenhum — nem em `echo`, nem em mensagem de erro, nem em corpo de requisição logado.
 
 ---
 
-# 61. Artifacts sensíveis
+# 63. Artifacts sensíveis
 
 Relatórios podem conter:
 
 - cookies;
-- headers;
-- screenshots com dados;
+- headers de autenticação;
+- screenshots com dados de sessão;
 - traces.
 
-Defina retenção e acesso.
+Defina retenção (`retention-days`) e acesso (artifacts de workflow privado não são públicos, mas ficam acessíveis a qualquer colaborador com leitura no repositório).
 
 ---
 
-# 62. Playwright traces
+# 64. Playwright traces
 
-Podem capturar dados de sessão.
+Podem capturar dados de sessão (cookies, tokens em localStorage, requisições completas).
 
-Não publique artifacts de produção publicamente.
+Não publique artifacts de execução contra produção publicamente, e considere retenção curta para traces que tocam ambientes reais.
 
 ---
 
-# 63. Dados reais
+# 65. Dados reais
 
 CI deve usar dados sintéticos.
 
@@ -745,13 +932,13 @@ Evite copiar banco PROD integral para testes.
 
 ---
 
-# 64. Anonimização
+# 66. Anonimização
 
-Quando dados reais forem necessários em ambientes controlados, anonimize conforme requisitos legais e de negócio.
+Quando dados reais forem necessários em ambientes controlados, anonimize conforme requisitos legais e de negócio (LGPD/GDPR conforme jurisdição).
 
 ---
 
-# 65. Database credentials
+# 67. Database credentials
 
 Separe:
 
@@ -765,27 +952,27 @@ Nunca reutilize senha PROD em DEV.
 
 ---
 
-# 66. Database user
+# 68. Database user
 
-Aplicação não precisa normalmente de usuário root.
+Aplicação não precisa normalmente de usuário root/admin do banco.
 
-Conceda apenas schema/operações necessárias.
-
----
-
-# 67. Migration user
-
-Pode ser separado do usuário runtime.
+Conceda apenas schema/operações necessárias (SELECT/INSERT/UPDATE/DELETE no schema da aplicação, sem DDL em runtime).
 
 ---
 
-# 68. Backup credentials
+# 69. Migration user
 
-Também devem ser segregadas.
+Pode ser separado do usuário runtime — usuário de migration tem permissão de DDL, usuário da aplicação não.
 
 ---
 
-# 69. MQTT security
+# 70. Backup credentials
+
+Também devem ser segregadas, com acesso restrito a quem realmente opera backup/restore.
+
+---
+
+# 71. MQTT security
 
 Para produção:
 
@@ -794,11 +981,11 @@ Para produção:
 - TLS quando apropriado;
 - tópicos com menor privilégio.
 
-CI usa broker isolado.
+CI usa broker isolado, nunca o broker de produção.
 
 ---
 
-# 70. MQTT wildcard
+# 72. MQTT wildcard
 
 Evite permitir:
 
@@ -806,31 +993,31 @@ Evite permitir:
 #
 ```
 
-para qualquer cliente sem necessidade.
+para qualquer cliente sem necessidade — um cliente comprometido com wildcard total lê e potencialmente publica em qualquer tópico.
 
 ---
 
-# 71. Webhooks
+# 73. Webhooks
 
-Valide assinatura/autenticidade quando o provedor suporta.
-
----
-
-# 72. Replay attacks
-
-Para webhooks críticos, considere timestamp/nonce/idempotência.
+Valide assinatura/autenticidade quando o provedor suporta (ex.: `X-Hub-Signature-256` do GitHub).
 
 ---
 
-# 73. API keys
+# 74. Replay attacks
+
+Para webhooks críticos, considere timestamp/nonce/idempotência para impedir reprocessamento de uma requisição capturada.
+
+---
+
+# 75. API keys
 
 Não colocar no frontend se são secrets de servidor.
 
-Código executado no browser não pode guardar secret real.
+Código executado no browser não pode guardar secret real — qualquer valor embutido em JS enviado ao cliente deve ser tratado como público.
 
 ---
 
-# 74. CORS
+# 76. CORS
 
 Não usar:
 
@@ -842,57 +1029,57 @@ indiscriminadamente quando credenciais/sensibilidade existem.
 
 ---
 
-# 75. Headers
+# 77. Headers
 
-Reverse proxy pode adicionar headers de segurança.
+Reverse proxy pode adicionar headers de segurança (`Content-Security-Policy`, `Strict-Transport-Security`, `X-Content-Type-Options`).
 
 Configuração depende da aplicação.
 
 ---
 
-# 76. Dependency policy
+# 78. Dependency policy
 
 Antes de adicionar pacote:
 
-- necessidade;
-- manutenção;
-- licença;
-- vulnerabilidades;
-- transitive dependencies.
+- necessidade real;
+- manutenção (última publicação, issues abertas);
+- licença compatível;
+- vulnerabilidades conhecidas;
+- transitive dependencies (o pacote pequeno pode trazer uma árvore grande).
 
 ---
 
-# 77. AI-generated dependencies
+# 79. AI-generated dependencies
 
-Agentes podem sugerir pacotes inexistentes, obsoletos ou desnecessários.
+Agentes podem sugerir pacotes inexistentes, obsoletos ou desnecessários — inclusive nomes plausíveis que não existem no registro real (risco de *slopsquatting*, quando alguém registra depois o nome sugerido com conteúdo malicioso).
 
-Sempre valide.
-
----
-
-# 78. Prompt injection em repositórios
-
-Agentes lendo Issues/docs podem encontrar instruções maliciosas.
-
-Ferramentas com capacidade de escrita/deploy devem tratar conteúdo do repo como dados não totalmente confiáveis.
+Sempre valide antes de instalar o que uma IA sugeriu.
 
 ---
 
-# 79. IA e secrets
+# 80. Prompt injection em repositórios
 
-Não copie secrets em chats/prompts.
+Agentes lendo Issues/PRs/docs podem encontrar instruções maliciosas embutidas em conteúdo aparentemente inofensivo (um comentário de issue, um README de dependência).
 
-Use conectores/secret stores e referências.
-
----
-
-# 80. Autonomia da IA
-
-Produção deve continuar protegida por gate e permissions.
+Ferramentas com capacidade de escrita/deploy devem tratar conteúdo do repositório como dado não totalmente confiável, não como instrução do operador.
 
 ---
 
-# 81. Audit log
+# 81. IA e secrets
+
+Não copie secrets em chats/prompts de IA.
+
+Use conectores/secret stores e referências — nunca cole uma chave de API ou senha em uma conversa para "a IA testar", mesmo que o histórico pareça privado.
+
+---
+
+# 82. Autonomia da IA
+
+Produção deve continuar protegida por gate humano e por `permissions:` restritivas, independentemente de quanta autonomia um agente de IA tenha no restante do fluxo.
+
+---
+
+# 83. Audit log
 
 Registre:
 
@@ -903,24 +1090,26 @@ quem fez deploy
 qual artifact
 ```
 
+O GitHub mantém audit log de organização (`Settings → Audit log`) — vale revisar periodicamente, não só em caso de incidente.
+
 ---
 
-# 82. Incident response
+# 84. Incident response
 
 Se pipeline comprometido:
 
 ```text
 1. bloquear deploy
-2. revogar tokens
+2. revogar tokens e credenciais expostas
 3. desligar runner afetado
 4. preservar logs
-5. verificar artifacts
+5. verificar integridade dos artifacts publicados
 6. reconstruir ambiente limpo
 ```
 
 ---
 
-# 83. Runner rebuild
+# 85. Runner rebuild
 
 Não tente necessariamente "limpar" host comprometido.
 
@@ -934,13 +1123,13 @@ reinstalar/recriar
 
 ---
 
-# 84. Golden image
+# 86. Golden image
 
 Uma evolução é automatizar criação do runner a partir de imagem conhecida.
 
 ---
 
-# 85. Patch management
+# 87. Patch management
 
 Atualize:
 
@@ -953,19 +1142,19 @@ Atualize:
 
 ---
 
-# 86. Unattended upgrades
+# 88. Unattended upgrades
 
-Podem ser úteis para patches de segurança, mas avalie impacto em runners críticos.
+Podem ser úteis para patches de segurança, mas avalie impacto em runners críticos (um reboot automático no meio de um job é pior que o risco que ele mitiga).
 
 ---
 
-# 87. Reboot
+# 89. Reboot
 
 Tenha procedimento para reiniciar runner sem deixar pipeline inconsistente.
 
 ---
 
-# 88. Monitoring
+# 90. Monitoring
 
 Detecte:
 
@@ -978,54 +1167,55 @@ Docker failed
 
 ---
 
-# 89. Backups
+# 91. Backups
 
 Backup de configuração não deve incluir secrets em texto claro sem proteção.
 
 ---
 
-# 90. Restore test
+# 92. Restore test
 
-Teste reconstrução do runner.
+Teste reconstrução do runner periodicamente — um backup nunca testado é uma suposição, não uma garantia.
 
 ---
 
-# 91. Security Gate PR
+# 93. Security Gate PR
 
 Sugestão inicial:
 
 ```text
 lint
 unit
-secret scan
-dependency scan básico
+secret scan (gitleaks/push protection)
+dependency scan básico (npm audit / Dependabot alerts)
 ```
 
 ---
 
-# 92. Security Gate Nightly
+# 94. Security Gate Nightly
 
 ```text
-container scan
-static analysis ampliado
+container scan (Trivy/Grype)
+static analysis ampliado (CodeQL/Semgrep)
 full dependency scan
 ```
 
 ---
 
-# 93. Release security
+# 95. Release security
 
 Antes de release crítica:
 
 ```text
-SBOM
-scan
-artifact digest
+SBOM (Syft)
+scan completo (Trivy/Grype)
+artifact digest fixado
+assinatura (cosign), se aplicável
 ```
 
 ---
 
-# 94. Não bloquear por tudo
+# 96. Não bloquear por tudo
 
 Crie política de severidade.
 
@@ -1037,11 +1227,11 @@ High -> review
 Medium -> backlog
 ```
 
-A política depende do risco.
+A política depende do risco real do projeto, não de um padrão genérico copiado de outro contexto.
 
 ---
 
-# 95. Exception process
+# 97. Exception process
 
 Se vulnerabilidade não pode ser corrigida imediatamente:
 
@@ -1053,46 +1243,59 @@ Se vulnerabilidade não pode ser corrigida imediatamente:
 
 ---
 
-# 96. Security checklist workflow
+# 98. Security checklist workflow
 
-- [ ] permissions mínimas.
-- [ ] Actions confiáveis.
-- [ ] secrets mínimos.
-- [ ] sem logs sensíveis.
-- [ ] timeout.
-- [ ] runner correto.
-- [ ] PR externa tratada.
-- [ ] artifact protegido.
+- [ ] `permissions:` mínimas, declaradas explicitamente no workflow e por job.
+- [ ] Actions de terceiros confiáveis e, quando crítico, pinadas por SHA.
+- [ ] secrets mínimos, escopados por Environment.
+- [ ] sem logs sensíveis (`set -x`, `env`, `echo` de secret).
+- [ ] timeout definido por job.
+- [ ] runner correto (CI sem acesso a PROD).
+- [ ] PR externa/fork tratada (sem secrets, sem `pull_request_target` perigoso).
+- [ ] artifact protegido (retenção, acesso, assinatura quando aplicável).
+- [ ] OIDC em vez de credencial estática de nuvem, quando aplicável.
 
 ---
 
-# 97. Security checklist runner
+# 99. Security checklist runner
 
 - [ ] usuário dedicado.
-- [ ] SSH por chave.
+- [ ] SSH por chave dedicada, nunca chave pessoal.
 - [ ] firewall.
-- [ ] patches.
-- [ ] Docker controlado.
+- [ ] patches em dia.
+- [ ] Docker controlado (grupo docker tratado como privilégio).
 - [ ] sem PROD no CI.
 - [ ] disk monitoring.
 - [ ] rebuild documentado.
 
 ---
 
-# 98. Security checklist deploy
+# 100. Security checklist deploy
 
-- [ ] gate humano.
-- [ ] chave dedicada.
-- [ ] environment secrets.
-- [ ] artifact imutável.
-- [ ] registry least privilege.
-- [ ] health.
-- [ ] rollback.
-- [ ] audit.
+- [ ] gate humano (aprovação de Environment).
+- [ ] chave dedicada (nunca root, nunca pessoal).
+- [ ] environment secrets segregados por ambiente.
+- [ ] artifact imutável (tag por digest).
+- [ ] registry least privilege (CI push, PROD pull).
+- [ ] health check pós-deploy.
+- [ ] rollback definido.
+- [ ] audit (quem, quando, o quê).
 
 ---
 
-# 99. Arquitetura alvo
+# 101. Branch protection e proteção de main — checklist rápido
+
+- [ ] PR obrigatório para `main`.
+- [ ] required status checks (CI verde antes do merge).
+- [ ] required reviews (ao menos 1, ou conforme política do time).
+- [ ] Require review from Code Owners, se `CODEOWNERS` existir.
+- [ ] sem force push.
+- [ ] sem exclusão de branch.
+- [ ] conversas resolvidas antes do merge.
+
+---
+
+# 102. Arquitetura alvo
 
 ```text
 GitHub
@@ -1103,7 +1306,8 @@ CI Runner
  +-- read code
  +-- tests
  +-- build
- +-- scan
+ +-- scan (SAST, SCA, container)
+ +-- sign (cosign) + SBOM (Syft)
  |
  v
 Registry
@@ -1111,8 +1315,8 @@ Registry
  v
 Deploy Runner
  |
- +-- read artifact
- +-- controlled SSH
+ +-- read artifact (verifica assinatura)
+ +-- controlled SSH / OIDC para nuvem
  |
  v
 PROD
@@ -1120,7 +1324,7 @@ PROD
 
 ---
 
-# 100. Próximo volume
+# 103. Próximo volume
 
 **Volume 11 — Observabilidade**
 

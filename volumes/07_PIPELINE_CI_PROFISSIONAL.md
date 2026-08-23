@@ -153,6 +153,43 @@ lint -> unit -> integration -> build -> E2E
 
 A arquitetura deve refletir a capacidade real.
 
+## 7.1 Matrix strategy
+
+Quando o mesmo job precisa rodar contra várias versões, sistemas operacionais ou shards, use `strategy.matrix` em vez de duplicar jobs manualmente:
+
+```yaml
+jobs:
+  unit:
+    runs-on: [self-hosted, linux, ci]
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        node-version: [20, 22]
+        shard: [1, 2, 3, 4]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - run: npm ci
+      - run: npm run test:unit -- --shard=${{ matrix.shard }}/4
+```
+
+Pontos importantes:
+
+```text
+fail-fast: true (padrão)  -> uma falha cancela todas as outras combinações
+fail-fast: false           -> cada combinação roda até o fim, útil para ver o panorama completo
+max-parallel                 -> limita quantos jobs da matrix rodam ao mesmo tempo (proteção de runners self-hosted)
+```
+
+Em runners self-hosted com capacidade limitada, `max-parallel` evita que uma matrix grande esgote todos os runners disponíveis e trave outros workflows.
+
 ---
 
 # 8. Pipeline Node.js básico
@@ -611,9 +648,97 @@ Uploads devem ocorrer especialmente em falha.
     path: playwright-report/
 ```
 
+**Atenção com `actions/upload-artifact@v4` e `actions/download-artifact@v4`:** a partir da v4, cada `name` de artifact precisa ser único dentro do run — não é mais possível fazer múltiplos uploads acumulando no mesmo nome (comportamento da v3). Em uma matrix, gere nomes únicos por combinação:
+
+```yaml
+- uses: actions/upload-artifact@v4
+  if: always()
+  with:
+    name: playwright-report-${{ matrix.shard }}
+    path: playwright-report/
+    retention-days: 7
+```
+
+## 33.1 Passando artifacts entre jobs
+
+Artifacts são o mecanismo padrão para levar arquivos de um job para outro (jobs não compartilham filesystem). Fluxo típico: `build` gera o artifact, `deploy` ou `e2e` baixa e usa:
+
+```yaml
+jobs:
+  build:
+    runs-on: [self-hosted, linux, ci]
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm run build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
+
+  e2e:
+    needs: build
+    runs-on: [self-hosted, linux, e2e]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - run: npm run test:e2e:smoke
+```
+
+Para baixar todos os artifacts de um run de uma vez (útil em jobs de consolidação), omita `name`:
+
+```yaml
+- uses: actions/download-artifact@v4
+  with:
+    path: all-artifacts/
+```
+
+## 33.2 Outputs entre jobs
+
+Para valores pequenos (strings, flags, versões, SHAs) — não arquivos — use `needs.<job>.outputs` em vez de artifacts. O job produtor declara `outputs:` e escreve em `$GITHUB_OUTPUT`; nunca use o comando depreciado `set-output`, removido pelo GitHub em 2023 por questões de segurança:
+
+```yaml
+jobs:
+  prepare:
+    runs-on: [self-hosted, linux, ci]
+    outputs:
+      version: ${{ steps.vars.outputs.version }}
+    steps:
+      - id: vars
+        run: echo "version=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: prepare
+    runs-on: [self-hosted, linux, ci]
+    steps:
+      - run: echo "Construindo versão ${{ needs.prepare.outputs.version }}"
+```
+
+O mesmo vale para variáveis de ambiente dentro de um step: use `$GITHUB_ENV`, nunca `echo "::set-env::"` (também depreciado e removido):
+
+```yaml
+- run: echo "BUILD_ID=${{ github.run_id }}" >> "$GITHUB_ENV"
+```
+
 ---
 
-# 34. Cache npm
+# 34. Cache de dependências
+
+Cache reduz o tempo gasto reinstalando dependências que não mudaram. Existem duas abordagens:
+
+```text
+cache nativo das setup-actions  -> mais simples, cobre o caso comum
+actions/cache                   -> controle total de chave, paths e política de restore
+```
+
+## 34.1 Cache nativo em setup-node
 
 ```yaml
 - uses: actions/setup-node@v4
@@ -622,13 +747,62 @@ Uploads devem ocorrer especialmente em falha.
     cache: npm
 ```
 
+O `cache: npm` usa o hash do `package-lock.json` como parte da chave automaticamente. Também funciona com `yarn` e `pnpm` (nesse caso, informe `cache-dependency-path` se o lockfile não estiver na raiz).
+
+## 34.2 Cache nativo em setup-python
+
+```yaml
+- uses: actions/setup-python@v5
+  with:
+    python-version: "3.12"
+    cache: pip
+    cache-dependency-path: requirements.txt
+```
+
+## 34.3 Cache nativo em setup-java
+
+```yaml
+- uses: actions/setup-java@v4
+  with:
+    distribution: temurin
+    java-version: "21"
+    cache: maven
+```
+
+Suporta `maven`, `gradle` e `sbt`.
+
+## 34.4 actions/cache para o caso genérico
+
+Quando não existe cache nativo (ex.: cache de build do Composer, cache de ferramentas customizadas), use `actions/cache@v4` diretamente. A chave deve incluir algo que mude quando as dependências mudam — normalmente o hash do lockfile — e um `restore-keys` como fallback parcial:
+
+```yaml
+- uses: actions/cache@v4
+  with:
+    path: |
+      ~/.composer/cache
+    key: composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}
+    restore-keys: |
+      composer-${{ runner.os }}-
+```
+
+Regras de ouro para a chave:
+
+```text
+incluir runner.os        -> caches de SOs diferentes não são compatíveis
+incluir hash do lockfile -> cache muda quando as dependências mudam
+restore-keys em cascata  -> permite reaproveitar cache parcial em vez de começar do zero
+nunca usar chave fixa    -> "cache sempre igual" nunca invalida e passa a mentir
+```
+
+Em runners self-hosted, avalie se o cache do GitHub Actions (limitado por repositório) compensa frente a um cache local persistente no próprio runner — muitas vezes o segundo é mais rápido e não conta contra a cota do GitHub.
+
 ---
 
 # 35. Cache Composer
 
-A estratégia pode utilizar cache do diretório adequado, mas deve seguir a versão atual das Actions e política do projeto.
+Composer não tem uma setup-action oficial mantida pelo GitHub com cache nativo equivalente ao `setup-node`. A prática recomendada é combinar `shivammathur/setup-php` (ou instalar o Composer disponível no runner) com `actions/cache@v4`, como mostrado em 34.4, usando `composer.lock` na chave.
 
-Evite caches globais sem chave apropriada.
+Evite caches globais sem chave apropriada — um cache sem hash do lockfile na chave serve dependências desatualizadas silenciosamente.
 
 ---
 
@@ -636,9 +810,22 @@ Evite caches globais sem chave apropriada.
 
 Em builds frequentes, BuildKit/buildx pode reutilizar layers.
 
-Primeiro otimize Dockerfile.
+Primeiro otimize Dockerfile (ordem de camadas, `.dockerignore`, dependências antes do código-fonte).
 
-Depois adicione cache distribuído.
+Depois adicione cache distribuído, por exemplo com `docker/build-push-action@v6` e `cache-from`/`cache-to` apontando para um registry (`type=registry`) ou para o cache do GitHub Actions (`type=gha`):
+
+```yaml
+- uses: docker/setup-buildx-action@v3
+
+- uses: docker/build-push-action@v6
+  with:
+    context: .
+    tags: app:${{ github.sha }}
+    cache-from: type=gha
+    cache-to: type=gha,mode=max
+```
+
+Em runners self-hosted persistentes, o próprio cache local do Docker (`docker build` reutilizando layers já baixadas) já entrega boa parte do ganho sem configuração extra — meça antes de adicionar cache remoto.
 
 ---
 
@@ -1100,28 +1287,129 @@ Separe responsabilidades.
 
 # 69. Reusable workflows
 
-Projetos semelhantes podem reutilizar lógica.
+Projetos semelhantes podem reutilizar lógica através de um workflow chamável (`workflow_call`), em vez de copiar YAML entre repositórios.
 
-Exemplo:
+Workflow reutilizável (`.github/workflows/node-ci.yml` em um repo central ou no próprio repo):
 
-```text
-workflow-node-ci.yml
+```yaml
+name: Node CI reutilizável
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        type: string
+        default: "22"
+      working-directory:
+        type: string
+        default: "."
+    secrets:
+      NPM_TOKEN:
+        required: false
+
+jobs:
+  quality:
+    runs-on: [self-hosted, linux, ci]
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+          cache-dependency-path: ${{ inputs.working-directory }}/package-lock.json
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test:unit
+      - run: npm run build
 ```
 
-centralizado.
+Workflow chamador, em outro repositório ou em outro arquivo do mesmo repositório:
 
-Use versionamento para não quebrar todos os projetos simultaneamente.
+```yaml
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    uses: org/repo-central/.github/workflows/node-ci.yml@v1
+    with:
+      node-version: "22"
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+```
+
+Pontos importantes:
+
+```text
+uses: org/repo@ref        -> sempre referencie por tag/branch/SHA, nunca sem versão
+inputs/secrets explícitos -> só o que é declarado em workflow_call fica visível ao chamador
+secrets: inherit          -> repassa todos os secrets do chamador (use com cautela)
+```
+
+Versione o workflow central (`@v1`, `@v1.2.0` ou SHA fixo) para não quebrar todos os consumidores ao alterar a lógica interna. Trate o workflow reutilizável como uma dependência com contrato — mudanças breaking exigem uma nova major tag.
 
 ---
 
-# 70. Composite actions
+# 70. Composite actions vs reusable workflows
 
-Úteis para sequências repetidas:
+Ambos evitam duplicação, mas resolvem problemas diferentes:
+
+```text
+composite action      -> reutiliza uma sequência de STEPS dentro de um job existente
+reusable workflow      -> reutiliza um ou mais JOBS inteiros, com seu próprio runs-on, matrix e needs
+```
+
+Composite action, útil para sequências repetidas como:
 
 ```text
 setup interno
 collect logs
 health check
+```
+
+Exemplo (`.github/actions/collect-logs/action.yml`):
+
+```yaml
+name: Collect logs
+description: Coleta logs do compose de teste em caso de falha
+
+inputs:
+  project-name:
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        docker compose \
+          -p ${{ inputs.project-name }} \
+          -f compose.test.yml \
+          logs --no-color
+```
+
+Uso no workflow:
+
+```yaml
+- uses: ./.github/actions/collect-logs
+  if: failure()
+  with:
+    project-name: ci-${{ github.run_id }}
+```
+
+Regra prática para escolher:
+
+```text
+precisa de vários jobs, matrix própria ou runs-on diferente -> reusable workflow
+precisa só encapsular alguns steps dentro de um job         -> composite action
 ```
 
 ---
@@ -1365,7 +1653,10 @@ runners efêmeros
 - [ ] Banco/MQTT isolados.
 - [ ] Logs em falha.
 - [ ] Cleanup.
-- [ ] Artifacts úteis.
+- [ ] Artifacts úteis, com nomes únicos por matrix.
+- [ ] Cache de dependências configurado com chave baseada no lockfile.
+- [ ] Outputs entre jobs via `GITHUB_OUTPUT`/`GITHUB_ENV` (nunca `set-output`/`set-env`).
+- [ ] Reusable workflows/composite actions versionados por tag.
 - [ ] Secrets mínimos.
 - [ ] Sem acesso PROD.
 - [ ] Métricas acompanhadas.

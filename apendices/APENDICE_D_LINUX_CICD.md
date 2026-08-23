@@ -29,6 +29,8 @@ lsblk
 ps aux
 pgrep -af PROCESSO
 kill PID
+kill -9 PID
+pkill -f PROCESSO
 ```
 
 ## Rede
@@ -53,13 +55,25 @@ sudo systemctl start SERVICO
 sudo systemctl stop SERVICO
 sudo systemctl restart SERVICO
 sudo systemctl enable SERVICO
+sudo systemctl enable --now SERVICO
+sudo systemctl disable SERVICO
+sudo systemctl daemon-reload
+systemctl is-active SERVICO
+systemctl list-units --failed
 ```
+
+Runner self-hosted do GitHub Actions: o instalador (`./svc.sh install` / `./svc.sh install USUARIO`) cria um serviço `actions.runner.*`; use `sudo ./svc.sh start`, `sudo ./svc.sh stop` e `sudo ./svc.sh status` (wrappers sobre `systemctl`), ou `systemctl status actions.runner.*` diretamente.
 
 ## Logs
 ```bash
 journalctl -u SERVICO
 journalctl -u SERVICO -f
+journalctl -u SERVICO --since "1 hour ago"
+journalctl -u SERVICO -n 200 --no-pager
 journalctl -p err
+journalctl -p err -b
+journalctl --disk-usage
+sudo journalctl --vacuum-time=7d
 ```
 
 ## Usuários e grupos
@@ -73,8 +87,10 @@ sudo usermod -aG docker usuario
 ## Permissões
 ```bash
 ls -la
-chmod
-chown
+chmod +x script.sh
+chmod 750 diretorio/
+chown usuario:grupo arquivo
+chown -R runner:runner /home/runner/_work
 ```
 
 Evite `chmod 777` como correção genérica.
@@ -96,12 +112,12 @@ apt policy PACOTE
 
 ## Arquivos
 ```bash
-cp
-mv
-rm
-mkdir -p
-find
-grep
+cp -r origem/ destino/
+mv origem destino
+rm -rf diretorio/
+mkdir -p caminho/subpasta
+find . -name "*.log" -mtime +7 -delete
+grep -R "erro" /var/log/
 ```
 
 ## Compressão
@@ -114,6 +130,9 @@ tar -xzf arquivo.tar.gz
 ```bash
 crontab -e
 crontab -l
+crontab -u usuario -l
+# ex.: limpeza noturna do workdir do runner
+# 0 3 * * * find /home/runner/_work -mtime +3 -delete
 ```
 
 ## Firewall UFW

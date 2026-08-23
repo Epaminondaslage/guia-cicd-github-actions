@@ -61,23 +61,36 @@ Ataque primeiro os maiores custos.
 
 # 5. Cache npm
 
-Use cache com lockfile.
+Use `actions/cache@v4` com chave derivada do lockfile via `hashFiles`, e `restore-keys` como fallback parcial:
 
-Não cache `node_modules` cegamente sem necessidade.
+```yaml
+- uses: actions/cache@v4
+  with:
+    path: ~/.npm
+    key: npm-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+    restore-keys: |
+      npm-${{ runner.os }}-
+```
+
+Alternativa mais simples para Node: `actions/setup-node@v4` com `cache: 'npm'` já cuida do cache do diretório de downloads (`~/.npm`) usando o lockfile como chave, sem precisar declarar `actions/cache` manualmente.
+
+Cache o diretório de downloads do gerenciador de pacotes (`~/.npm`), não `node_modules`. `node_modules` cacheado direto engessa binários nativos, symlinks e a resolução do lockfile entre runners com SO/arch diferentes, e tende a divergir silenciosamente do lockfile.
+
+Limites do cache do GitHub Actions: repositório tem teto de 10 GB (entradas mais antigas são evictadas automaticamente para abrir espaço); uma entrada não usada por 7 dias é removida; a chave de cache é imutável — uma vez gravada não é sobrescrita, por isso a chave precisa mudar (via `hashFiles`) quando o conteúdo muda.
 
 ---
 
 # 6. Cache Composer
 
-Cache de downloads pode reduzir instalação.
+Mesmo padrão do npm, com o cache de downloads do Composer (`~/.composer/cache` ou o path retornado por `composer config cache-files-dir`) chaveado por `hashFiles('**/composer.lock')` e `restore-keys` sem o hash para aproveitar parcialmente uma chave antiga.
 
-O lockfile continua fonte de versões.
+O lockfile continua fonte de versões; o cache só evita rebaixar pacotes já resolvidos.
 
 ---
 
 # 7. Docker layer cache
 
-Dockerfile bem estruturado:
+Dockerfile bem estruturado continua a primeira otimização:
 
 ```dockerfile
 COPY package*.json ./
@@ -85,17 +98,43 @@ RUN npm ci
 COPY . .
 ```
 
-é a primeira otimização.
+Isso separa a camada de dependências (que muda pouco) da camada de código (que muda a cada commit), mas só ajuda de fato quando o cache de camadas persiste entre execuções — o que exige BuildKit com backend de cache explícito via `docker buildx build` (ou `docker/build-push-action@v6`, que já usa buildx por padrão):
+
+```yaml
+- uses: docker/setup-buildx-action@v3
+
+- uses: docker/build-push-action@v6
+  with:
+    context: .
+    push: true
+    tags: registry.exemplo/app:${{ github.sha }}
+    cache-from: type=gha
+    cache-to: type=gha,mode=max
+```
+
+Opções de backend de cache:
+
+```text
+type=gha       cache hospedado pelo GitHub Actions (por repositório, mesmos limites/eviction do actions/cache)
+type=registry  cache publicado como imagem/manifesto num registry (bom p/ compartilhar entre runners self-hosted)
+type=local     cache em diretório do disco local (rápido em runner persistente, mas é o disco que se quer monitorar)
+```
+
+`mode=max` grava todas as camadas intermediárias no cache (não só a camada final), o que é necessário para builds multi-stage aproveitarem cache entre estágios — custa mais espaço/tempo de export em troca de mais acertos de cache.
+
+Em runner self-hosted persistente, `type=local` com `--cache-to type=local,dest=/caminho,mode=max` evita depender de rede, mas o diretório cresce sem limite se nada fizer `docker buildx prune` — ver seção 39.
 
 ---
 
 # 8. Browser cache
 
-Playwright baixa browsers grandes.
+Playwright baixa browsers grandes (Chromium/Firefox/WebKit, várias centenas de MB no total).
 
-Em runner persistente, versões podem ser reaproveitadas quando compatíveis.
+Em runner efêmero, cachear o diretório de browsers (`~/.cache/ms-playwright` no Linux) com `actions/cache@v4` chaveado pela versão do Playwright (ex.: `hashFiles('**/package-lock.json')` ou a versão do pacote) evita rebaixar a cada job; some com `restore-keys` para não falhar quando a versão exata não bate.
 
-Gerencie espaço e versões.
+Em runner persistente, os browsers já instalados podem ser reaproveitados diretamente do disco entre jobs quando a versão instalada é compatível com a exigida pelo lockfile — nesse caso o cache do Actions é dispensável, mas cabe checar a versão antes de assumir compatibilidade (`playwright install --with-deps` falha ou reinstala quando diverge).
+
+Gerencie espaço: cada versão nova do Playwright normalmente não remove a anterior sozinha.
 
 ---
 
@@ -126,6 +165,25 @@ setup rápido
 ```
 
 Exige provisioning automatizado.
+
+Trade-off central entre runner efêmero e persistente:
+
+```text
+efêmero (registra e desregistra a cada job)
+  + isolamento forte: job nunca herda estado/segredo/cache de job anterior
+  + reduz superfície de ataque de repo público/PR externo
+  - custo de I/O e boot a cada execução: clonar/baixar imagem, subir VM/container, instalar toolchain
+  - depende de provisioning automatizado (imagem pronta, template, orquestrador)
+
+persistente (fica registrado por dias/semanas)
+  + setup por job quase zero, sem custo de boot repetido
+  + mais simples de operar sem orquestrador
+  - risco de vazamento entre jobs (cache, variável de ambiente, processo zumbi, credencial em disco)
+  - acumula lixo (containers, imagens, workspaces, logs) — exige limpeza ativa (seções 37-39)
+  - superfície maior para repo público ou runner que roda PR de fork
+```
+
+Para repositório público ou que aceita PR de fork, prefira efêmero — persistente com segredo em ambiente compartilhado é vetor de exfiltração. Para repositório privado com poucos contribuidores confiáveis, persistente pode ser aceitável e mais barato em I/O.
 
 ---
 
@@ -332,17 +390,24 @@ Bom quando muitos jobs ficam em fila.
 
 # 32. Auto-scaling
 
-Em ambiente cloud/virtualização, runners podem ser criados sob demanda.
+Em ambiente cloud/virtualização, runners podem ser criados sob demanda a partir de um template/imagem, atendem um job (idealmente como efêmero) e são destruídos em seguida.
 
-É fase avançada.
+Sem Kubernetes, isso normalmente é implementado com um webhook do GitHub (evento `workflow_job` com status `queued`) disparando a criação de VM/container a partir de um template — ver seção 35. É fase avançada: exige orquestração própria, imagem pronta e monitoramento de falha de provisionamento.
 
 ---
 
 # 33. Actions Runner Controller
 
-Em ambientes Kubernetes, existem soluções de autoscaling de runners.
+O **Actions Runner Controller (ARC)** é a solução oficial da GitHub para autoscaling de runners self-hosted em Kubernetes. Ele expõe dois modos de escala:
 
-Só considerar quando escala justificar Kubernetes.
+```text
+RunnerDeployment (legado)   pool de runners com scale-up/down por polling
+RunnerScaleSet (atual)      escuta o job diretamente e escala com granularidade de 1 job = 1 pod efêmero
+```
+
+O modelo atual (`RunnerScaleSet`, instalado via chart Helm `gha-runner-scale-set`) usa runners efêmeros por padrão: cada job sobe um pod, registra, executa e é descartado — o que resolve o problema de acúmulo de lixo em disco (seção 37) porque não há disco persistente entre jobs, mas paga o custo de I/O/boot descrito na seção 10 a cada execução (pull de imagem do runner, cold start do pod).
+
+Só considerar ARC quando a escala e a operação já justificarem manter um cluster Kubernetes — não adote Kubernetes só para ganhar autoscaling de runner (ver seção 34). Para poucos runners, VM templates em Proxmox/cloud (seção 35) ou runners persistentes bem geridos (seções 37-39) costumam ser mais simples de operar.
 
 ---
 
@@ -370,44 +435,77 @@ template runner
 
 # 36. Ephemeral registration
 
-Runners descartáveis devem ser registrados de forma adequada para uso único conforme recursos do GitHub Runner.
+Runners descartáveis devem ser registrados com a flag `--ephemeral` no `config.sh`/`config.cmd` do runner (ou equivalente no ARC/`RunnerScaleSet`, que já é efêmero por padrão). Um runner efêmero se desregistra automaticamente após concluir um único job — não confie em script externo para desregistrar manualmente, pois um crash no meio do job pode deixar o registro órfão no GitHub sem que o processo tenha rodado o cleanup.
+
+Combine com fetch raso e limpeza de workspace (seção 36-A) para manter o custo de I/O por job baixo mesmo em provisionamento automatizado.
+
+---
+
+# 36-A. Checkout raso e limpeza de workspace
+
+`actions/checkout@v4` clona por padrão com `fetch-depth: 1` (raso), o que já evita baixar todo o histórico. Ajuste explicitamente quando precisar de mais:
+
+```yaml
+- uses: actions/checkout@v4
+  with:
+    fetch-depth: 1        # padrão; suficiente para build/test comuns
+    # fetch-depth: 0      # histórico completo — só quando necessário (changelog, git blame, tags)
+```
+
+Fetch completo (`fetch-depth: 0`) em repositório grande é um dos custos de I/O mais fáceis de esquecer — pesa toda vez que o job roda, não só na primeira vez. Reserve para os jobs que realmente precisam de histórico (ex.: gerar changelog, calcular versão semântica a partir de tags).
+
+Em runner persistente, o workspace de um job pode ficar em disco entre execuções. Isso acelera builds incrementais, mas acumula lixo (`node_modules` antigos, artefatos de build, arquivos temporários de teste) se nada limpar. Avalie:
+
+```text
+runner efêmero          workspace descartado junto com o runner — sem acúmulo, mas sem cache de disco entre jobs
+runner persistente       workspace sobrevive — ganho de I/O no build incremental, exige limpeza periódica (git clean -ffdx, ou clean: true no checkout)
+```
+
+`actions/checkout@v4` já limpa arquivos não rastreados do próprio checkout por padrão (`clean: true`), mas isso não remove diretórios fora do controle do Git (ex.: cache de build em path customizado) — essa limpeza é responsabilidade de um passo explícito ou de rotina de manutenção do runner (seção 37).
 
 ---
 
 # 37. Cleanup automático
 
-Runner persistente:
+Runner persistente acumula:
 
 ```text
-containers
-images
-workspaces
-logs
+containers parados
+imagens não usadas (dangling e não referenciadas)
+volumes órfãos
+cache de build do BuildKit (seção 7)
+workspaces antigos de jobs
+logs do runner
 ```
 
-precisa manutenção.
+Automatize a limpeza (cron ou hook pós-job) em vez de depender de intervenção manual — é justamente o cenário que gera custo de I/O silencioso em disco compartilhado com outros produtos na mesma máquina.
 
 ---
 
 # 38. Disk budget
 
-Defina:
+Defina limiares de disco e a ação em cada um:
 
 ```text
-alert 70%
-cleanup 75%
-critical 90%
+alert 70%      notificar, sem ação automática
+cleanup 75%    disparar rotina de limpeza automática (containers/imagens/workspaces)
+critical 90%   bloquear novos jobs até liberar espaço
 ```
 
-Valores são exemplos e devem ser ajustados.
+Valores são exemplos e devem ser ajustados ao tamanho real do disco e ao ritmo de crescimento observado — monitore antes de fixar o número.
 
 ---
 
 # 39. Docker build cache pruning
 
-Limpe de forma controlada.
+`docker buildx prune` (cache do BuildKit) e `docker system prune` (containers/imagens/redes/volumes não usados) limpam de forma controlada. Prefira flags explícitas a `--all` cego:
 
-Não apagar cache durante horário de maior uso sem necessidade.
+```bash
+docker buildx prune --filter "until=168h"   # remove cache do BuildKit com mais de 7 dias
+docker system prune -f                       # remove containers parados, redes e imagens dangling
+```
+
+Não apagar cache durante horário de maior uso sem necessidade — um prune agressivo no meio do expediente invalida o cache que outros jobs concorrentes esperavam reaproveitar, gerando rebuilds completos e pico de I/O justamente no horário mais sensível.
 
 ---
 

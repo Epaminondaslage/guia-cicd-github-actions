@@ -88,6 +88,16 @@ git branch --merged
 git fetch --prune
 ```
 
+## Worktrees
+Úteis em CI/CD para manter múltiplas branches (ex.: build de release + hotfix) sem clonar o repositório várias vezes.
+```bash
+git worktree add ../app-hotfix hotfix/x
+git worktree add -b feature/y ../app-y origin/main
+git worktree list
+git worktree remove ../app-hotfix
+git worktree prune
+```
+
 ## Fluxo diário
 ```bash
 git switch main

@@ -50,16 +50,16 @@
 - [ ] Branch pode ser removida.
 
 ## Novo workflow
-- [ ] Trigger correto.
-- [ ] `permissions` mínimas.
-- [ ] Runner/labels corretos.
-- [ ] Timeout.
-- [ ] Concurrency.
-- [ ] Dependências reproduzíveis.
-- [ ] Cleanup.
-- [ ] Artifacts.
-- [ ] Sem secrets em logs.
-- [ ] Testado em branch/PR.
+- [ ] Trigger correto (`on:` restrito ao evento/branch/path necessário).
+- [ ] `permissions:` mínimas declaradas no topo do workflow ou do job.
+- [ ] Runner/labels corretos (`runs-on:` casa com labels do runner self-hosted).
+- [ ] `timeout-minutes` definido no job.
+- [ ] `concurrency` com `cancel-in-progress` quando aplicável.
+- [ ] Dependências reproduzíveis (lockfile commitado, `npm ci` em vez de `npm install`).
+- [ ] Cleanup garantido com `if: always()`.
+- [ ] Artifacts relevantes publicados (`actions/upload-artifact`).
+- [ ] Sem secrets em logs (nenhum `echo`/`run` que imprima valor de secret).
+- [ ] Testado em branch/PR antes de mesclar na branch principal.
 
 ## Novo self-hosted runner
 - [ ] Ubuntu atualizado.
@@ -154,16 +154,18 @@
 - [ ] Action items.
 
 ## Segurança periódica
-- [ ] MFA.
-- [ ] Colaboradores.
-- [ ] Tokens.
-- [ ] SSH keys.
-- [ ] Secrets.
-- [ ] Dependências.
-- [ ] Base images.
-- [ ] Runner patches.
-- [ ] Firewall/rede.
-- [ ] Backup/restore.
+- [ ] MFA obrigatório para todos os colaboradores.
+- [ ] Colaboradores e permissões revisados (remover acesso de quem saiu/mudou de função).
+- [ ] Tokens (PAT, deploy keys) com validade e escopo mínimo, sem tokens "clássicos" sem expiração.
+- [ ] SSH keys rotacionadas/auditadas (`authorized_keys` sem chaves órfãs).
+- [ ] Secrets sem uso removidos; nenhum secret plaintext em log/artifact.
+- [ ] Dependências com `dependabot`/`npm audit`/`pip-audit` em dia.
+- [ ] Base images com tag fixa (não `latest`) e sem CVEs críticas conhecidas (`docker scout`/`trivy`).
+- [ ] Runner patches (SO e Docker Engine) aplicados.
+- [ ] `permissions:` do `GITHUB_TOKEN` mínimas por workflow (evitar `write-all`).
+- [ ] Actions de terceiros fixadas por SHA (não por tag mutável) quando crítico.
+- [ ] Firewall/rede do runner revisados.
+- [ ] Backup/restore testado (não só existente).
 
 ## Observabilidade
 - [ ] Health.

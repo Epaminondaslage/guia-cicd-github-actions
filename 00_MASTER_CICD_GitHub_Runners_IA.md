@@ -291,7 +291,7 @@ Uso de componentes existentes.
 
 ## Capítulo 03.7 — Secrets
 
-Gerenciamento seguro de credenciais.
+Gerenciamento seguro de credenciais. Inclui OIDC (OpenID Connect) como alternativa preferencial a secrets estáticos de longa duração para autenticação com provedores cloud (AWS, Azure, GCP) — o workflow recebe um token de curta duração assinado pelo GitHub, sem chave permanente armazenada no repositório.
 
 ## Capítulo 03.8 — Variables
 
@@ -309,9 +309,17 @@ Cache de npm, Composer e dependências.
 
 Testes com múltiplas versões.
 
-## Capítulo 03.12 — Workflows reutilizáveis
+## Capítulo 03.12 — Workflows e composite actions reutilizáveis
 
-Redução de duplicação.
+Redução de duplicação via `workflow_call` (workflows reutilizáveis) e composite actions locais.
+
+## Capítulo 03.13 — Permissões do `GITHUB_TOKEN`
+
+Uso do bloco `permissions:` no nível de workflow e de job para aplicar o princípio do menor privilégio — o padrão recomendado é `permissions: {}` no topo do arquivo e elevar apenas o necessário (`contents: read`, `pull-requests: write` etc.) em cada job.
+
+## Capítulo 03.14 — Versionamento de actions e sintaxe atual
+
+Fixação de actions em versões major suportadas (ex.: `actions/checkout@v4`, `actions/setup-node@v4`, `actions/upload-artifact@v4`) e substituição de comandos legados (`::set-output::`, `::save-state::`, `::set-env::`) pelos arquivos de ambiente `$GITHUB_OUTPUT`, `$GITHUB_STATE` e `$GITHUB_ENV`, obrigatórios desde a desativação dos comandos antigos.
 
 ---
 
@@ -379,11 +387,16 @@ Escalabilidade.
 
 ## Capítulo 04.10 — Segurança
 
-Isolamento, permissões e riscos de execução de código.
+Isolamento, permissões e riscos de execução de código. Ponto crítico: self-hosted runners **não devem** ser habilitados para workflows disparados por `pull_request` em repositórios públicos sem revisão — um PR malicioso de um fork pode executar código arbitrário no runner. Cuidados obrigatórios:
+
+- restringir execução de workflows em PRs de forks (aprovação manual do mantenedor antes de rodar);
+- nunca usar `pull_request_target` combinado com checkout do código do fork sem sanitização — esse evento roda com o contexto (e secrets) do branch base, ampliando o risco;
+- runners self-hosted em repositórios públicos, quando inevitáveis, devem ser efêmeros (uma execução por VM/container descartável) para evitar persistência de artefatos maliciosos entre jobs;
+- isolar o runner em rede própria, sem acesso direto a outros sistemas internos.
 
 ## Capítulo 04.11 — Atualizações
 
-Manutenção do runner.
+Manutenção do runner, incluindo acompanhamento do fim de suporte de versões de Node.js usadas pelo runner e pelas actions (ex.: Node 16 já descontinuado; runners atuais exigem Node 20+).
 
 ## Capítulo 04.12 — Monitoramento
 
@@ -682,7 +695,7 @@ Procedimento seguro.
 
 ## Capítulo 09.7 — Deploy com Docker
 
-Atualização de containers.
+Atualização de containers. Pode ser feito diretamente via SSH/Docker Compose ou delegado a um orquestrador de deploy (ex.: Coolify), que recebe o webhook do GitHub Actions e cuida do build, health check e substituição do container — reduzindo a lógica de deploy mantida dentro do próprio workflow.
 
 ## Capítulo 09.8 — Blue/Green Deployment
 
@@ -710,7 +723,7 @@ Chaves dedicadas ao CI/CD.
 
 ## Capítulo 10.4 — Princípio do menor privilégio
 
-Permissões mínimas.
+Permissões mínimas, incluindo o bloco `permissions:` do `GITHUB_TOKEN` (workflow e por job) e uso de OIDC em vez de secrets estáticos para autenticação com serviços externos.
 
 ## Capítulo 10.5 — Segurança de self-hosted runners
 
@@ -1024,6 +1037,8 @@ Sempre que tecnicamente adequado, o projeto dará preferência a ferramentas de 
 | E2E | Playwright |
 | MQTT | Eclipse Mosquitto |
 | Proxy | Nginx / Traefik |
+| Orquestração de deploy | Coolify (opcional) |
+| Autenticação cloud | OIDC (preferencial a secrets estáticos) |
 | Métricas | Prometheus |
 | Dashboards | Grafana |
 | Logs | Loki |
@@ -1088,6 +1103,8 @@ O projeto seguirá os seguintes princípios.
 10. **A IA auxilia a engenharia; critérios técnicos continuam explícitos e auditáveis.**
 11. **Specs devem registrar o comportamento desejado antes de grandes alterações.**
 12. **Refinamentos posteriores devem referenciar a implementação/PR original quando aplicável.**
+13. **Workflows devem declarar `permissions:` mínimas explicitamente, nunca depender do padrão implícito do repositório.**
+14. **Self-hosted runners nunca executam código de PRs de forks sem revisão humana prévia.**
 
 ---
 

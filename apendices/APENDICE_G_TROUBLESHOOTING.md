@@ -213,7 +213,25 @@ Meça runner utilization. Talvez seja necessário adicionar runner.
 ## 29. CI ficou lento
 Meça cada etapa; não otimize por palpite.
 
-## 30. Diagnóstico padrão
+## 30. Cache do actions/cache não restaura
+Verifique:
+
+```text
+chave de cache mudou (hash do lockfile)?
+cache criado em outra branch (restore-keys cobre?)
+limite de 10 GB por repositório excedido?
+```
+
+Cache é best-effort: workflow deve funcionar corretamente mesmo em cache miss.
+
+## 31. Rate limit da API do GitHub
+```bash
+gh api rate_limit
+```
+
+Em runners self-hosted compartilhados, muitas chamadas simultâneas (`gh`, `actions/checkout`, integrações) podem esgotar o limite. Prefira `GITHUB_TOKEN` do próprio job em vez de PAT pessoal quando possível.
+
+## 32. Diagnóstico padrão
 Sempre registre:
 
 ```text

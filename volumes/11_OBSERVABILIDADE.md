@@ -2,7 +2,7 @@
 
 **Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 11_OBSERVABILIDADE.md  
-**Versão:** 0.1.0
+**Versão:** 0.2.0
 
 ---
 
@@ -94,20 +94,58 @@ Prefira:
 
 a logs livres difíceis de consultar.
 
----
-
-# 6. Correlação
-
-Inclua identificadores:
+Campos recomendados em cada linha de log:
 
 ```text
-requestId
-traceId
-user/session technical id
-job id
+timestamp (ISO 8601, UTC)
+level
+service
+version (SHA curto ou tag do deploy)
+environment (dev/staging/prod)
+requestId ou traceId
+message
 ```
 
-Sem expor dados pessoais desnecessários.
+O formato JSON por linha (NDJSON — um objeto por linha) é o mais fácil de indexar em Loki, Elasticsearch/OpenSearch, CloudWatch Logs Insights ou qualquer coletor. Emitir `console.log` de string livre funciona para debug local, mas não escala para consulta e correlação em produção.
+
+Bibliotecas comuns para logging estruturado:
+
+```text
+Node.js: pino, winston (formatter JSON)
+Python: structlog, logging com JSONFormatter
+Go: slog (stdlib, Go 1.21+), zap, zerolog
+Java: Logback/Log4j2 com encoder JSON
+```
+
+---
+
+# 6. Correlação entre pipeline e aplicação
+
+O objetivo prático é responder "esse erro em produção apareceu depois de qual execução do workflow?". Para isso, o identificador do deploy precisa atravessar a fronteira entre CI/CD e aplicação.
+
+Inclua identificadores nos logs da aplicação:
+
+```text
+requestId ou traceId (por requisição)
+deployId / releaseVersion (SHA do commit ou tag)
+job id / run id do GitHub Actions (opcional, para depuração)
+user/session technical id
+```
+
+Como propagar o identificador do pipeline para dentro da aplicação:
+
+```yaml
+- name: Build com metadata de versão
+  run: |
+    docker build \
+      --build-arg GIT_SHA=${{ github.sha }} \
+      --build-arg RUN_ID=${{ github.run_id }} \
+      -t minha-app:${{ github.sha }} .
+```
+
+A aplicação lê essas variáveis em build time (ou via env var em runtime) e as inclui em todo log estruturado e no endpoint `/version` (ver seção 25). Assim, ao ver um erro em produção, basta olhar o campo `version` do log e localizar o run correspondente em `Actions` no GitHub pelo SHA.
+
+Sem expor dados pessoais desnecessários (PII) nos logs — nem em nome de "correlação".
 
 ---
 
@@ -159,14 +197,16 @@ Grafana
 
 ---
 
-# 10. Promtail e agentes
+# 10. Agentes de coleta de logs
 
-O ecossistema de coleta evolui. Ao implementar, consulte componentes atualmente recomendados pelo projeto Grafana.
+O ecossistema de coleta evolui rápido. O Promtail (agente clássico do Loki) entrou em modo de manutenção, e o Grafana recomenda o Grafana Alloy como substituto para novas instalações — Alloy é um coletor único, compatível com OpenTelemetry, que também sabe enviar dados para Loki, Prometheus e Tempo.
+
+Ao implementar, consulte a documentação atual do projeto Grafana antes de escolher o agente — o nome do componente recomendado muda com mais frequência do que o conceito por trás dele.
 
 O conceito permanece:
 
 ```text
-host logs -> collector -> Loki
+host/container logs -> agente de coleta -> Loki
 ```
 
 ---
@@ -392,6 +432,47 @@ quando isso realmente requer ação.
 
 ---
 
+# 27a. Notificações de falha de pipeline e deploy
+
+Além de alertas de infraestrutura (Prometheus/Alertmanager), o pipeline deve notificar diretamente quando falha, sem depender de alguém checar a aba Actions manualmente.
+
+Opções mais comuns:
+
+```text
+e-mail: notificação padrão do GitHub para quem disparou o workflow (ativado por padrão em Settings -> Notifications)
+Slack: webhook de entrada + step dedicado no job
+Microsoft Teams: webhook de entrada, formato similar ao Slack
+GitHub: status check + comentário automático no PR
+```
+
+Exemplo de step em Slack usando um webhook, disparado apenas em falha:
+
+```yaml
+- name: Notificar falha no Slack
+  if: failure()
+  uses: slackapi/slack-github-action@v2
+  with:
+    webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+    webhook-type: incoming-webhook
+    payload: |
+      {
+        "text": "Falha no deploy de ${{ github.repository }} (${{ github.ref_name }}) — run ${{ github.run_id }}"
+      }
+```
+
+Pontos de atenção:
+
+```text
+não commite a URL do webhook — use secrets;
+notifique falha, não sucesso repetitivo (evita ruído — ver Alert fatigue);
+inclua link direto para o run (github.server_url/github.repository/actions/runs/github.run_id);
+diferencie canal de falha de CI (build/test) do canal de falha de deploy em produção — severidades diferentes.
+```
+
+Para falhas de deploy especificamente, é comum um canal com resposta mais rápida (ex.: canal de on-call) separado do canal de CI geral.
+
+---
+
 # 28. Alert fatigue
 
 Muitos alertas inúteis fazem a equipe ignorar todos.
@@ -494,9 +575,60 @@ result
 
 # 37. Logs de CI
 
-GitHub já possui logs de Actions.
+GitHub já possui logs de Actions, disponíveis pela UI, pelo `gh run view --log` (GitHub CLI) e pela API REST/GraphQL.
 
-Para análise de longo prazo, métricas agregadas podem ser úteis.
+Para análise de longo prazo, métricas agregadas podem ser úteis, já que os logs brutos expiram conforme a retenção configurada (padrão 90 dias em repositórios públicos/privados, ajustável em Settings → Actions).
+
+---
+
+# 37a. GitHub Actions: métricas via API e insights nativos
+
+O próprio GitHub expõe dados de execução que dispensam, em boa parte dos casos, montar uma stack própria só para observar o pipeline:
+
+```text
+Aba "Insights -> Actions" do repositório
+  - duração de workflows ao longo do tempo
+  - taxa de sucesso/falha por workflow
+  - uso de minutos por runner (hosted)
+
+API REST
+  GET /repos/{owner}/{repo}/actions/runs
+  GET /repos/{owner}/{repo}/actions/runs/{run_id}/timing
+  GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs
+
+API GraphQL
+  campos de CheckRun/WorkflowRun com startedAt/completedAt/conclusion
+```
+
+Métricas de pipeline que valem a pena extrair e acompanhar ao longo do tempo:
+
+```text
+duração total do workflow (created_at -> updated_at)
+duração por job e por step (útil para achar o gargalo real)
+tempo em fila até um runner pegar o job (queue time)
+taxa de falha por workflow/branch
+tempo até deploy (do commit/merge até o job de deploy concluir com sucesso)
+taxa de uso de retry / re-run manual
+```
+
+Exemplo de script simples para extrair duração de jobs via `gh` e a API:
+
+```bash
+gh api repos/OWNER/REPO/actions/runs/RUN_ID/jobs \
+  --jq '.jobs[] | {name, started_at, completed_at, conclusion}'
+```
+
+Para série histórica (dashboard próprio), um job agendado pode consultar a API periodicamente e gravar o resultado em um banco de métricas (Prometheus via Pushgateway, um banco de séries temporais, ou até uma tabela simples), alimentando o "CI dashboard" da seção 57.
+
+Ferramentas de terceiros (avalie antes de adotar) que já fazem essa coleta:
+
+```text
+GitHub Actions exporter para Prometheus (comunidade)
+Datadog CI Visibility
+Grafana Cloud + integração GitHub
+```
+
+Comece pelos Insights nativos do GitHub; monte coleta própria só quando precisar cruzar esses dados com métricas de aplicação/infra no mesmo dashboard.
 
 ---
 
@@ -726,27 +858,57 @@ Use dados objetivos para reconstruir timeline.
 
 # 59. Tracing
 
-OpenTelemetry pode instrumentar aplicações distribuídas.
+Tracing distribuído mostra o caminho completo de uma requisição atravessando múltiplos serviços, com o tempo gasto em cada etapa (chamado de "span").
 
-Fluxo:
+Faz sentido adotar tracing quando existe mais de um serviço/processo envolvido numa mesma requisição (frontend -> API -> serviço interno -> banco/fila). Para uma aplicação monolítica simples, logs estruturados com bom RED (seção 16) e métricas já cobrem boa parte da necessidade — tracing tem custo de instrumentação e de armazenamento que só compensa a partir de certa complexidade.
+
+Fluxo típico:
 
 ```text
 frontend/API
  |
- trace
+ trace (traceId propagado via header, ex.: traceparent)
  |
  services
  |
- database
+ database/fila
 ```
+
+Cada span carrega o mesmo `traceId`, permitindo reconstruir a linha do tempo completa de uma requisição em ferramentas como Grafana Tempo, Jaeger ou Zipkin.
 
 ---
 
 # 60. OpenTelemetry
 
-Projeto open source para métricas, logs e traces padronizados.
+OpenTelemetry (OTel) é o projeto open source (CNCF) que padronizou coleta de métricas, logs e traces através de uma API e um formato comuns, independentes de fornecedor. Hoje é o padrão de facto — a maioria dos backends de observabilidade (Grafana, Datadog, New Relic, Honeycomb, etc.) aceita dados no formato OTLP (OpenTelemetry Protocol) nativamente.
 
-É uma evolução recomendada para sistemas distribuídos.
+Componentes principais:
+
+```text
+SDKs de instrumentação (por linguagem: Node.js, Python, Go, Java, .NET, ...)
+OpenTelemetry Collector (recebe, processa e exporta os dados)
+Backends (Grafana Tempo/Loki/Mimir, Jaeger, Prometheus, um APM comercial)
+```
+
+Um Collector típico numa stack self-hosted:
+
+```text
+aplicação (SDK OTel)
+ |
+ OTLP (gRPC/HTTP)
+ |
+ OpenTelemetry Collector
+ |
+ exporta para: Tempo (traces) / Prometheus (métricas) / Loki (logs)
+```
+
+Muitas linguagens oferecem instrumentação automática (auto-instrumentation) que captura chamadas HTTP, queries de banco e chamadas a filas sem alterar o código da aplicação — bom ponto de partida antes de instrumentar manualmente spans customizados.
+
+---
+
+# 60a. Correlação entre deploy e tracing
+
+O mesmo identificador de versão usado nos logs (seção 6) deve aparecer também nos traces, como atributo do span (`service.version` ou `deployment.environment` no padrão de atributos semânticos do OpenTelemetry). Isso permite, ao investigar um span lento ou com erro, saber imediatamente em qual deploy ele ocorreu — fechando o ciclo pipeline -> deploy -> log -> métrica -> trace com o mesmo identificador em todas as camadas.
 
 ---
 
@@ -798,8 +960,8 @@ Grafana/Prometheus não devem ficar expostos publicamente sem autenticação e p
 
 # 65. Checklist
 
-- [ ] Logs estruturados.
-- [ ] Sem secrets.
+- [ ] Logs estruturados (JSON) com versão/deploy no payload.
+- [ ] Sem secrets nos logs.
 - [ ] Health.
 - [ ] Version.
 - [ ] Host metrics.
@@ -807,6 +969,8 @@ Grafana/Prometheus não devem ficar expostos publicamente sem autenticação e p
 - [ ] App errors.
 - [ ] Latency.
 - [ ] Deploy markers.
+- [ ] Notificação de falha de pipeline/deploy (Slack/e-mail).
+- [ ] Métricas de pipeline (duração de jobs, tempo até deploy, taxa de falha).
 - [ ] Runbooks.
 - [ ] Retenção definida.
 

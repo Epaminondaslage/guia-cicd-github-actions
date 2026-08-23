@@ -169,7 +169,85 @@ O código executado pode:
 
 Para repositórios sob controle do próprio desenvolvedor, o risco pode ser administrado.
 
-Para repositórios públicos que aceitam PRs de terceiros, runners persistentes exigem cuidados adicionais e normalmente não devem executar automaticamente código não confiável.
+## 5.1 Repositórios públicos: risco crítico
+
+Em um repositório **público**, qualquer pessoa pode abrir um Pull Request a partir de um fork.
+
+Se esse repositório utilizar self-hosted runners, o código do PR — incluindo o conteúdo de `workflow` alterado pelo próprio autor do fork, dependendo do trigger — pode acabar sendo executado diretamente no seu runner.
+
+Isso significa, na prática:
+
+```text
+Fork malicioso
+    |
+    v
+Pull Request
+    |
+    v
+Workflow roda no seu runner
+    |
+    v
+Código arbitrário executado no seu host
+```
+
+O GitHub documenta explicitamente esse risco e recomenda **não usar self-hosted runners em repositórios públicos**, a menos que:
+
+- o runner seja **efêmero** (destruído/recriado a cada job, nunca reaproveitado);
+- exista uma política de aprovação manual para execução de workflows de forks (`Require approval for all outside collaborators` / `for first-time contributors`, configurável em Settings → Actions → General);
+- o runner não tenha acesso a segredos, à rede interna ou a outros sistemas sensíveis.
+
+### Cuidado especial com `pull_request_target`
+
+O trigger `pull_request_target` executa o workflow com o contexto e os **secrets do repositório base** (não do fork), mesmo quando o PR vem de um fork não confiável. Isso já foi usado, na prática, para vazar segredos.
+
+O erro clássico é combinar `pull_request_target` com um `checkout` explícito do código do fork:
+
+```yaml
+on:
+  pull_request_target
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}   # ⚠️ código do fork
+```
+
+Isso permite que o autor do fork controle o código executado, enquanto o workflow ainda tem acesso aos secrets do repositório base — uma combinação perigosa em qualquer runner, e ainda mais grave em um self-hosted persistente.
+
+Regras práticas:
+
+- evitar `pull_request_target` sempre que possível; preferir `pull_request` (que já roda sem acesso a secrets quando o PR vem de um fork);
+- se `pull_request_target` for realmente necessário, nunca fazer checkout do `head` do PR sem antes revisar o diff manualmente (ou usar um job de aprovação);
+- nunca expor um self-hosted runner persistente a `pull_request` de forks externos em repositório público.
+
+Recomendação geral para este guia: self-hosted runners devem ser usados preferencialmente em **repositórios privados ou internos**. Quando um repositório público precisar de runner próprio, utilizar runners **efêmeros** (ver seção 5.2) restritos por ambiente e sem segredos de produção.
+
+## 5.2 Runners efêmeros
+
+Um runner efêmero se registra, executa **um único job** e é removido/desregistrado em seguida — o oposto do runner persistente tradicional descrito neste capítulo.
+
+Registro efêmero (flag suportada pelo `config.sh` do runner oficial):
+
+```bash
+./config.sh --url REPOSITORIO --token TOKEN_TEMPORARIO --ephemeral
+```
+
+Após executar um job, o processo do runner encerra e a instância deve ser recriada (por script, container descartável, ou VM reiniciada a partir de um snapshot limpo) antes de aceitar o próximo job.
+
+Vantagens:
+
+- nenhum resíduo de um job pode contaminar o próximo;
+- reduz drasticamente o risco de um workflow malicioso comprometer execuções futuras;
+- se o runner for comprometido, o dano fica limitado a um único job.
+
+Efêmero é o padrão recomendado para:
+
+- repositórios públicos;
+- runners provisionados via autoscaling (seção 39.1);
+- ambientes com forte exigência de compliance.
 
 ---
 
@@ -710,6 +788,22 @@ runs-on:
   - e2e
 ```
 
+## 20.1 Runner groups
+
+Além das labels, o GitHub organiza runners em **runner groups** (Settings → Actions → Runner groups). Um grupo define quais repositórios/organizações podem usar aquele conjunto de runners, e é o mecanismo indicado para restringir acesso — por exemplo, um grupo `production-deploy` visível apenas para o repositório de deploy, separado de um grupo `ci-general` compartilhado.
+
+Diferença prática:
+
+```text
+Labels
+   → escolhem QUAL runner dentro do grupo executa o job
+
+Runner group
+   → controla QUEM (quais repositórios/orgs) pode enxergar e usar aquele runner
+```
+
+Em conta Organization/Enterprise, sempre associar runners sensíveis (com acesso a PROD) a um grupo restrito, em vez de depender apenas de labels — labels não impedem que outro repositório da mesma organização "peça" aquele runner se ele estiver no grupo padrão.
+
 ---
 
 # 21. Testar manualmente
@@ -766,6 +860,71 @@ Consultar:
 ```bash
 sudo ./svc.sh status
 ```
+
+## 22.1 O que o `svc.sh install` faz de fato
+
+O script oficial `svc.sh` gera e registra uma unit do `systemd` em nome do usuário atual (não é necessário escrever a unit manualmente). O arquivo criado fica em:
+
+```text
+/etc/systemd/system/actions.runner.<org-ou-repo>.<runner-name>.service
+```
+
+Um exemplo do conteúdo gerado (aproximado — os valores exatos dependem da instalação):
+
+```ini
+[Unit]
+Description=GitHub Actions Runner (<runner-name>)
+After=network.target
+
+[Service]
+ExecStart=/home/github-runner/actions-runner/runsvc.sh
+User=github-runner
+WorkingDirectory=/home/github-runner/actions-runner
+KillMode=process
+KillSignal=SIGTERM
+TimeoutStopSec=5min
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Pontos importantes:
+
+- `Restart=always` garante que o runner volta a subir automaticamente após falha ou reboot do host, sem intervenção manual;
+- a unit roda como o usuário `github-runner` (nunca `root`), reforçando o princípio de menor privilégio;
+- `svc.sh uninstall` remove a unit de forma limpa, sem deixar arquivos systemd órfãos.
+
+Depois de instalado, o serviço também responde aos comandos nativos do `systemd`:
+
+```bash
+sudo systemctl status actions.runner.*.service
+sudo systemctl restart actions.runner.*.service
+sudo systemctl enable actions.runner.*.service   # garante start automático no boot
+```
+
+## 22.2 Logs via journalctl
+
+Além dos arquivos em `_diag/` (seção 42), o `systemd` também captura a saída do serviço no `journald`:
+
+```bash
+sudo journalctl -u actions.runner.*.service -f
+```
+
+Últimas 200 linhas:
+
+```bash
+sudo journalctl -u actions.runner.*.service -n 200 --no-pager
+```
+
+Logs desde o último boot:
+
+```bash
+sudo journalctl -u actions.runner.*.service -b
+```
+
+Isso é útil especialmente quando o runner falha antes mesmo de gravar em `_diag/`, ou quando o interesse é correlacionar a falha com eventos do sistema (OOM killer, reinício de rede, etc.).
 
 ---
 
@@ -1289,6 +1448,72 @@ Servidor físico
 
 Cada runner terá diretório próprio.
 
+## 39.1 Autoscaling de runners
+
+Manter runners fixos ligados 24/7 desperdiça recursos quando a demanda de CI é irregular (picos durante o horário comercial, ociosidade à noite). Duas abordagens comuns:
+
+### Opção A — actions-runner-controller (ARC) no Kubernetes
+
+O projeto oficial mantido pelo GitHub (`actions/actions-runner-controller`) roda um operador Kubernetes que cria e destrói **pods de runner efêmeros** sob demanda, conforme jobs são enfileirados. Conceito:
+
+```text
+Job enfileirado no GitHub
+        |
+        v
+ARC detecta demanda (via webhook ou polling)
+        |
+        v
+Kubernetes cria pod de runner efêmero
+        |
+        v
+Job executa
+        |
+        v
+Pod é destruído automaticamente
+```
+
+Vantagens:
+
+- escala de zero até N runners conforme a fila;
+- cada job roda em um pod novo (efêmero por natureza), reduzindo o risco de resíduo entre execuções;
+- integra-se bem com clusters já existentes.
+
+Desvantagens/custos:
+
+- exige um cluster Kubernetes operacional (complexidade adicional);
+- rodar Docker dentro de pods de runner (`docker-in-docker` ou soquete montado) exige atenção extra de segurança;
+- curva de aprendizado maior que uma VM/LXC com `systemd`.
+
+Para laboratórios pequenos ou uma única VPS, o ARC costuma ser desproporcional ao ganho — vale considerar quando o volume de jobs realmente justificar um cluster dedicado.
+
+### Opção B — scale-up/down manual ou por script em VPS/LXC
+
+Alternativa mais simples para ambientes menores: manter um número mínimo de runners sempre ativos e provisionar runners adicionais sob demanda por script, usando a API do provedor (Proxmox, provedor de VPS, etc.) ou simplesmente ligando containers/LXCs adicionais em horários de pico.
+
+Esboço de fluxo:
+
+```text
+cron / gatilho de fila
+        |
+        v
+script verifica jobs pendentes (API do GitHub)
+        |
+        v
+se houver fila > limite:
+    provisiona runner adicional (LXC/VM/container)
+    registra com --ephemeral
+        |
+        v
+runner executa 1 job e se desregistra
+        |
+        v
+script de limpeza remove a instância ociosa
+```
+
+Isso pode ser feito com scripts simples (bash + `gh api` ou a API REST de runners) sem depender de Kubernetes, mas exige monitoramento próprio — não há um operador cuidando do ciclo de vida como no ARC.
+
+Em qualquer uma das duas opções, o princípio da seção 5.2 (runners efêmeros) se aplica com ainda mais força: runners provisionados dinamicamente devem sempre nascer limpos e ser descartados após o uso.
+
 ---
 
 # 40. Runner dedicado para E2E
@@ -1531,29 +1756,60 @@ Mesmo que inicialmente sejam VMs no mesmo servidor físico.
 
 ---
 
-# 50. Máquina física, VM ou container
+# 50. Máquina física, VM/LXC ou container
 
-## VM
+Regra geral, independentemente da opção escolhida:
+
+> O runner nunca deve rodar diretamente no host que também hospeda aplicações ou bancos de PRODUÇÃO.
+
+O runner deve sempre estar em uma camada isolada — VM, container LXC ou container Docker dedicado — mesmo que essa camada esteja fisicamente no mesmo servidor. Isso limita o raio de impacto caso um workflow (malicioso ou apenas com bug) comprometa o ambiente de execução.
+
+## VM ou LXC
 
 É a opção recomendada inicialmente.
 
 Vantagens:
 
-- isolamento;
-- snapshots;
-- fácil reconstrução;
-- limites de CPU/RAM;
-- manutenção simples.
+- isolamento do host físico e de outras cargas;
+- snapshots antes de mudanças arriscadas;
+- fácil reconstrução a partir de um template limpo;
+- limites de CPU/RAM/disco aplicados pelo hypervisor;
+- manutenção simples com ferramentas já conhecidas (Proxmox, libvirt, etc.).
+
+Exemplo didático de topologia com LXC (nomes genéricos, apenas ilustrativos):
+
+```text
+Host Proxmox
+|
++-- LXC-CI       (runner de CI, sem acesso a PROD)
++-- LXC-E2E      (runner de E2E, sem acesso a PROD)
++-- LXC-DEPLOY   (runner de deploy, acesso restrito e auditado ao PROD)
++-- LXC-PROD     (aplicação de produção — nunca compartilha container com o runner)
+```
 
 ## Máquina física
 
-Boa para E2E pesado.
+Boa para E2E pesado, quando a virtualização introduzir overhead relevante (ex.: paralelismo intenso de browsers). Mesmo assim, o runner deve rodar com usuário dedicado e, idealmente, dentro de um container Docker isolado nessa máquina — não diretamente exposto no SO base sem nenhuma camada de contenção.
 
-## Container
+## Container Docker
 
-É possível executar runners em containers, mas adiciona complexidade, principalmente quando os jobs também precisam executar Docker.
+É possível — e cada vez mais comum — executar o próprio runner dentro de um container Docker (a imagem `myoung34/github-runner` e variantes são amplamente usadas na comunidade; o GitHub também publica um `Dockerfile` de referência no repositório `actions/runner`). Isso facilita provisionamento repetível e descarte (bom combinado com autoscaling, seção 39.1).
 
-Será tratado em capítulo avançado.
+Ponto de atenção: se os jobs desse runner também precisarem rodar `docker build`/`docker run`, existem duas estratégias, cada uma com trade-offs de segurança:
+
+```text
+Docker-in-Docker (DinD)
+  |
+  +-- container roda seu próprio daemon Docker isolado
+  +-- mais isolado, porém exige --privileged (ou runtime rootless)
+
+Docker socket bind-mount (DooD)
+  |
+  +-- monta /var/run/docker.sock do host dentro do container
+  +-- mais simples, porém dá ao container controle equivalente ao do host
+```
+
+DooD (montar o socket do host) é a opção mais usada na prática, mas equivale, em termos de privilégio, a dar acesso root ao host — reforça a necessidade de nunca expor esse runner a workflows não confiáveis (seção 5.1).
 
 ---
 
@@ -1908,6 +2164,10 @@ e2e
 - [ ] Docker é utilizado somente por usuários autorizados.
 - [ ] Logs são revisáveis.
 - [ ] Processo de reconstrução está documentado.
+- [ ] Runner não roda diretamente no host de produção (VM/LXC/container dedicado).
+- [ ] Repositório público, se houver, usa runner efêmero (`--ephemeral`) ou aprovação manual de workflows de forks.
+- [ ] Nenhum workflow combina `pull_request_target` com checkout do código do fork sem revisão.
+- [ ] Runners com acesso a PROD estão em runner group restrito, não apenas identificados por label.
 
 ---
 
@@ -2030,11 +2290,13 @@ com foco em reduzir o tempo de E2E à medida que o sistema cresce.
 
 # 65. Notas de atualização
 
-Este documento evita fixar a versão do binário do GitHub Actions Runner. A instalação deve utilizar a versão apresentada no momento pela interface oficial do GitHub.
+Este documento evita fixar a versão do binário do GitHub Actions Runner. A instalação deve utilizar a versão apresentada no momento pela interface oficial do GitHub, ou consultada nas releases do repositório `actions/runner`.
 
-A documentação oficial atual do GitHub informa que runners Linux suportam Ubuntu 20.04 ou posterior e que workflows com container actions ou service containers precisam de Linux com Docker instalado.
+A documentação oficial atual do GitHub informa que runners Linux suportam Ubuntu 20.04 ou posterior (Ubuntu 22.04/24.04 LTS recomendados para instalações novas) e que workflows com container actions ou service containers precisam de Linux com Docker instalado. O agente do runner requer uma glibc compatível com a distribuição e não deve ser instalado em sistemas fora do ciclo de suporte.
 
-O acesso do runner ao GitHub é iniciado pela própria máquina, usando comunicação HTTPS de saída.
+O acesso do runner ao GitHub é iniciado pela própria máquina, usando comunicação HTTPS de saída — não é necessário abrir portas de entrada.
+
+Este capítulo também assume que, sempre que possível, repositórios públicos usam runners efêmeros (seção 5.2), que runners com acesso a produção ficam isolados em runner group próprio (seção 20.1) e que autoscaling (seção 39.1) só entra em cena quando o volume de jobs justificar a complexidade adicional.
 
 ---
 

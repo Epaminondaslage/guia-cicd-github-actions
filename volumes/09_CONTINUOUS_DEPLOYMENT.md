@@ -62,6 +62,35 @@ software aprovado é implantado automaticamente
 
 Neste guia, produção mantém gate humano.
 
+Isso não torna Continuous Deployment automático "errado" — é uma opção igualmente válida, adotada por muitos times maduros. A diferença é o risco que cada modelo aceita:
+
+```text
+Deploy com gate manual
+  humano aprova cada ida para PROD
+  mais lento, mais controle por evento
+
+Deploy automático (CD puro)
+  merge aprovado já implica produção
+  mais rápido, exige suíte de testes e observabilidade muito confiáveis
+```
+
+Se optar por automático, o GitHub exige que a proteção não dependa de disciplina humana informal. Configure o *environment* `production` com **required reviewers**:
+
+```text
+Settings -> Environments -> production
+  Required reviewers: 1+ pessoas
+```
+
+Com isso, mesmo um workflow disparado automaticamente por push em `main` **pausa** antes de rodar o job com `environment: production`, aguardando aprovação na própria interface do GitHub. Ou seja: "CD automático" e "gate humano" não são mutuamente exclusivos — required reviewers é a forma do GitHub aplicar gate humano dentro de um pipeline desenhado como automático. A escolha real é onde a aprovação vive:
+
+```text
+gate via workflow_dispatch manual   -> operador decide quando disparar
+gate via required reviewers         -> pipeline dispara sozinho, mas pausa para aprovação
+sem nenhum dos dois                 -> deploy automático "puro", sem freio humano
+```
+
+Este guia usa `workflow_dispatch` para produção (Seção 21) porque é explícito e fácil de auditar, mas o mesmo resultado de segurança pode ser obtido com push automático + required reviewers no environment.
+
 ---
 
 # 3. Build versus Deploy
@@ -362,6 +391,14 @@ environment:
 
 Configure protection rules disponíveis para a conta/repositório.
 
+Na prática, o recurso mais importante do environment `production` é:
+
+```text
+Required reviewers
+```
+
+Sem reviewers configurados, `environment: production` no YAML é só um rótulo — não bloqueia nada sozinho. É a combinação `environment de proteção com reviewers` + `job aponta para esse environment` que efetivamente impede o job de rodar sem aprovação, mesmo em planos gratuitos de repositório público (em repositórios privados, esse recurso exige GitHub Team/Enterprise).
+
 ---
 
 # 20. Workflow PROD
@@ -420,6 +457,31 @@ previous_version
 ```
 
 para rollback.
+
+---
+
+# 23a. Estratégia de rollback
+
+Rollback rápido depende de decisões tomadas *antes* do incidente, não durante ele:
+
+```text
+1. Toda imagem publicada é versionada e imutável (Seção 4).
+   app:sha-a91c302, nunca app:latest em PROD.
+
+2. A versão anterior continua disponível no registry
+   e no host (imagem já puxada não é removida agressivamente).
+
+3. "Reverter" é trocar a tag ativa e reiniciar o serviço,
+   nunca rebuildar ou recriar a versão antiga a partir do código.
+```
+
+Isso implica não fazer `docker image prune` agressivo em PROD logo após o deploy — mantenha pelo menos a imagem N-1 disponível localmente por um período, para que o rollback não dependa de baixar a imagem do registry sob pressão (e não falhe se o registry estiver indisponível justamente durante o incidente que motivou o rollback).
+
+Rollback bom é aquele que:
+
+- não exige decisão de arquitetura no momento da falha;
+- é o mesmo mecanismo usado no dia a dia (deploy de uma versão-alvo), só que apontando para trás;
+- é testado antes de ser necessário de verdade (pelo menos uma vez em DEV).
 
 ---
 
@@ -531,6 +593,20 @@ backup
 ```
 
 Mas backup não substitui migration segura.
+
+Trate como regra absoluta, não como recomendação: **nenhuma mudança de dado em produção acontece sem dump/backup verificado imediatamente antes**. Isso vale tanto para migration automatizada no pipeline quanto para qualquer correção manual/script rodado à mão contra o banco de PROD.
+
+```text
+dump prévio
+ |
+ script de correção versionado (não comando solto interativo)
+ |
+ aplicar
+ |
+ conferir resultado
+```
+
+"Verificado" significa confirmar que o dump foi gerado com sucesso (tamanho não-zero, sem erro no `stderr` do processo de backup) antes de prosseguir — um backup que falhou em silêncio é o mesmo que não ter backup.
 
 ---
 
@@ -794,7 +870,25 @@ proxy -> BLUE
 
 Quando downtime e rollback precisam ser muito baixos.
 
-Custa mais recursos e complexidade.
+Custa mais recursos e complexidade: dobro de instâncias rodando durante a troca, proxy/load balancer capaz de trocar o alvo, e gestão de estado (sessões, filas, migrations) compatível com as duas versões coexistindo brevemente.
+
+---
+
+# 54a. Quando NÃO vale a pena
+
+Para a maioria dos setups pequenos/médios — um único servidor de aplicação, uma equipe pequena, um domínio de negócio que tolera alguns segundos de indisponibilidade em janela combinada — blue/green e canary custam mais do que entregam:
+
+```text
+setup simples:
+  1 servidor, 1 stack Compose
+  deploy = trocar imagem + reiniciar container
+  downtime de poucos segundos, aceitável
+  -> blue/green é complexidade desnecessária
+```
+
+Nesses casos, o que realmente reduz risco é o que já foi descrito neste volume: artifact imutável, health check obrigatório, rollback rápido testado e gate humano antes de produção (Seções 4, 14, 18, 23a). Blue/green e canary resolvem um problema diferente — *impacto de usuários durante a janela de deploy em sistemas com tráfego contínuo e várias instâncias* — não são pré-requisito de um pipeline de CI/CD maduro.
+
+Adote blue/green ou canary quando o custo de alguns segundos de indisponibilidade for realmente alto (SLA contratual, tráfego 24/7 relevante) ou quando já existir infraestrutura (load balancer, múltiplas instâncias) que os suporte sem esforço extra significativo.
 
 ---
 
@@ -814,11 +908,11 @@ Requer load balancer e health checks.
 
 # 56. Canary
 
-Liberar nova versão para pequena parcela.
+Liberar nova versão para pequena parcela do tráfego, observar métricas, e só então liberar para o restante.
 
-Adequado para sistemas maiores.
+Adequado para sistemas com volume de tráfego suficiente para que uma fração pequena já gere sinal estatístico útil, e com infraestrutura de roteamento (proxy, service mesh, feature flag por percentual) que suporte o split.
 
-Não é requisito inicial.
+Não é requisito inicial: para um setup simples (Seção 54a), a "canary" mais barata e eficaz continua sendo a validação em DEV seguida de observação atenta na janela pós-deploy em PROD (Seção 60).
 
 ---
 

@@ -55,6 +55,30 @@ main protegida
 
 Alterações entram por PR.
 
+No GitHub, isso é aplicado por **regras de proteção de branch**. Existem hoje duas interfaces para o mesmo mecanismo:
+
+```text
+Branch protection rules (clássico)
+Rulesets (repositório ou organização)
+```
+
+Rulesets são a interface recomendada atualmente: permitem combinar múltiplos padrões de branch/tag em uma única regra, aplicar em nível de organização (várias repos de uma vez), têm modo "evaluate" (dry-run, só reporta o que bloquearia) e bypass list granular por time/app. Branch protection clássico continua funcionando, mas novas contas devem preferir Rulesets.
+
+Configuração mínima recomendada para `main`:
+
+```text
+require pull request before merging
+require approvals (>= 1)
+dismiss stale approvals on new commits
+require status checks to pass
+require branches to be up to date before merging
+require conversation resolution before merging
+block force pushes
+restrict deletions
+```
+
+Em repositórios com CODEOWNERS, adicione também "Require review from Code Owners" (ver seção 46).
+
 ---
 
 # 4. Branch curta
@@ -124,6 +148,16 @@ integration
 smoke E2E
 ```
 
+Isso é diferente de **required reviews** (revisão humana obrigatória), configurada na mesma regra de proteção/ruleset. Os dois são independentes e complementares:
+
+```text
+required status checks -> CI verde
+required reviews        -> aprovação humana (N pessoas)
+CODEOWNERS review       -> aprovação de dono da área tocada
+```
+
+Uma PR só pode ser mesclada quando **todos** os requisitos ativos forem satisfeitos. Evite marcar checks flaky como obrigatórios: isso trava merges legítimos e incentiva bypass da proteção.
+
 ---
 
 # 10. Definition of Ready
@@ -191,6 +225,15 @@ Exemplo:
 v2.4.1
 ```
 
+Tags e GitHub Releases podem ser geradas manualmente ou automatizadas por workflow. Duas ferramentas comuns nesse cenário:
+
+```text
+semantic-release   -> calcula versão a partir de conventional commits, publica tag/release/changelog
+release-please     -> mantém uma PR de release aberta; ao mesclar, cria tag/release
+```
+
+Ambas dependem de mensagens de commit padronizadas (ver seção 13) para decidir se o bump é MAJOR, MINOR ou PATCH.
+
 ---
 
 # 15. Semantic Versioning
@@ -199,7 +242,22 @@ v2.4.1
 MAJOR.MINOR.PATCH
 ```
 
-Use quando compatível com o produto.
+```text
+MAJOR -> mudança incompatível (breaking change)
+MINOR -> funcionalidade nova, compatível
+PATCH -> correção, compatível
+```
+
+Use quando compatível com o produto. Com conventional commits, o mapeamento típico é:
+
+```text
+fix:               -> PATCH
+feat:               -> MINOR
+BREAKING CHANGE: /
+feat!: / fix!:      -> MAJOR
+```
+
+Pré-releases (`v2.4.1-rc.1`) e metadados de build (`v2.4.1+build.5`) seguem a mesma especificação (semver.org) quando necessário.
 
 ---
 
@@ -208,6 +266,19 @@ Use quando compatível com o produto.
 Registre mudanças relevantes ao usuário/operação.
 
 Não listar todo commit técnico necessariamente.
+
+Formato recomendado: [Keep a Changelog](https://keepachangelog.com), com seções fixas por versão:
+
+```text
+Added
+Changed
+Deprecated
+Removed
+Fixed
+Security
+```
+
+Quando os commits seguem conventional commits, o changelog pode ser gerado automaticamente (mesma automação da seção 14: semantic-release ou release-please mantêm o `CHANGELOG.md` sincronizado com cada release). Edição manual continua válida para clarear texto destinado ao usuário final.
 
 ---
 
@@ -230,6 +301,47 @@ main -> DEV
 DEV validated -> approval
 approval -> PROD
 ```
+
+## 18.1 Auditoria de deploy
+
+Todo deploy deve responder "quem, quando, o quê, para onde":
+
+```text
+quem disparou (usuário ou automação)
+quando (timestamp)
+o que foi implantado (commit/tag)
+para qual ambiente
+resultado (sucesso/falha)
+```
+
+No GitHub isso é coberto por três mecanismos complementares, não excludentes:
+
+```text
+Environments com histórico de deployments
+Deployments API (GET /repos/{owner}/{repo}/deployments)
+Audit log da organização
+```
+
+Ao usar **Environments** (Settings > Environments) em cada job de deploy do workflow (`environment: producao`), o GitHub registra automaticamente um deployment vinculado ao run, ao actor e ao commit, visível na aba "Environments" do repositório e consultável pela API/GraphQL. Isso é a fonte de verdade de "o que está rodando em cada ambiente agora" e do histórico de quem promoveu cada versão.
+
+Regras de proteção de Environment (reviewers obrigatórios, wait timer, branches permitidas) também servem como o "approval" da política acima: só quem está na lista de reviewers do Environment pode aprovar a promoção para PROD, e essa aprovação fica registrada.
+
+O **audit log** (organização, planos Team/Enterprise) complementa registrando quem alterou configurações sensíveis — proteção de branch, secrets, membros, Environments — não o conteúdo do deploy em si.
+
+## 18.2 Autenticação do runner: prefira OIDC a secrets de longa duração
+
+Quando o deploy precisa autenticar em um provedor externo (nuvem, registry, servidor), evite armazenar chave/senha de longa duração como secret do repositório. Prefira **OpenID Connect (OIDC)**: o GitHub Actions emite um token de curta duração assinado, que o provedor troca por credenciais temporárias.
+
+```text
+workflow solicita ID token do GitHub
+provedor valida claims (repo, branch, environment)
+provedor emite credencial de curta duração
+job usa a credencial e ela expira
+```
+
+Vantagens: nada fica salvo em segredo permanente para vazar, e o próprio provedor externo passa a registrar por qual repositório/branch/environment cada acesso foi originado — reforçando a trilha de auditoria da seção 18.1.
+
+Para infraestrutura própria sem suporte nativo a OIDC (por exemplo, um runner self-hosted acessando um servidor via SSH), a alternativa é reduzir o TTL do que for possível e aplicar a rotação da seção 37.
 
 ---
 
@@ -431,6 +543,8 @@ Periodicamente reveja:
 - production access;
 - registry.
 
+Onde for possível, prefira OIDC (seção 18.2) a tokens de longa duração: reduz a superfície da própria revisão, já que não há credencial permanente para revogar — apenas a confiança configurada no provedor externo (repo/branch/environment autorizados).
+
 ---
 
 # 36. Offboarding
@@ -533,6 +647,30 @@ Pode documentar como reportar vulnerabilidades.
 # 46. CODEOWNERS
 
 Use em áreas sensíveis se equipe crescer.
+
+Arquivo `CODEOWNERS`, em `.github/CODEOWNERS`, `CODEOWNERS` (raiz) ou `docs/CODEOWNERS`. Sintaxe (padrões `.gitignore`, avaliados de cima para baixo — a **última** linha que casa vence):
+
+```text
+# comentário
+*                       @time-padrao
+/apps/api/               @time-backend
+/apps/web/               @time-frontend
+*.tf                    @time-infra
+/.github/workflows/      @time-plataforma @fulano
+/apps/api/**/migrations/ @time-backend @dba
+```
+
+Donos podem ser `@usuario`, `@org/time` (o time precisa ter permissão de escrita/leitura no repo) ou e-mail associado a conta do GitHub.
+
+Isso só passa a bloquear merge quando combinado com a proteção de branch/ruleset da seção 3: ative "Require review from Code Owners" (clássico) ou a regra equivalente em Rulesets. Sem essa opção marcada, o CODEOWNERS apenas sugere revisores automaticamente — não impede merge sem a aprovação deles.
+
+Cuidados comuns:
+
+```text
+arquivo precisa estar em main (ou branch padrão) para valer
+usuário/time listado precisa ter acesso ao repositório
+padrões mais específicos devem vir depois dos genéricos
+```
 
 ---
 

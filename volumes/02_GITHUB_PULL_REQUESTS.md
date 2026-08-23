@@ -2,8 +2,8 @@
 
 **Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 02_GITHUB_PULL_REQUESTS.md  
-**Versão:** 0.1.0  
-**Status:** Primeira versão para expansão incremental
+**Versão:** 0.2.0  
+**Status:** Revisado — Pull Requests, branch protection, CODEOWNERS e merge atualizados (2026)
 
 ---
 
@@ -436,6 +436,12 @@ aprovação
 merge
 ```
 
+Importante:
+
+- uma PR Draft **não pode ser mergeada** até ser marcada como "Ready for review" (o botão de merge fica desabilitado);
+- workflows do GitHub Actions disparados por `pull_request` rodam normalmente em uma Draft, a menos que o workflow filtre explicitamente por `github.event.pull_request.draft`;
+- é possível reverter uma PR de "Ready for review" de volta para Draft a qualquer momento, útil quando o CI aponta problemas sérios e você quer sinalizar "não revisem ainda".
+
 ---
 
 # 16. Descrição da PR
@@ -727,6 +733,35 @@ Squash and merge
 Rebase and merge
 ```
 
+Cada estratégia pode ser habilitada ou desabilitada individualmente nas configurações do repositório (**Settings → General → Pull Requests**). É recomendável permitir apenas a(s) estratégia(s) que o time realmente usa, para evitar inconsistência no histórico.
+
+## Auto-merge
+
+O GitHub permite habilitar **auto-merge** em uma PR: o merge é agendado automaticamente assim que todos os requisitos forem satisfeitos (checks obrigatórios verdes, aprovações necessárias, conversas resolvidas), sem exigir que alguém clique em "Merge" no momento exato em que o último check passa.
+
+```text
+PR
+ |
+ +-- Enable auto-merge
+ |
+ v
+CI roda / review acontece
+ |
+ v
+requisitos satisfeitos
+ |
+ v
+merge automático (squash/merge commit/rebase, conforme escolhido)
+```
+
+Útil quando:
+
+- o CI é lento e ninguém quer ficar monitorando manualmente;
+- a PR já foi aprovada, mas ainda falta um check demorado (ex.: E2E);
+- se agenda o merge e a pessoa segue para outra tarefa.
+
+Auto-merge **não ignora** branch protection: se a branch `main` exige aprovação e checks obrigatórios, o merge automático só ocorre depois que todas as exigências forem cumpridas.
+
 ---
 
 # 27. Merge commit
@@ -873,15 +908,26 @@ ninguém modifica main
 sem passar pelo processo definido
 ```
 
-Possíveis regras:
+> **Regra de ouro deste guia:** ninguém — nem humano, nem agente de IA — commita direto na `main`. Toda alteração nasce em uma branch e chega em `main` exclusivamente por Pull Request. Isso vale mesmo para "correções pequenas", "só um ajuste de config" ou trabalho solo: sem exceção.
 
-- exigir PR;
-- exigir aprovação;
-- exigir checks;
-- bloquear force push;
-- impedir exclusão;
-- exigir resolução de conversas;
-- exigir branch atualizada.
+Possíveis regras (configuráveis em **Settings → Branches** ou, no modelo mais novo, em **Settings → Rules → Rulesets**):
+
+- exigir PR antes de integrar (`Require a pull request before merging`);
+- exigir número mínimo de aprovações (`Require approvals`);
+- exigir revisão do CODEOWNERS quando o caminho alterado tiver dono definido;
+- descartar aprovações antigas quando novos commits chegarem (`Dismiss stale pull request approvals`);
+- exigir checks obrigatórios (`Require status checks to pass`);
+- exigir que a branch esteja atualizada com a base antes do merge (`Require branches to be up to date before merging`);
+- exigir resolução de todas as conversas (`Require conversation resolution before merging`);
+- exigir commits assinados (`Require signed commits`);
+- exigir histórico linear (`Require linear history` — bloqueia merge commit, força squash ou rebase);
+- exigir merge queue (`Require merge queue`);
+- bloquear force push (`Block force pushes`);
+- impedir exclusão da branch (`Restrict deletions`);
+- restringir quem pode fazer push direto, mesmo com bypass de PR (`Restrict who can push to matching branches`);
+- aplicar as regras também a administradores — sem isso, admins conseguem contornar a proteção.
+
+**Rulesets** (recurso mais recente) fazem o mesmo papel das "classic branch protection rules", mas com vantagens: podem ser aplicados a múltiplos padrões de branch/tag de uma vez, têm histórico de auditoria próprio, suportam camadas (várias rulesets somam restrições) e podem ser reaproveitados via API/Terraform entre repositórios. Para projetos novos, prefira Rulesets; branch protection rules clássicas continuam funcionando, mas são o modelo antigo.
 
 ---
 
@@ -939,6 +985,12 @@ Se um falhar:
 merge bloqueado
 ```
 
+Pontos importantes:
+
+- o nome do check exigido precisa bater exatamente com o nome do job (ou do `name:` do workflow) que o GitHub Actions reporta; renomear um job sem atualizar a regra faz a PR ficar travada esperando um check que nunca mais aparece;
+- é possível marcar `Require branches to be up to date before merging`, o que força atualizar a branch com a base antes de mergear — evita integrar uma combinação de código que nunca foi testada junta;
+- checks obrigatórios que ainda não iniciaram (por exemplo, porque o workflow só roda em certas condições) também bloqueiam o merge; vale revisar os `paths`/`if` do workflow para não travar PRs que nunca vão disparar aquele check.
+
 ---
 
 # 37. Require Pull Request Reviews
@@ -949,9 +1001,13 @@ Uma regra pode exigir:
 1 approval
 ```
 
-ou mais.
+ou mais, e pode combinar com:
 
-Para um desenvolvedor individual, isso pode não ser necessário em todos os projetos.
+- `Dismiss stale pull request approvals when new commits are pushed` — qualquer novo commit invalida aprovações anteriores, forçando nova revisão;
+- `Require review from Code Owners` — quando o caminho alterado tem dono definido em CODEOWNERS, a aprovação daquele dono é obrigatória além (ou no lugar) da aprovação genérica;
+- `Require approval of the most recent reviewable push` — impede que o próprio autor aprove sua última alteração usando uma conta secundária.
+
+Para um desenvolvedor individual, exigir aprovação de terceiros pode não ser necessário em todos os projetos — mas isso **não dispensa a PR**. Mesmo sozinho, a proteção da `main` continua ativa: push direto bloqueado, PR obrigatória, checks obrigatórios. O que muda é apenas o número de aprovações humanas exigidas (podendo ser zero), nunca a obrigatoriedade do fluxo branch → PR → merge.
 
 Mesmo trabalhando sozinho, a PR continua útil para:
 
@@ -1134,10 +1190,12 @@ Exemplo:
 
 # 44. CODEOWNERS
 
-Arquivo:
+Arquivo (qualquer um destes caminhos é reconhecido; a raiz e `.github/` são as mais comuns):
 
 ```text
 .github/CODEOWNERS
+CODEOWNERS
+docs/CODEOWNERS
 ```
 
 Permite associar partes do repositório a responsáveis.
@@ -1145,11 +1203,21 @@ Permite associar partes do repositório a responsáveis.
 Exemplo:
 
 ```text
+# regra mais específica vence — a última linha que casar com o arquivo é a que vale
+*           @owner-padrao
 /backend/   @equipe-backend
 /frontend/  @equipe-frontend
+/infra/*.yml @equipe-devops @owner-padrao
 ```
 
-Em projetos individuais, pode não ser necessário inicialmente.
+Pontos importantes:
+
+- a pessoa ou time listado precisa ter permissão de **write** (ou superior) no repositório, senão não pode ser exigido como reviewer;
+- o efeito prático de CODEOWNERS só existe quando a branch protection/ruleset marca `Require review from Code Owners` — sem essa opção, o arquivo é só documentação;
+- times (`@org/equipe-backend`) exigem que o time tenha acesso explícito ao repositório;
+- em caso de padrões conflitantes, **a última regra que casar no arquivo prevalece** (não a mais específica por convenção lógica, e sim por ordem de declaração).
+
+Em projetos individuais, pode não ser necessário inicialmente — mas passa a fazer sentido assim que colaboradores externos ou agentes de IA começam a abrir PRs em áreas sensíveis (ex.: `infra/`, `.github/workflows/`).
 
 ---
 
@@ -1825,9 +1893,30 @@ Isso pode economizar recursos.
 
 # 73. Merge Queue
 
-Em equipes ou repositórios com muitas PRs simultâneas, uma fila de merge pode ajudar a validar a combinação das mudanças antes da integração final.
+Em equipes ou repositórios com muitas PRs simultâneas, uma fila de merge (**merge queue**) ajuda a validar a combinação das mudanças antes da integração final.
 
-Será tratada como recurso avançado.
+Funcionamento resumido:
+
+```text
+PR aprovada + checks OK
+        |
+        v
+entra na merge queue
+        |
+        v
+GitHub cria um "merge temporário" com main + PR
+        |
+        v
+roda os checks obrigatórios nessa combinação
+        |
+        v
+se passar --> merge real em main
+se falhar  --> PR removida da fila, autor é avisado
+```
+
+Isso evita o problema clássico de "duas PRs passaram isoladamente, mas juntas quebram main" — cada PR na fila é testada já combinada com o estado mais recente de `main` e com as PRs que entraram antes dela na fila.
+
+É habilitada em **Settings → Branches/Rules → Require merge queue**, exige repositório com Actions habilitado e é mais relevante a partir do momento em que várias PRs concorrem para a mesma branch — em um projeto solo ou com poucas PRs simultâneas normalmente não compensa a complexidade extra.
 
 ---
 
@@ -1836,16 +1925,18 @@ Será tratada como recurso avançado.
 Inicialmente:
 
 ```text
-main protegida
+main protegida (Ruleset ou branch protection classica)
+push direto na main sempre bloqueado, sem excecao
 PR obrigatória
-CI obrigatório
+CI obrigatório (status checks)
+branch atualizada com a base antes do merge
 conversas resolvidas
 squash merge preferencial
 branch excluída após merge
 produção com gate humano
 ```
 
-A exigência de reviewer humano poderá variar conforme equipe/projeto.
+A exigência de reviewer humano (número de aprovações, CODEOWNERS) poderá variar conforme equipe/projeto. O que **não** varia é a proibição de commit direto na `main` — essa regra permanece ativa mesmo em projetos individuais ou com zero aprovações exigidas.
 
 ---
 
@@ -1915,7 +2006,15 @@ em vez de:
 mudanças
 ```
 
-O título frequentemente aparecerá no histórico, changelog ou squash commit.
+O título frequentemente aparecerá no histórico, changelog ou squash commit — no **squash and merge**, o GitHub usa o título da PR (e a lista de commits, se houver mais de um) como sugestão de mensagem do commit final, editável antes de confirmar.
+
+Vale adotar o padrão **Conventional Commits** (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`, `ci:`) tanto nos commits individuais quanto no título da PR. Vantagens práticas:
+
+- gera changelogs automáticos de forma consistente;
+- permite automações (ex.: bump de versão semântica) baseadas no tipo do commit;
+- facilita ler `git log` depois do squash, já que o título da PR normalmente vira o commit único em `main`.
+
+Isso não é exigido pelo GitHub — é uma convenção de repositório, geralmente reforçada por lint de commit/PR (ex.: uma Action que valida o título contra o padrão) rodando como check obrigatório.
 
 ---
 

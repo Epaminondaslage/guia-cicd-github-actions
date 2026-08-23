@@ -167,6 +167,9 @@ name: CI
 on:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -178,6 +181,8 @@ jobs:
       - name: Teste simples
         run: echo "CI funcionando"
 ```
+
+Repare no bloco `permissions:` logo abaixo de `on:`. Por padrão, o `GITHUB_TOKEN` pode receber permissões amplas dependendo da configuração do repositório/organização; declarar explicitamente o mínimo necessário (aqui, apenas leitura do conteúdo) é uma prática de segurança recomendada (least privilege) e deveria aparecer em todo workflow.
 
 Conceito:
 
@@ -567,6 +572,8 @@ Desvantagens:
 - limpeza;
 - disponibilidade.
 
+**Atenção especial em repositórios públicos:** self-hosted runners expostos a workflows disparados por `pull_request` de forks são um risco real de execução de código arbitrário — qualquer pessoa que abra um PR malicioso pode potencialmente rodar comandos no seu servidor. Recomenda-se usar runners efêmeros (descartados a cada job), nunca reaproveitar o mesmo runner para repositórios públicos sem isolamento, e jamais combinar self-hosted com `pull_request_target` sem controles adicionais. O Volume 04 aprofunda essas mitigações.
+
 O Volume 04 trata da instalação completa.
 
 ---
@@ -692,6 +699,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
 
   test:
@@ -735,6 +745,9 @@ name: CI Self Hosted
 on:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
 
   test:
@@ -754,6 +767,14 @@ jobs:
       - run: npm ci
       - run: npm test
 ```
+
+**Alerta de segurança:** em repositórios **públicos**, um runner self-hosted que executa jobs disparados por `pull_request` de forks desconhecidos é um risco sério — o autor do PR pode alterar o próprio workflow ou o código executado (`npm ci`, scripts de build, etc.) para rodar código arbitrário na sua máquina. Nesse cenário, prefira:
+
+- runners GitHub-hosted para PRs de forks em repositórios públicos; ou
+- self-hosted **efêmeros** (uma VM/container descartado a cada job), sem persistência de segredos ou acesso à rede interna; ou
+- exigir aprovação manual para execução de workflows vindos de forks (configurável em Settings → Actions).
+
+Nunca combine self-hosted runners com o evento `pull_request_target` sem cuidado extremo: esse evento roda com o `GITHUB_TOKEN` e os segredos do repositório base, mas pode fazer checkout do código do fork — uma combinação clássica para vazamento de segredos e execução de código malicioso caso o checkout do PR não seja tratado com muito cuidado (idealmente, evitando checkout do ref do PR nesse evento).
 
 ---
 
@@ -1231,6 +1252,12 @@ services:
 
 Em self-hosted, requisitos do runner e Docker precisam ser considerados.
 
+⚠️ **Segurança em self-hosted runners**: em repositórios públicos, um self-hosted runner que executa workflows disparados por `pull_request` de forks é um risco sério — qualquer pessoa pode abrir um PR malicioso e rodar código arbitrário na sua máquina/rede. Recomendações:
+
+- prefira runners efêmeros (que sobem, executam um job e são destruídos), nunca um runner persistente reaproveitado entre execuções;
+- nunca combine self-hosted com `pull_request_target` sem cuidado extremo — esse evento roda com o contexto (e secrets) do branch base mesmo para PRs de forks;
+- em repositório público, considere exigir aprovação manual para rodar workflows de contribuidores externos (configurável nas configurações de Actions do repositório/organização).
+
 ---
 
 # 51. Docker Compose
@@ -1607,6 +1634,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
 
   e2e:
@@ -1633,6 +1663,8 @@ jobs:
 ```
 
 A marcação `@smoke` depende da organização adotada nos testes.
+
+⚠️ Assim como no workflow anterior, este job roda em self-hosted disparado por `pull_request`. Em repositório público, isso expõe o runner a PRs de forks não confiáveis — veja o alerta de segurança na seção 50 (runners efêmeros, cuidado redobrado com `pull_request_target`).
 
 ---
 
@@ -2032,11 +2064,24 @@ Avalie:
 
 # 88. Pinning
 
-Para ambientes de segurança elevada, pode-se fixar Actions por commit SHA.
+Tags como `@v1` ou `@v4` podem ser movidas pelo mantenedor da Action (de propósito ou por conta comprometida). Isso significa que `uses: owner/action@v1` pode passar a apontar para um código diferente do que você revisou, sem qualquer mudança no seu YAML — um vetor clássico de supply chain attack.
 
-Isso reduz o risco de uma tag mutável apontar para código inesperado.
+A prática recomendada é fixar (pin) Actions de terceiros pelo SHA completo do commit, não apenas pela tag:
 
-A estratégia será aprofundada no Volume de Segurança.
+```yaml
+uses: owner/action@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v1.2.3
+```
+
+O comentário com a tag serve apenas como referência humana; quem garante a imutabilidade é o SHA.
+
+Como isso cria manutenção manual (SHAs não atualizam sozinhos), use ferramentas como **Dependabot** ou **Renovate** para abrir PRs automáticos atualizando os SHAs fixados quando novas versões forem publicadas — assim você mantém a segurança do pinning sem perder atualizações.
+
+Resumo do trade-off:
+
+```text
+@v1        -> conveniente, mas mutável
+@sha       -> imutável, exige Dependabot/Renovate para não travar no tempo
+```
 
 ---
 
@@ -2044,20 +2089,31 @@ A estratégia será aprofundada no Volume de Segurança.
 
 Não permita automaticamente que código não confiável de terceiros execute em runner persistente com acesso à sua rede.
 
+Por padrão, workflows disparados por `pull_request` a partir de um fork já rodam com `GITHUB_TOKEN` de permissões restritas e sem acesso a secrets do repositório — essa é uma proteção do próprio GitHub. O risco real aparece quando:
+
+- o repositório é público **e** usa self-hosted runners: qualquer pessoa pode abrir um PR de fork, e se o workflow rodar automaticamente nesse runner, o código do PR executa dentro da sua rede/infraestrutura;
+- o runner é persistente ("Ephemeral: false", reaproveitado entre execuções): um job malicioso pode deixar processos, credenciais em cache ou binários manipulados para o próximo job que rodar ali.
+
 Risco:
 
 ```text
-PR maliciosa
+PR maliciosa (fork)
    |
    v
-runner interno
+runner self-hosted interno
    |
-   +-- rede
-   +-- Docker
-   +-- arquivos
+   +-- rede interna
+   +-- Docker do host
+   +-- arquivos/credenciais residuais
 ```
 
-Self-hosted runner exige política de confiança.
+Recomendações mínimas:
+
+- em repositórios **públicos**, nunca deixe self-hosted runners disponíveis para workflows disparados por PRs de fork sem aprovação manual (GitHub exige aprovação de primeira execução para contribuidores externos — mantenha essa proteção ativa em vez de desabilitá-la para "agilizar");
+- prefira runners **efêmeros** (`Ephemeral: true`, uma execução e descarte) quando houver qualquer chance de rodar código não confiável;
+- em repositórios privados/internos, restrinja quem pode abrir PR e trate colaboradores externos como não confiáveis por padrão.
+
+Self-hosted runner exige política de confiança explícita, documentada e revisada — não é um detalhe operacional.
 
 ---
 
@@ -2065,9 +2121,27 @@ Self-hosted runner exige política de confiança.
 
 Eventos com contexto privilegiado exigem extremo cuidado.
 
-Não execute código não confiável de uma PR usando secrets privilegiados apenas para facilitar o workflow.
+Diferente de `pull_request`, o evento `pull_request_target` roda com as **permissões e secrets do repositório base** (o repo que vai receber o PR), mesmo quando o PR vem de um fork. O código do workflow executado é o da branch padrão do repo base — mas se algum step fizer checkout do código do fork (`ref: ${{ github.event.pull_request.head.sha }}`) e depois rodar esse código (build, test, script), o conteúdo malicioso do fork passa a rodar com acesso total a secrets do repo base.
 
-Esse é um tema de segurança avançada.
+```text
+PR de fork
+   |
+   v
+pull_request_target
+   |
+   +-- permissions do repo BASE
+   +-- secrets do repo BASE
+   +-- (se fizer checkout do fork e executar) => código do fork com esses secrets
+```
+
+Regras práticas:
+
+- **nunca** faça checkout do código do fork em um workflow `pull_request_target` e em seguida execute esse código (`npm install && npm run build`, `npm test`, scripts arbitrários) sem sanitização — isso anula a proteção do evento;
+- se precisar comentar no PR, aplicar labels ou rodar validações que dependem de secrets, mantenha o checkout restrito ao código do repo base (padrão do `actions/checkout` sem `ref` explícito para o fork);
+- prefira `pull_request` sempre que possível — ele não expõe secrets do repo base e é suficiente para a maioria dos casos (lint, testes, build);
+- quando `pull_request_target` for realmente necessário (ex.: comentar automaticamente em PRs externos), use um "approval gate": um mantenedor precisa aprovar manualmente a execução (ou separar em dois workflows, um `pull_request` sem privilégio para build/teste e outro `pull_request_target` mínimo, sem checkout do fork, só para a ação privilegiada).
+
+Esse é um tema de segurança avançada — errar aqui é uma das formas mais comuns de vazar secrets de produção via GitHub Actions.
 
 ---
 
@@ -2333,6 +2407,9 @@ integration:
     - linux
     - docker
 
+  permissions:
+    contents: read
+
   steps:
     - uses: actions/checkout@v4
 
@@ -2357,6 +2434,9 @@ e2e:
     - self-hosted
     - linux
     - e2e
+
+  permissions:
+    contents: read
 
   steps:
     - uses: actions/checkout@v4
@@ -2836,7 +2916,22 @@ Dependências de Actions também devem ser mantidas atualizadas.
 
 O Dependabot pode ajudar a abrir PRs de atualização conforme configuração do repositório.
 
-Cada PR deve passar pelo CI.
+Para isso, o repositório precisa declarar o ecossistema `github-actions` em `.github/dependabot.yml`:
+
+```yaml
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+```
+
+Isso cobre actions referenciadas em qualquer workflow de `.github/workflows/`, incluindo actions usadas dentro de actions compostas.
+
+Cada PR gerado deve passar pelo CI antes do merge, como qualquer outra mudança.
+
+Prefira sempre fixar a versão da action por tag maior (`@v4`) ou, em cenários de maior exigência de segurança, por SHA de commit — o Dependabot também sabe atualizar SHAs fixados, mantendo um comentário com a tag correspondente.
 
 ---
 
@@ -3209,6 +3304,20 @@ Monitoramento
 - [ ] PRs não confiáveis são bloqueadas.
 - [ ] Runner CI não possui acesso desnecessário a PROD.
 - [ ] Processo de reconstrução está documentado.
+- [ ] Runner é efêmero (uma execução por instância, destruído e recriado em seguida) sempre que possível.
+- [ ] Em repositório **público**, `pull_request` de forks não dispara workflow em self-hosted sem aprovação (`pull_request_target` evitado ou usado com extremo cuidado).
+
+Atenção especial em repositórios públicos: a documentação oficial do GitHub recomenda não usar self-hosted runners em repositórios públicos, porque qualquer pessoa pode abrir um PR de um fork e, dependendo do workflow, executar código arbitrário nesse runner. Um runner comprometido pode expor a rede interna, credenciais residuais no disco e outros repositórios que o mesmo runner atende.
+
+Mitigações quando não há alternativa a runner self-hosted em repositório público:
+
+```text
+exigir aprovação manual para rodar workflow vindo de fork
+usar runners efêmeros (imagem limpa a cada job)
+isolar o runner em rede sem acesso a recursos internos
+nunca reaproveitar o mesmo runner para repositórios de risco distinto
+nunca guardar secrets de longa duração no host do runner
+```
 
 ---
 

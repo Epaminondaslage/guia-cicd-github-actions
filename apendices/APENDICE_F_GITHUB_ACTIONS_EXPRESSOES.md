@@ -40,6 +40,25 @@ ${{ matrix.node }}
 ## Needs
 ```yaml
 ${{ needs.build.result }}
+${{ needs.build.outputs.versao }}
+```
+
+## Steps e env
+```yaml
+${{ steps.meu-id.outputs.valor }}
+${{ steps.meu-id.outcome }}
+${{ env.MINHA_VAR }}
+```
+
+## Funções úteis
+```yaml
+${{ contains(github.event.head_commit.message, '[skip ci]') }}
+${{ startsWith(github.ref, 'refs/tags/') }}
+${{ endsWith(github.ref, '/main') }}
+${{ format('{0}-{1}', github.sha, github.run_number) }}
+${{ toJSON(github.event) }}
+${{ fromJSON(steps.meu-id.outputs.json) }}
+${{ join(github.event.commits.*.message, ', ') }}
 ```
 
 ## Conditions

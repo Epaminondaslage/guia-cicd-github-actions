@@ -146,7 +146,7 @@ Podemos criar vários containers a partir da mesma imagem.
 Exemplo simples para Node.js:
 
 ```dockerfile
-FROM node:22-alpine
+FROM node:24-alpine
 
 WORKDIR /app
 
@@ -297,13 +297,24 @@ Exemplo:
 .git
 .github
 node_modules
+npm-debug.log
 coverage
 playwright-report
+dist
+build
 *.log
 .env
 .env.*
+!.env.example
+Dockerfile
+docker-compose*.yml
+.vscode
+.idea
 README.md
+*.md
 ```
+
+O padrão `!.env.example` reintroduz explicitamente esse arquivo, útil quando ele documenta variáveis esperadas sem conter segredo real.
 
 Objetivos:
 
@@ -627,6 +638,17 @@ Evite incluir:
 - chaves;
 - `.git`.
 
+Escolha da imagem base também importa:
+
+```text
+node:24        -> completa (Debian), maior superfície
+node:24-slim   -> Debian mínimo, sem muitas libs
+node:24-alpine -> musl libc, ainda menor, cuidado com libs nativas
+gcr.io/distroless/nodejs24 -> sem shell, sem package manager, superfície mínima
+```
+
+`alpine` costuma ser um bom padrão didático; `distroless` é interessante quando o runtime não precisa de shell/depuração interativa dentro do container e o time aceita o custo de debugar de outra forma (logs, exec em imagem auxiliar, etc). Para stacks com dependências nativas compiladas contra glibc, `slim` (Debian) pode evitar dor de cabeça que `alpine` (musl) causaria.
+
 ---
 
 # 27. Multi-stage build
@@ -634,36 +656,49 @@ Evite incluir:
 Exemplo:
 
 ```dockerfile
-FROM node:22-alpine AS build
+# syntax=docker/dockerfile:1
+
+FROM node:24-alpine AS build
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci
 
 COPY . .
 RUN npm run build
 
 
-FROM node:22-alpine AS runtime
+FROM node:24-alpine AS runtime
 
+ENV NODE_ENV=production
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --omit=dev
 
-COPY --from=build /app/dist ./dist
+COPY --from=build --chown=node:node /app/dist ./dist
 
 USER node
 
 CMD ["node", "dist/server.js"]
 ```
 
-Benefícios:
+A linha `# syntax=docker/dockerfile:1` garante uma versão recente do frontend do BuildKit, habilitando recursos como `RUN --mount=type=cache`.
+
+Benefícios do multi-stage:
 
 - imagem final menor;
 - separação build/runtime;
-- menos ferramentas no runtime.
+- menos ferramentas no runtime (sem devDependencies, sem código-fonte de teste).
+
+Benefícios do cache mount:
+
+- o cache de `npm`/`pip`/`composer` persiste entre builds, mesmo sem reaproveitar a camada inteira;
+- útil quando o `package-lock.json` muda com frequência, mas boa parte dos pacotes já foi baixada antes;
+- o cache não é copiado para a imagem final, então não afeta o tamanho do artifact.
 
 ---
 
@@ -671,13 +706,26 @@ Benefícios:
 
 Evite executar aplicação como root dentro do container quando não houver necessidade.
 
-Exemplo:
+Imagens oficiais de Node já trazem um usuário `node` (UID 1000) pronto para uso:
 
 ```dockerfile
 USER node
 ```
 
-Para imagens próprias, crie usuário dedicado quando necessário.
+Quando a imagem base não fornece um usuário pronto, crie um explicitamente:
+
+```dockerfile
+RUN addgroup -g 1001 app && \
+    adduser -D -u 1001 -G app app
+
+USER app
+```
+
+Pontos importantes:
+
+- defina `USER` **depois** de copiar arquivos e ajustar permissões, para não gerar erro de escrita;
+- combine com `COPY --chown=app:app` para evitar `chown` recursivo em uma camada separada;
+- container rodando como root não é automaticamente inseguro, mas amplia o impacto de uma eventual RCE — inclusive combinado a `docker run --user`, que também pode forçar um UID não-root em runtime mesmo que a imagem não declare `USER`.
 
 ---
 
@@ -864,14 +912,28 @@ Isso pode tornar builds desnecessariamente lentos.
 
 # 38. BuildKit
 
-Docker moderno utiliza recursos avançados de build.
+Desde o Docker Engine 23 (e no Docker Desktop há mais tempo), o BuildKit é o builder **padrão** — não é necessário exportar `DOCKER_BUILDKIT=1` manualmente. Em versões antigas isso ainda pode ser relevante, mas não é o cenário normal em 2025+.
 
-Com `buildx`, podemos ter:
+Com `buildx` (o plugin de build que expõe os recursos do BuildKit), podemos ter:
 
-- cache avançado;
-- builds multi-plataforma;
-- exportação de cache;
-- melhor controle de build.
+- cache mounts (`RUN --mount=type=cache`) para gerenciadores de pacote;
+- builds multi-plataforma (`--platform linux/amd64,linux/arm64`);
+- exportação/importação de cache entre execuções de CI (`--cache-to`/`--cache-from`);
+- secrets de build (`--mount=type=secret`) sem gravar segredos em camadas;
+- melhor controle de build em geral.
+
+Cache exportado para um registry, por exemplo:
+
+```bash
+docker buildx build \
+  --cache-to type=registry,ref=registry/app:buildcache,mode=max \
+  --cache-from type=registry,ref=registry/app:buildcache \
+  -t registry/app:sha-a91c302 \
+  --push \
+  .
+```
+
+Isso é especialmente útil em runners efêmeros, que não mantêm cache local de build entre execuções. Em runner self-hosted persistente, o cache local do próprio daemon já tende a sobreviver entre jobs, mas o cache de registry ainda ajuda quando múltiplos runners constroem a mesma imagem.
 
 No pipeline inicial, começaremos simples e evoluiremos conforme necessidade.
 
@@ -1091,7 +1153,7 @@ Use onde melhora reprodutibilidade e isolamento.
 Podemos ter um stage:
 
 ```dockerfile
-FROM node:22 AS test
+FROM node:24 AS test
 ```
 
 com:
@@ -1103,7 +1165,7 @@ com:
 E outro:
 
 ```dockerfile
-FROM node:22-alpine AS runtime
+FROM node:24-alpine AS runtime
 ```
 
 mais enxuto.
@@ -1113,7 +1175,7 @@ mais enxuto.
 # 51. Exemplo multi-stage completo
 
 ```dockerfile
-FROM node:22-alpine AS deps
+FROM node:24-alpine AS deps
 
 WORKDIR /app
 COPY package*.json ./
@@ -1133,7 +1195,7 @@ COPY . .
 RUN npm run build
 
 
-FROM node:22-alpine AS runtime
+FROM node:24-alpine AS runtime
 
 WORKDIR /app
 
@@ -1830,7 +1892,7 @@ FROM node:latest
 prefira algo controlado:
 
 ```dockerfile
-FROM node:22-alpine
+FROM node:24-alpine
 ```
 
 Para reprodutibilidade ainda maior, imagens podem ser fixadas por digest.
@@ -1896,7 +1958,42 @@ scan
  +-- risco crítico -> bloquear
 ```
 
-Ferramentas específicas serão tratadas no volume de segurança.
+Duas ferramentas open source comuns para esse papel são o **Trivy** (Aqua Security) e o **Grype** (Anchore). Ambas leem a imagem já construída e comparam pacotes/dependências contra bancos de vulnerabilidades conhecidos (CVE).
+
+Exemplo de step com Trivy no GitHub Actions:
+
+```yaml
+- name: Build image
+  run: docker build -t app:${{ github.sha }} .
+
+- name: Scan image (Trivy)
+  uses: aquasecurity/trivy-action@0.28.0
+  with:
+    image-ref: app:${{ github.sha }}
+    severity: CRITICAL,HIGH
+    exit-code: "1"
+    ignore-unfixed: true
+```
+
+Equivalente com Grype:
+
+```yaml
+- name: Scan image (Grype)
+  uses: anchore/scan-action@v4
+  with:
+    image: app:${{ github.sha }}
+    severity-cutoff: high
+    fail-build: true
+```
+
+Pontos práticos:
+
+- `exit-code`/`fail-build` são o que transforma o scan em um gate real de CI, em vez de apenas um relatório ignorado;
+- `ignore-unfixed` evita bloquear o pipeline por vulnerabilidades sem correção disponível ainda — cada equipe deve decidir a política;
+- rodar o scan **depois do build e antes do push** evita publicar uma imagem já reprovada;
+- o mesmo scanner pode ser usado localmente (`trivy image app:dev` ou `grype app:dev`) para diagnóstico antes de abrir o PR.
+
+Detalhes adicionais de política de segurança (severidade aceitável, exceções, SBOM integrado) serão aprofundados no volume de segurança.
 
 ---
 

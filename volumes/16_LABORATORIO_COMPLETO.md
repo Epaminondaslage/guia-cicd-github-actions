@@ -249,7 +249,28 @@ Runners
 New self-hosted runner
 ```
 
-Use comandos gerados no momento pela interface.
+O GitHub gera um token de registro (`--token`) válido por tempo limitado e uma URL específicas para o seu repositório/organização — copie os comandos exatamente como exibidos na tela, pois o token muda a cada geração. O roteiro abaixo é o padrão do runner oficial (`actions/runner`), executado como usuário dedicado (nunca root):
+
+```bash
+mkdir actions-runner && cd actions-runner
+
+curl -o actions-runner-linux-x64.tar.gz -L \
+  https://github.com/actions/runner/releases/latest/download/actions-runner-linux-x64-2.319.1.tar.gz
+
+tar xzf ./actions-runner-linux-x64.tar.gz
+
+./config.sh --url https://github.com/ORG/REPO --token SEU_TOKEN_AQUI
+```
+
+Ajuste a versão do pacote para a mais recente publicada em `actions/runner/releases` no momento da instalação.
+
+Para transformar o runner em serviço persistente (sobrevive a reboot, reinicia sozinho):
+
+```bash
+sudo ./svc.sh install
+sudo ./svc.sh start
+sudo ./svc.sh status
+```
 
 ---
 
@@ -355,7 +376,20 @@ ou mesmo runner inicial.
 
 # 24. Artifacts
 
-Em falha:
+Em falha, publicar com `actions/upload-artifact@v4`:
+
+```yaml
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+```
+
+Conteúdo típico:
 
 ```text
 playwright-report
@@ -377,24 +411,66 @@ Squash and merge
 
 # 26. Build oficial
 
-Workflow em `main`:
+Workflow em `main` (`.github/workflows/build.yml`), disparado após o merge:
 
-```text
-docker build
-tag commit SHA
-push registry
+```yaml
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: [self-hosted, linux, docker]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}:sha-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+```
+
+Equivalente manual, para rodar localmente ou entender o que o workflow faz:
+
+```bash
+docker buildx build \
+  --tag ghcr.io/org/app:sha-a91c302 \
+  --push \
+  .
 ```
 
 ---
 
 # 27. Registry
 
-Utilizar registry escolhido.
+Utilizar registry escolhido (ex.: GitHub Container Registry — `ghcr.io`).
 
 Artifact:
 
 ```text
-app:sha-a91c302
+ghcr.io/org/app:sha-a91c302
 ```
 
 ---
@@ -487,13 +563,40 @@ ou mecanismo equivalente.
 
 # 36. Deploy PROD manual/gated
 
-Workflow:
+Workflow (`.github/workflows/deploy-prod.yml`):
 
-```text
-workflow_dispatch
-+
-environment production
+```yaml
+name: Deploy PROD
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Tag da imagem já validada em DEV (ex.: sha-a91c302)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux, deploy]
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy
+        run: |
+          docker compose pull app
+          IMAGE_TAG=${{ inputs.image_tag }} docker compose up -d app
+
+      - name: Health check
+        run: curl --fail https://prod.example/health
 ```
+
+O `environment: production` exige que o *environment* `production` esteja configurado no GitHub (passo 34), com os *required reviewers* aprovando antes do job rodar.
 
 ---
 
@@ -622,11 +725,20 @@ validation
 
 # 50. Security scan
 
-Adicionar:
+Adicionar ao workflow de CI:
 
-```text
-Gitleaks
-Trivy
+```yaml
+      - name: Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Trivy (imagem)
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: ghcr.io/${{ github.repository }}:sha-${{ github.sha }}
+          severity: HIGH,CRITICAL
+          exit-code: 1
 ```
 
 conforme política.
@@ -687,13 +799,40 @@ Dividir suite quando existirem runners suficientes.
 
 # 57. Nightly
 
-Criar:
+Criar `.github/workflows/e2e-nightly.yml`:
 
-```text
-e2e-nightly.yml
+```yaml
+name: E2E Nightly
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: [self-hosted, linux, e2e]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - run: npm run test:e2e -- --grep-invert @smoke
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
 ```
 
-Executar full regression.
+Executar full regression (horário em UTC).
 
 ---
 
@@ -701,8 +840,9 @@ Executar full regression.
 
 Criar tag:
 
-```text
-v1.0.0
+```bash
+git tag -a v1.0.0 -m "Release v1.0.0"
+git push origin v1.0.0
 ```
 
 ---
