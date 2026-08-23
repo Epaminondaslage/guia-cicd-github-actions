@@ -4,6 +4,11 @@
 
 Guia completo cobrindo fundamentos de Git, GitHub Actions, runners self-hosted, Docker no pipeline, testes, deploy contínuo, segurança, observabilidade, infraestrutura, arquiteturas de referência, otimização e governança.
 
+<p align="center">
+  <img src="img/img11_light.png#gh-light-mode-only" alt="Ciclo de desenvolvimento assistido por IA: necessidade, brainstorm, entrevista de requisitos, SPEC, revisão humana, plano, revisão humana do plano, branch, implementação assistida, testes locais, revisão humana do código, PR, CI+E2E, merge, DEV, aprovação e PROD" width="720">
+  <img src="img/img11_dark.png#gh-dark-mode-only" alt="Ciclo de desenvolvimento assistido por IA: necessidade, brainstorm, entrevista de requisitos, SPEC, revisão humana, plano, revisão humana do plano, branch, implementação assistida, testes locais, revisão humana do código, PR, CI+E2E, merge, DEV, aprovação e PROD" width="720">
+</p>
+
 ## Sobre vibe coding e IA neste guia
 
 "Vibe coding" — deixar um agente de IA gerar código e aceitar o resultado sem revisão criteriosa — virou um movimento global à medida que ferramentas como GitHub Copilot, Cursor e Claude Code tornaram trivial produzir código funcional em minutos. É rápido para prototipar, mas descontrolado é um risco real em produção: código que "funciona na tela" pode conter dependência inventada, lógica que não bate com o requisito real, ou falha de segurança que só aparece sob carga.
