@@ -286,12 +286,9 @@ Inicialização automática.
 
 Exemplo:
 
-```yaml
-runs-on:
-  - self-hosted
-  - linux
-  - docker
-```
+<p align="center">
+  <img src="img6.png" alt="GitHub Actions runs-on: exemplo de workflow.yml com runs-on self-hosted, linux e docker; explicação de que o job só roda em runner com TODOS os rótulos (lógica AND), o que cada rótulo representa e como funciona a correspondência" width="720">
+</p>
 
 #### Capítulo 04.9 — Múltiplos runners
 
