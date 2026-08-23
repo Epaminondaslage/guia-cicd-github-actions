@@ -2,7 +2,7 @@
 
 > Esta é a estrutura que uso nos meus projetos pessoais. Serve como ponto de partida e referência de boas práticas, mas exige ajuste antes de ser adotada em projetos corporativos — políticas de segurança, compliance, governança de acesso e requisitos de infraestrutura variam de empresa para empresa.
 
-Guia completo cobrindo fundamentos de Git, GitHub Actions, runners self-hosted, Docker no pipeline, testes, deploy contínuo, segurança, observabilidade, infraestrutura, arquiteturas de referência, otimização e governança.
+Guia  cobrindo fundamentos de Git, GitHub Actions, runners self-hosted, Docker no pipeline, testes, deploy contínuo, segurança, observabilidade, infraestrutura, arquiteturas de referência, otimização e governança.
 
 <p align="center">
   <img src="img/img11_light.png#gh-light-mode-only" alt="Ciclo de desenvolvimento assistido por IA: necessidade, brainstorm, entrevista de requisitos, SPEC, revisão humana, plano, revisão humana do plano, branch, implementação assistida, testes locais, revisão humana do código, PR, CI+E2E, merge, DEV, aprovação e PROD" width="720">
