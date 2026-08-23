@@ -1,4 +1,4 @@
-# Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA
+# Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA
 
 **Documento:** 00_MASTER.md  
 **Versão:** 0.1.0  
