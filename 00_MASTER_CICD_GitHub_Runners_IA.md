@@ -427,19 +427,9 @@ Execução de suítes extensas fora do ciclo da PR.
 
 #### Capítulo 07.1 — Pipeline mínimo
 
-```text
-Checkout
-   |
-Install
-   |
-Lint
-   |
-Unit
-   |
-Integration
-   |
-Build
-```
+<p align="center">
+  <img src="img8.png" alt="Pipeline mínimo de CI: checkout, install, lint, unit, integration e build, com o que acontece em cada etapa" width="720">
+</p>
 
 #### Capítulo 07.2 — Pipeline para Node.js
 
