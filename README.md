@@ -1,4 +1,4 @@
-# Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA
+# Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA
 
 > Esta é a estrutura que uso nos meus projetos pessoais. Serve como ponto de partida e referência de boas práticas, mas exige ajuste antes de ser adotada em projetos corporativos — políticas de segurança, compliance, governança de acesso e requisitos de infraestrutura variam de empresa para empresa.
 
