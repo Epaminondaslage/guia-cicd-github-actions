@@ -249,7 +249,7 @@ Runners
 New self-hosted runner
 ```
 
-O GitHub gera um token de registro (`--token`) válido por tempo limitado e uma URL específicas para o seu repositório/organização — copie os comandos exatamente como exibidos na tela, pois o token muda a cada geração. O roteiro abaixo é o padrão do runner oficial (`actions/runner`), executado como usuário dedicado (nunca root):
+O GitHub gera um token de registro (`--token`) válido por tempo limitado e uma URL específicas para o seu repositório/organização. Copie os comandos exatamente como exibidos na tela, pois o token muda a cada geração. O roteiro abaixo é o padrão do runner oficial (`actions/runner`), executado como usuário dedicado (nunca root):
 
 ```bash
 mkdir actions-runner && cd actions-runner
@@ -465,7 +465,7 @@ docker buildx build \
 
 ## 27. Registry
 
-Utilizar registry escolhido (ex.: GitHub Container Registry — `ghcr.io`).
+Utilizar registry escolhido (ex.: GitHub Container Registry, `ghcr.io`).
 
 Artifact:
 

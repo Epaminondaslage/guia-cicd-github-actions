@@ -106,7 +106,7 @@ Campos recomendados em cada linha de log:
 | `requestId` ou `traceId` | Identificador de correlação |
 | `message` | Mensagem do evento |
 
-O formato JSON por linha (NDJSON — um objeto por linha) é o mais fácil de indexar em Loki, Elasticsearch/OpenSearch, CloudWatch Logs Insights ou qualquer coletor. Emitir `console.log` de string livre funciona para debug local, mas não escala para consulta e correlação em produção.
+O formato JSON por linha (NDJSON: um objeto por linha) é o mais fácil de indexar em Loki, Elasticsearch/OpenSearch, CloudWatch Logs Insights ou qualquer coletor. Emitir `console.log` de string livre funciona para debug local, mas não escala para consulta e correlação em produção.
 
 Bibliotecas comuns para logging estruturado:
 
@@ -145,7 +145,7 @@ Como propagar o identificador do pipeline para dentro da aplicação:
 
 A aplicação lê essas variáveis em build time (ou via env var em runtime) e as inclui em todo log estruturado e no endpoint `/version` (ver seção 25). Assim, ao ver um erro em produção, basta olhar o campo `version` do log e localizar o run correspondente em `Actions` no GitHub pelo SHA.
 
-Sem expor dados pessoais desnecessários (PII) nos logs — nem em nome de "correlação".
+Sem expor dados pessoais desnecessários (PII) nos logs, nem em nome de "correlação".
 
 ---
 
@@ -199,9 +199,9 @@ Grafana
 
 ## 10. Agentes de coleta de logs
 
-O ecossistema de coleta evolui rápido. O Promtail (agente clássico do Loki) entrou em modo de manutenção, e o Grafana recomenda o Grafana Alloy como substituto para novas instalações — Alloy é um coletor único, compatível com OpenTelemetry, que também sabe enviar dados para Loki, Prometheus e Tempo.
+O ecossistema de coleta evolui rápido. O Promtail (agente clássico do Loki) entrou em modo de manutenção, e o Grafana recomenda o Grafana Alloy como substituto para novas instalações. Alloy é um coletor único, compatível com OpenTelemetry, que também sabe enviar dados para Loki, Prometheus e Tempo.
 
-Ao implementar, consulte a documentação atual do projeto Grafana antes de escolher o agente — o nome do componente recomendado muda com mais frequência do que o conceito por trás dele.
+Ao implementar, consulte a documentação atual do projeto Grafana antes de escolher o agente: o nome do componente recomendado muda com mais frequência do que o conceito por trás dele.
 
 O conceito permanece:
 
@@ -462,10 +462,10 @@ Exemplo de step em Slack usando um webhook, disparado apenas em falha:
 
 Pontos de atenção:
 
-- não commite a URL do webhook — use secrets;
-- notifique falha, não sucesso repetitivo (evita ruído — ver Alert fatigue);
+- não commite a URL do webhook, use secrets;
+- notifique falha, não sucesso repetitivo (evita ruído, ver Alert fatigue);
 - inclua link direto para o run (github.server_url/github.repository/actions/runs/github.run_id);
-- diferencie canal de falha de CI (build/test) do canal de falha de deploy em produção — severidades diferentes.
+- diferencie canal de falha de CI (build/test) do canal de falha de deploy em produção, pois têm severidades diferentes.
 
 Para falhas de deploy especificamente, é comum um canal com resposta mais rápida (ex.: canal de on-call) separado do canal de CI geral.
 
@@ -858,7 +858,7 @@ Use dados objetivos para reconstruir timeline.
 
 Tracing distribuído mostra o caminho completo de uma requisição atravessando múltiplos serviços, com o tempo gasto em cada etapa (chamado de "span").
 
-Faz sentido adotar tracing quando existe mais de um serviço/processo envolvido numa mesma requisição (frontend -> API -> serviço interno -> banco/fila). Para uma aplicação monolítica simples, logs estruturados com bom RED (seção 16) e métricas já cobrem boa parte da necessidade — tracing tem custo de instrumentação e de armazenamento que só compensa a partir de certa complexidade.
+Faz sentido adotar tracing quando existe mais de um serviço/processo envolvido numa mesma requisição (frontend -> API -> serviço interno -> banco/fila). Para uma aplicação monolítica simples, logs estruturados com bom RED (seção 16) e métricas já cobrem boa parte da necessidade. Tracing tem custo de instrumentação e de armazenamento que só compensa a partir de certa complexidade.
 
 Fluxo típico:
 
@@ -878,7 +878,7 @@ Cada span carrega o mesmo `traceId`, permitindo reconstruir a linha do tempo com
 
 ## 60. OpenTelemetry
 
-OpenTelemetry (OTel) é o projeto open source (CNCF) que padronizou coleta de métricas, logs e traces através de uma API e um formato comuns, independentes de fornecedor. Hoje é o padrão de facto — a maioria dos backends de observabilidade (Grafana, Datadog, New Relic, Honeycomb, etc.) aceita dados no formato OTLP (OpenTelemetry Protocol) nativamente.
+OpenTelemetry (OTel) é o projeto open source (CNCF) que padronizou coleta de métricas, logs e traces através de uma API e um formato comuns, independentes de fornecedor. Hoje é o padrão de facto: a maioria dos backends de observabilidade (Grafana, Datadog, New Relic, Honeycomb, etc.) aceita dados no formato OTLP (OpenTelemetry Protocol) nativamente.
 
 Componentes principais:
 
@@ -900,13 +900,13 @@ aplicação (SDK OTel)
  exporta para: Tempo (traces) / Prometheus (métricas) / Loki (logs)
 ```
 
-Muitas linguagens oferecem instrumentação automática (auto-instrumentation) que captura chamadas HTTP, queries de banco e chamadas a filas sem alterar o código da aplicação — bom ponto de partida antes de instrumentar manualmente spans customizados.
+Muitas linguagens oferecem instrumentação automática (auto-instrumentation) que captura chamadas HTTP, queries de banco e chamadas a filas sem alterar o código da aplicação. É um bom ponto de partida antes de instrumentar manualmente spans customizados.
 
 ---
 
 ## 60a. Correlação entre deploy e tracing
 
-O mesmo identificador de versão usado nos logs (seção 6) deve aparecer também nos traces, como atributo do span (`service.version` ou `deployment.environment` no padrão de atributos semânticos do OpenTelemetry). Isso permite, ao investigar um span lento ou com erro, saber imediatamente em qual deploy ele ocorreu — fechando o ciclo pipeline -> deploy -> log -> métrica -> trace com o mesmo identificador em todas as camadas.
+O mesmo identificador de versão usado nos logs (seção 6) deve aparecer também nos traces, como atributo do span (`service.version` ou `deployment.environment` no padrão de atributos semânticos do OpenTelemetry). Isso permite, ao investigar um span lento ou com erro, saber imediatamente em qual deploy ele ocorreu, fechando o ciclo pipeline -> deploy -> log -> métrica -> trace com o mesmo identificador em todas as camadas.
 
 ---
 

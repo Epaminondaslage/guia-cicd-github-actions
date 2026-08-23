@@ -337,7 +337,7 @@ git worktree remove ../projeto-hotfix
 
 (ou apagar o diretório e rodar `git worktree prune` para limpar a referência).
 
-Na prática, para quem trabalha com múltiplas branches simultaneamente — inclusive quando parte do trabalho é conduzido por IA, tema da seção 44 — `git worktree add` costuma ser preferível a `git checkout`/`git switch` puro: evita stash, evita misturar mudanças de contextos diferentes na mesma Working Tree e permite rodar builds/testes de branches distintas em paralelo.
+Na prática, para quem trabalha com múltiplas branches simultaneamente (inclusive quando parte do trabalho é conduzido por IA, tema da seção 44), `git worktree add` costuma ser preferível a `git checkout`/`git switch` puro: evita stash, evita misturar mudanças de contextos diferentes na mesma Working Tree e permite rodar builds/testes de branches distintas em paralelo.
 
 ---
 
@@ -990,7 +990,7 @@ Finalizar:
 git bisect reset
 ```
 
-Com testes automatizados, esse recurso pode ser ainda mais poderoso.
+Com testes automatizados, esse recurso reduz ainda mais o esforço manual de localizar a regressão.
 
 ---
 

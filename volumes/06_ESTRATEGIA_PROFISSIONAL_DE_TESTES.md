@@ -98,7 +98,7 @@ menos testes de integração
 poucos testes E2E
 ```
 
-Ou seja: a base (unitários) deve concentrar a maior parte da suíte, integração vem em quantidade intermediária, e E2E fica reservado para os fluxos que realmente precisam validar o sistema de ponta a ponta. Não é uma regra estética — é consequência direta do custo e da velocidade de cada camada.
+Ou seja: a base (unitários) deve concentrar a maior parte da suíte, integração vem em quantidade intermediária, e E2E fica reservado para os fluxos que realmente precisam validar o sistema de ponta a ponta. Não é uma regra estética, é consequência direta do custo e da velocidade de cada camada.
 
 Características:
 
@@ -110,7 +110,7 @@ Características:
 
 ### Variações modernas
 
-Algumas equipes adotam o **testing trophy** (Kent C. Dodds), que redistribui o peso relativo dando mais espaço à integração — sob a tese de que testes de integração capturam mais bugs reais por esforço investido, especialmente em aplicações com bastante lógica de composição entre componentes:
+Algumas equipes adotam o **testing trophy** (Kent C. Dodds), que redistribui o peso relativo dando mais espaço à integração. A tese é que testes de integração capturam mais bugs reais por esforço investido, especialmente em aplicações com bastante lógica de composição entre componentes:
 
 ```text
         E2E
@@ -121,7 +121,7 @@ Algumas equipes adotam o **testing trophy** (Kent C. Dodds), que redistribui o p
 static/tipagem
 ```
 
-Isso não contradiz a pirâmide: a base ampla e o topo estreito continuam valendo. A diferença é apenas onde fica o "meio-de-campo" — quanto peso dar a integração versus unitário puro. A escolha depende do tipo de aplicação: sistemas com regras de negócio complexas e isoladas tendem a pirâmide clássica; aplicações com bastante integração entre camadas (frontend orientado a componentes, por exemplo) tendem a se beneficiar do trophy. Em qualquer variação, o topo (E2E) permanece o mais caro e o mais escasso.
+Isso não contradiz a pirâmide: a base ampla e o topo estreito continuam valendo. A diferença é apenas onde fica o "meio-de-campo", ou seja, quanto peso dar a integração versus unitário puro. A escolha depende do tipo de aplicação: sistemas com regras de negócio complexas e isoladas tendem a pirâmide clássica; aplicações com bastante integração entre camadas (frontend orientado a componentes, por exemplo) tendem a se beneficiar do trophy. Em qualquer variação, o topo (E2E) permanece o mais caro e o mais escasso.
 
 ---
 
@@ -657,10 +657,10 @@ jobs:
 
 Pontos importantes desse exemplo:
 
-- `npx playwright install --with-deps` instala browsers e as bibliotecas de sistema (libgtk, libnss etc.) exigidas pelo runner Linux — sem `--with-deps` o job falha ou fica incompleto em runners "limpos";
+- `npx playwright install --with-deps` instala browsers e as bibliotecas de sistema (libgtk, libnss etc.) exigidas pelo runner Linux; sem `--with-deps` o job falha ou fica incompleto em runners "limpos";
 - o `matrix.shard` combinado com `strategy.job-total` divide a suíte automaticamente entre os jobs paralelos;
 - o `services.mysql` com `--health-cmd` garante que o banco esteja pronto antes dos testes;
-- a aplicação sobe como processo efêmero do próprio job — nada roda contra DEV ou PROD;
+- a aplicação sobe como processo efêmero do próprio job, nada roda contra DEV ou PROD;
 - o upload de artifact roda mesmo se o job falhar (`if: ${{ !cancelled() }}`), preservando `playwright-report/` (que inclui trace, screenshot e vídeo quando configurados — ver seção 70).
 
 Um passo de merge dos relatórios de shard (`npx playwright merge-reports`) pode ser adicionado em um job subsequente quando for necessário visualizar a suíte completa em um único relatório HTML.
@@ -905,7 +905,7 @@ truncar tabelas afetadas no início do teste (ou usar dados com identificador ú
 nunca reaproveitar linha criada por outro teste
 ```
 
-A regra que nunca pode ser quebrada: **um teste não deve gravar em uma tabela compartilhada com outros testes sem isolar seus próprios dados** — seja por transaction+rollback, seja por identificador único (seção 31), seja por schema isolado por execução/worker. Um teste que insere um registro fixo (`id = 1`, `email = 'teste@teste.com'`) e outro teste lê ou apaga esse mesmo registro é a causa mais comum de flakiness em suíte de integração com banco real.
+A regra que nunca pode ser quebrada: **um teste não deve gravar em uma tabela compartilhada com outros testes sem isolar seus próprios dados**, seja por transaction+rollback, seja por identificador único (seção 31), seja por schema isolado por execução/worker. Um teste que insere um registro fixo (`id = 1`, `email = 'teste@teste.com'`) e outro teste lê ou apaga esse mesmo registro é a causa mais comum de flakiness em suíte de integração com banco real.
 
 ---
 
@@ -1173,7 +1173,7 @@ código de suporte (utilitários, camadas finas)             -> cobertura modera
 UI decorativa, scripts descartáveis                          -> baixa prioridade
 ```
 
-Priorize código crítico. Um gate de 80% aplicado uniformemente ao projeto inteiro tende a gerar testes artificiais só para "bater o número" — o que é pior do que não ter a métrica.
+Priorize código crítico. Um gate de 80% aplicado uniformemente ao projeto inteiro tende a gerar testes artificiais só para "bater o número", o que é pior do que não ter a métrica.
 
 ### Ferramentas de coverage por stack
 
@@ -1772,7 +1772,7 @@ Depois do merge:
 ambiente destruído
 ```
 
-É poderoso, mas aumenta infraestrutura.
+Isola bem a validação por PR, mas aumenta infraestrutura.
 
 ---
 

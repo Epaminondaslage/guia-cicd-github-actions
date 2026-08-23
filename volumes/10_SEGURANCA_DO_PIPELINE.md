@@ -134,7 +134,7 @@ Defina expiração. Um token sem data de expiração é uma dívida técnica de 
 
 O `GITHUB_TOKEN` é gerado automaticamente pelo GitHub para cada execução de workflow e expira ao final do job. Ele **não** deve ser confundido com um PAT.
 
-Desde 2023, novos repositórios podem ter o padrão configurado como somente leitura (`Settings → Actions → Workflow permissions`), mas isso é configuração de repositório/organização — não assuma, **declare explicitamente** no workflow.
+Desde 2023, novos repositórios podem ter o padrão configurado como somente leitura (`Settings → Actions → Workflow permissions`), mas isso é configuração de repositório/organização. Não assuma, **declare explicitamente** no workflow.
 
 Boa prática: definir `permissions` no nível do **workflow** com o mínimo comum, e elevar apenas no **job** que realmente precisa:
 
@@ -158,13 +158,13 @@ jobs:
       - run: echo "cria release"
 ```
 
-Sem o bloco `permissions:`, o comportamento herda o padrão da organização/repositório — que pode ser mais permissivo do que o pipeline precisa. Não deixe implícito.
+Sem o bloco `permissions:`, o comportamento herda o padrão da organização/repositório, que pode ser mais permissivo do que o pipeline precisa. Não deixe implícito.
 
 ---
 
 ## 8. secrets
 
-Armazene credenciais em **GitHub Secrets** (repositório, ambiente ou organização) — nunca em texto plano no código.
+Armazene credenciais em **GitHub Secrets** (repositório, ambiente ou organização). Nunca em texto plano no código.
 
 Nunca em:
 
@@ -184,7 +184,7 @@ Isso vale mesmo para repositórios privados: privado não é sinônimo de seguro
 
 ## 9. rotação
 
-Se um secret for exposto — versionado por engano, colado em log, colado em um prompt de IA — o procedimento correto é:
+Se um secret for exposto (versionado por engano, colado em log, colado em um prompt de IA), o procedimento correto é:
 
 ```text
 1. revogar a credencial exposta imediatamente
@@ -193,7 +193,7 @@ Se um secret for exposto — versionado por engano, colado em log, colado em um 
 4. remover do histórico do git quando aplicável (git filter-repo, BFG)
 ```
 
-Ponto crítico: **remover do histórico não neutraliza o vazamento**. `git filter-repo` e o BFG Repo-Cleaner reescrevem o histórico local e podem forçar um novo push, mas não apagam cópias que já foram clonadas, indexadas por scrapers automatizados (existem bots que varrem GitHub em busca de segredos em tempo real) ou cacheadas por serviços de terceiros. Uma vez exposto, o segredo deve ser tratado como comprometido — a única mitigação real é a **rotação**. Limpar o histórico é higiene depois da rotação, não substituto dela.
+Ponto crítico: **remover do histórico não neutraliza o vazamento**. `git filter-repo` e o BFG Repo-Cleaner reescrevem o histórico local e podem forçar um novo push, mas não apagam cópias que já foram clonadas, indexadas por scrapers automatizados (existem bots que varrem GitHub em busca de segredos em tempo real) ou cacheadas por serviços de terceiros. Uma vez exposto, o segredo deve ser tratado como comprometido. A única mitigação real é a **rotação**. Limpar o histórico é higiene depois da rotação, não substituto dela.
 
 ---
 
@@ -216,7 +216,7 @@ Cada Environment pode ter:
 | *Deployment branches* | só `main`/`release/*` pode disparar deploy no ambiente |
 | *Wait timer* | — |
 
-Secret de produção não deve ser disponibilizado ao CI de PR nem a jobs que rodam a partir de forks — um workflow disparado por `pull_request` de um fork não tem acesso aos secrets do Environment por padrão, e essa proteção não deve ser contornada sem necessidade real.
+Secret de produção não deve ser disponibilizado ao CI de PR nem a jobs que rodam a partir de forks. Um workflow disparado por `pull_request` de um fork não tem acesso aos secrets do Environment por padrão, e essa proteção não deve ser contornada sem necessidade real.
 
 ---
 
@@ -387,7 +387,7 @@ Em ambientes de segurança elevada, fixe Action por SHA de commit, não por tag:
 uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3  # v4.1.1
 ```
 
-Tags (`@v4`, `@v4.1.1`) podem ser movidas pelo mantenedor da Action — inclusive de forma maliciosa, em caso de comprometimento da conta do mantenedor. SHA de commit é imutável.
+Tags (`@v4`, `@v4.1.1`) podem ser movidas pelo mantenedor da Action, inclusive de forma maliciosa, em caso de comprometimento da conta do mantenedor. SHA de commit é imutável.
 
 ---
 
@@ -414,7 +414,7 @@ Pontos de atenção:
 
 - toda atualização deve passar por PR + CI, nunca merge automático sem checks;
 - separe atualizações de patch/minor (baixo risco, podem ter merge mais leve) de major (revisão manual);
-- Dependabot também cobre `github-actions` como ecossistema — mantenha as próprias Actions atualizadas, não só `package.json`/`composer.json`.
+- Dependabot também cobre `github-actions` como ecossistema. Mantenha as próprias Actions atualizadas, não só `package.json`/`composer.json`.
 
 ---
 
@@ -449,7 +449,7 @@ Use:
 npm ci
 ```
 
-no CI. `npm ci` instala exatamente o que está no lockfile e falha se `package.json`/`package-lock.json` estiverem dessincronizados — diferente de `npm install`, que pode atualizar o lockfile silenciosamente.
+no CI. `npm ci` instala exatamente o que está no lockfile e falha se `package.json`/`package-lock.json` estiverem dessincronizados. É diferente de `npm install`, que pode atualizar o lockfile silenciosamente.
 
 ---
 
@@ -499,7 +499,7 @@ Automatize busca por:
 - passwords;
 - credentials.
 
-GitHub possui **secret scanning** nativo (ativado por padrão em repositórios públicos, disponível para privados conforme plano) e **push protection** (bloqueia o push antes que o segredo entre no histórico). Habilite ambos em `Settings → Code security`. Isso não substitui a rotação (seção 9) quando algo escapa — só reduz a chance de escapar.
+GitHub possui **secret scanning** nativo (ativado por padrão em repositórios públicos, disponível para privados conforme plano) e **push protection** (bloqueia o push antes que o segredo entre no histórico). Habilite ambos em `Settings → Code security`. Isso não substitui a rotação (seção 9) quando algo escapa, só reduz a chance de escapar.
 
 ---
 
@@ -595,7 +595,7 @@ Integre gradualmente: comece só reportando (`exit-code: '0'`), depois passe a b
 
 ## 38. Grype
 
-Alternativa/complemento ao Trivy, também open source (Anchore), focada em SCA de imagens e SBOMs — combina bem com Syft (seção 52), do mesmo projeto.
+Alternativa/complemento ao Trivy, também open source (Anchore), focada em SCA de imagens e SBOMs. Combina bem com Syft (seção 52), do mesmo projeto.
 
 ---
 
@@ -743,7 +743,7 @@ Isso fecha o ciclo: a imagem só é aceita em produção se foi assinada pelo pr
 
 ## 52. SBOM
 
-Gere inventário dos componentes de cada imagem/build (*Software Bill of Materials*) — útil para responder rapidamente "estamos expostos à CVE X?" sem precisar re-escanear tudo.
+Gere inventário dos componentes de cada imagem/build (*Software Bill of Materials*). Útil para responder rapidamente "estamos expostos à CVE X?" sem precisar re-escanear tudo.
 
 ---
 
@@ -807,7 +807,7 @@ steps:
   - run: aws s3 sync ./dist s3://meu-bucket
 ```
 
-Sem `secrets.AWS_ACCESS_KEY_ID` nenhum. A *trust policy* do lado da AWS (IAM) restringe qual repositório/branch pode assumir a role — o equivalente existe para Azure (`azure/login` com Federated Credentials) e GCP (Workload Identity Federation).
+Sem `secrets.AWS_ACCESS_KEY_ID` nenhum. A *trust policy* do lado da AWS (IAM) restringe qual repositório/branch pode assumir a role. O equivalente existe para Azure (`azure/login` com Federated Credentials) e GCP (Workload Identity Federation).
 
 Quando o provedor de nuvem não suportar OIDC, ao menos: credencial com escopo mínimo, em Environment secret, com rotação programada.
 
@@ -818,7 +818,7 @@ Quando o provedor de nuvem não suportar OIDC, ao menos: credencial com escopo m
 `main` protegida:
 
 - PR obrigatório (nenhum push direto, nem de admins, se a política assim exigir);
-- *required status checks* (CI precisa passar — lint, testes, scans — antes do merge ser permitido);
+- *required status checks* (CI precisa passar: lint, testes, scans, antes do merge ser permitido);
 - *required reviews* (ao menos um revisor aprovando; considerar exigir revisão de code owner);
 - sem force push;
 - sem exclusão da branch;
@@ -841,7 +841,7 @@ infra/             @time-plataforma
 scripts/deploy/    @time-plataforma
 ```
 
-Combine com "Require review from Code Owners" na branch protection — sem isso, o CODEOWNERS é só documentação.
+Combine com "Require review from Code Owners" na branch protection. Sem isso, o CODEOWNERS é só documentação.
 
 ---
 
@@ -860,9 +860,9 @@ Um workflow malicioso ou mal revisado pode, por exemplo, exfiltrar secrets adici
 
 ## 59. pull request target
 
-O evento `pull_request_target` roda com o contexto (e os secrets) do repositório base, mesmo para PRs vindos de forks — diferente de `pull_request`, que roda com contexto restrito.
+O evento `pull_request_target` roda com o contexto (e os secrets) do repositório base, mesmo para PRs vindos de forks. É diferente de `pull_request`, que roda com contexto restrito.
 
-Isso é privilegiado por design e deve ser usado com extremo cuidado. Nunca faça checkout do código do PR (`ref: ${{ github.event.pull_request.head.sha }}`) e execute esse código com secrets disponíveis em um workflow disparado por `pull_request_target` — é o padrão clássico de comprometimento via PR malicioso.
+Isso é privilegiado por design e deve ser usado com extremo cuidado. Nunca faça checkout do código do PR (`ref: ${{ github.event.pull_request.head.sha }}`) e execute esse código com secrets disponíveis em um workflow disparado por `pull_request_target`. É o padrão clássico de comprometimento via PR malicioso.
 
 ---
 
@@ -896,7 +896,7 @@ Evite imprimir ambientes completos. O GitHub mascara valores que batem exatament
 
 Não confie apenas no mascaramento automático do GitHub Actions.
 
-A melhor defesa é não imprimir o secret em lugar nenhum — nem em `echo`, nem em mensagem de erro, nem em corpo de requisição logado.
+A melhor defesa é não imprimir o secret em lugar nenhum: nem em `echo`, nem em mensagem de erro, nem em corpo de requisição logado.
 
 ---
 
@@ -959,7 +959,7 @@ Conceda apenas schema/operações necessárias (SELECT/INSERT/UPDATE/DELETE no s
 
 ## 69. migration user
 
-Pode ser separado do usuário runtime — usuário de migration tem permissão de DDL, usuário da aplicação não.
+Pode ser separado do usuário runtime. Usuário de migration tem permissão de DDL, usuário da aplicação não.
 
 ---
 
@@ -990,7 +990,7 @@ Evite permitir:
 #
 ```
 
-para qualquer cliente sem necessidade — um cliente comprometido com wildcard total lê e potencialmente publica em qualquer tópico.
+para qualquer cliente sem necessidade. Um cliente comprometido com wildcard total lê e potencialmente publica em qualquer tópico.
 
 ---
 
@@ -1010,7 +1010,7 @@ Para webhooks críticos, considere timestamp/nonce/idempotência para impedir re
 
 Não colocar no frontend se são secrets de servidor.
 
-Código executado no browser não pode guardar secret real — qualquer valor embutido em JS enviado ao cliente deve ser tratado como público.
+Código executado no browser não pode guardar secret real. Qualquer valor embutido em JS enviado ao cliente deve ser tratado como público.
 
 ---
 
@@ -1048,7 +1048,7 @@ Antes de adicionar pacote:
 
 ## 79. AI-generated dependencies
 
-Agentes podem sugerir pacotes inexistentes, obsoletos ou desnecessários — inclusive nomes plausíveis que não existem no registro real (risco de *slopsquatting*, quando alguém registra depois o nome sugerido com conteúdo malicioso).
+Agentes podem sugerir pacotes inexistentes, obsoletos ou desnecessários, inclusive nomes plausíveis que não existem no registro real (risco de *slopsquatting*, quando alguém registra depois o nome sugerido com conteúdo malicioso).
 
 Sempre valide antes de instalar o que uma IA sugeriu.
 
@@ -1066,7 +1066,7 @@ Ferramentas com capacidade de escrita/deploy devem tratar conteúdo do repositó
 
 Não copie secrets em chats/prompts de IA.
 
-Use conectores/secret stores e referências — nunca cole uma chave de API ou senha em uma conversa para "a IA testar", mesmo que o histórico pareça privado.
+Use conectores/secret stores e referências. Nunca cole uma chave de API ou senha em uma conversa para "a IA testar", mesmo que o histórico pareça privado.
 
 ---
 
@@ -1087,7 +1087,7 @@ quem fez deploy
 qual artifact
 ```
 
-O GitHub mantém audit log de organização (`Settings → Audit log`) — vale revisar periodicamente, não só em caso de incidente.
+O GitHub mantém audit log de organização (`Settings → Audit log`). Vale revisar periodicamente, não só em caso de incidente.
 
 ---
 
@@ -1172,7 +1172,7 @@ Backup de configuração não deve incluir secrets em texto claro sem proteção
 
 ## 92. restore test
 
-Teste reconstrução do runner periodicamente — um backup nunca testado é uma suposição, não uma garantia.
+Teste reconstrução do runner periodicamente. Um backup nunca testado é uma suposição, não uma garantia.
 
 ---
 

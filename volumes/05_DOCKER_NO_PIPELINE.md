@@ -725,7 +725,7 @@ Pontos importantes:
 
 - defina `USER` **depois** de copiar arquivos e ajustar permissões, para não gerar erro de escrita;
 - combine com `COPY --chown=app:app` para evitar `chown` recursivo em uma camada separada;
-- container rodando como root não é automaticamente inseguro, mas amplia o impacto de uma eventual RCE — inclusive combinado a `docker run --user`, que também pode forçar um UID não-root em runtime mesmo que a imagem não declare `USER`.
+- container rodando como root não é automaticamente inseguro, mas amplia o impacto de uma eventual RCE (inclusive combinado a `docker run --user`, que também pode forçar um UID não-root em runtime mesmo que a imagem não declare `USER`).
 
 ---
 
@@ -912,7 +912,7 @@ Isso pode tornar builds desnecessariamente lentos.
 
 ## 38. BuildKit
 
-Desde o Docker Engine 23 (e no Docker Desktop há mais tempo), o BuildKit é o builder **padrão** — não é necessário exportar `DOCKER_BUILDKIT=1` manualmente. Em versões antigas isso ainda pode ser relevante, mas não é o cenário normal em 2025+.
+Desde o Docker Engine 23 (e no Docker Desktop há mais tempo), o BuildKit é o builder **padrão**: não é necessário exportar `DOCKER_BUILDKIT=1` manualmente. Em versões antigas isso ainda pode ser relevante, mas não é o cenário normal em 2025+.
 
 Com `buildx` (o plugin de build que expõe os recursos do BuildKit), podemos ter:
 
@@ -1989,7 +1989,7 @@ Equivalente com Grype:
 Pontos práticos:
 
 - `exit-code`/`fail-build` são o que transforma o scan em um gate real de CI, em vez de apenas um relatório ignorado;
-- `ignore-unfixed` evita bloquear o pipeline por vulnerabilidades sem correção disponível ainda — cada equipe deve decidir a política;
+- `ignore-unfixed` evita bloquear o pipeline por vulnerabilidades sem correção disponível ainda; cada equipe deve decidir a política;
 - rodar o scan **depois do build e antes do push** evita publicar uma imagem já reprovada;
 - o mesmo scanner pode ser usado localmente (`trivy image app:dev` ou `grype app:dev`) para diagnóstico antes de abrir o PR.
 

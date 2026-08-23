@@ -572,7 +572,7 @@ Desvantagens:
 - limpeza;
 - disponibilidade.
 
-**Atenção especial em repositórios públicos:** self-hosted runners expostos a workflows disparados por `pull_request` de forks são um risco real de execução de código arbitrário — qualquer pessoa que abra um PR malicioso pode potencialmente rodar comandos no seu servidor. Recomenda-se usar runners efêmeros (descartados a cada job), nunca reaproveitar o mesmo runner para repositórios públicos sem isolamento, e jamais combinar self-hosted com `pull_request_target` sem controles adicionais. O Volume 04 aprofunda essas mitigações.
+**Atenção especial em repositórios públicos:** self-hosted runners expostos a workflows disparados por `pull_request` de forks são um risco real de execução de código arbitrário. Qualquer pessoa que abra um PR malicioso pode rodar comandos no seu servidor. Recomenda-se usar runners efêmeros (descartados a cada job), nunca reaproveitar o mesmo runner para repositórios públicos sem isolamento, e jamais combinar self-hosted com `pull_request_target` sem controles adicionais. O Volume 04 aprofunda essas mitigações.
 
 O Volume 04 trata da instalação completa.
 
@@ -768,13 +768,13 @@ jobs:
       - run: npm test
 ```
 
-**Alerta de segurança:** em repositórios **públicos**, um runner self-hosted que executa jobs disparados por `pull_request` de forks desconhecidos é um risco sério — o autor do PR pode alterar o próprio workflow ou o código executado (`npm ci`, scripts de build, etc.) para rodar código arbitrário na sua máquina. Nesse cenário, prefira:
+**Alerta de segurança:** em repositórios **públicos**, um runner self-hosted que executa jobs disparados por `pull_request` de forks desconhecidos é um risco sério. O autor do PR pode alterar o próprio workflow ou o código executado (`npm ci`, scripts de build, etc.) para rodar código arbitrário na sua máquina. Nesse cenário, prefira:
 
 - runners GitHub-hosted para PRs de forks em repositórios públicos; ou
 - self-hosted **efêmeros** (uma VM/container descartado a cada job), sem persistência de segredos ou acesso à rede interna; ou
 - exigir aprovação manual para execução de workflows vindos de forks (configurável em Settings → Actions).
 
-Nunca combine self-hosted runners com o evento `pull_request_target` sem cuidado extremo: esse evento roda com o `GITHUB_TOKEN` e os segredos do repositório base, mas pode fazer checkout do código do fork — uma combinação clássica para vazamento de segredos e execução de código malicioso caso o checkout do PR não seja tratado com muito cuidado (idealmente, evitando checkout do ref do PR nesse evento).
+Nunca combine self-hosted runners com o evento `pull_request_target` sem cuidado extremo: esse evento roda com o `GITHUB_TOKEN` e os segredos do repositório base, mas pode fazer checkout do código do fork, o que é uma combinação clássica para vazamento de segredos e execução de código malicioso caso o checkout do PR não seja tratado com muito cuidado (idealmente, evitando checkout do ref do PR nesse evento).
 
 ---
 
@@ -1252,10 +1252,10 @@ services:
 
 Em self-hosted, requisitos do runner e Docker precisam ser considerados.
 
-**Segurança em self-hosted runners**: em repositórios públicos, um self-hosted runner que executa workflows disparados por `pull_request` de forks é um risco sério — qualquer pessoa pode abrir um PR malicioso e rodar código arbitrário na sua máquina/rede. Recomendações:
+**Segurança em self-hosted runners**: em repositórios públicos, um self-hosted runner que executa workflows disparados por `pull_request` de forks é um risco sério. Qualquer pessoa pode abrir um PR malicioso e rodar código arbitrário na sua máquina/rede. Recomendações:
 
 - prefira runners efêmeros (que sobem, executam um job e são destruídos), nunca um runner persistente reaproveitado entre execuções;
-- nunca combine self-hosted com `pull_request_target` sem cuidado extremo — esse evento roda com o contexto (e secrets) do branch base mesmo para PRs de forks;
+- nunca combine self-hosted com `pull_request_target` sem cuidado extremo, pois esse evento roda com o contexto (e secrets) do branch base mesmo para PRs de forks;
 - em repositório público, considere exigir aprovação manual para rodar workflows de contribuidores externos (configurável nas configurações de Actions do repositório/organização).
 
 ---
@@ -2064,7 +2064,7 @@ Avalie:
 
 ## 88. Pinning
 
-Tags como `@v1` ou `@v4` podem ser movidas pelo mantenedor da Action (de propósito ou por conta comprometida). Isso significa que `uses: owner/action@v1` pode passar a apontar para um código diferente do que você revisou, sem qualquer mudança no seu YAML — um vetor clássico de supply chain attack.
+Tags como `@v1` ou `@v4` podem ser movidas pelo mantenedor da Action (de propósito ou por conta comprometida). Isso significa que `uses: owner/action@v1` pode passar a apontar para um código diferente do que você revisou, sem qualquer mudança no seu YAML: um vetor clássico de supply chain attack.
 
 A prática recomendada é fixar (pin) Actions de terceiros pelo SHA completo do commit, não apenas pela tag:
 
@@ -2074,7 +2074,7 @@ uses: owner/action@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v1.2.3
 
 O comentário com a tag serve apenas como referência humana; quem garante a imutabilidade é o SHA.
 
-Como isso cria manutenção manual (SHAs não atualizam sozinhos), use ferramentas como **Dependabot** ou **Renovate** para abrir PRs automáticos atualizando os SHAs fixados quando novas versões forem publicadas — assim você mantém a segurança do pinning sem perder atualizações.
+Como isso cria manutenção manual (SHAs não atualizam sozinhos), use ferramentas como **Dependabot** ou **Renovate** para abrir PRs automáticos atualizando os SHAs fixados quando novas versões forem publicadas. Assim você mantém a segurança do pinning sem perder atualizações.
 
 Resumo do trade-off:
 
@@ -2089,7 +2089,7 @@ Resumo do trade-off:
 
 Não permita automaticamente que código não confiável de terceiros execute em runner persistente com acesso à sua rede.
 
-Por padrão, workflows disparados por `pull_request` a partir de um fork já rodam com `GITHUB_TOKEN` de permissões restritas e sem acesso a secrets do repositório — essa é uma proteção do próprio GitHub. O risco real aparece quando:
+Por padrão, workflows disparados por `pull_request` a partir de um fork já rodam com `GITHUB_TOKEN` de permissões restritas e sem acesso a secrets do repositório: essa é uma proteção do próprio GitHub. O risco real aparece quando:
 
 - o repositório é público **e** usa self-hosted runners: qualquer pessoa pode abrir um PR de fork, e se o workflow rodar automaticamente nesse runner, o código do PR executa dentro da sua rede/infraestrutura;
 - o runner é persistente ("Ephemeral: false", reaproveitado entre execuções): um job malicioso pode deixar processos, credenciais em cache ou binários manipulados para o próximo job que rodar ali.
@@ -2109,11 +2109,11 @@ runner self-hosted interno
 
 Recomendações mínimas:
 
-- em repositórios **públicos**, nunca deixe self-hosted runners disponíveis para workflows disparados por PRs de fork sem aprovação manual (GitHub exige aprovação de primeira execução para contribuidores externos — mantenha essa proteção ativa em vez de desabilitá-la para "agilizar");
+- em repositórios **públicos**, nunca deixe self-hosted runners disponíveis para workflows disparados por PRs de fork sem aprovação manual (GitHub exige aprovação de primeira execução para contribuidores externos; mantenha essa proteção ativa em vez de desabilitá-la para "agilizar");
 - prefira runners **efêmeros** (`Ephemeral: true`, uma execução e descarte) quando houver qualquer chance de rodar código não confiável;
 - em repositórios privados/internos, restrinja quem pode abrir PR e trate colaboradores externos como não confiáveis por padrão.
 
-Self-hosted runner exige política de confiança explícita, documentada e revisada — não é um detalhe operacional.
+Self-hosted runner exige política de confiança explícita, documentada e revisada: não é um detalhe operacional.
 
 ---
 
@@ -2121,7 +2121,7 @@ Self-hosted runner exige política de confiança explícita, documentada e revis
 
 Eventos com contexto privilegiado exigem extremo cuidado.
 
-Diferente de `pull_request`, o evento `pull_request_target` roda com as **permissões e secrets do repositório base** (o repo que vai receber o PR), mesmo quando o PR vem de um fork. O código do workflow executado é o da branch padrão do repo base — mas se algum step fizer checkout do código do fork (`ref: ${{ github.event.pull_request.head.sha }}`) e depois rodar esse código (build, test, script), o conteúdo malicioso do fork passa a rodar com acesso total a secrets do repo base.
+Diferente de `pull_request`, o evento `pull_request_target` roda com as **permissões e secrets do repositório base** (o repo que vai receber o PR), mesmo quando o PR vem de um fork. O código do workflow executado é o da branch padrão do repo base, mas se algum step fizer checkout do código do fork (`ref: ${{ github.event.pull_request.head.sha }}`) e depois rodar esse código (build, test, script), o conteúdo malicioso do fork passa a rodar com acesso total a secrets do repo base.
 
 ```text
 PR de fork
@@ -2136,12 +2136,12 @@ pull_request_target
 
 Regras práticas:
 
-- **nunca** faça checkout do código do fork em um workflow `pull_request_target` e em seguida execute esse código (`npm install && npm run build`, `npm test`, scripts arbitrários) sem sanitização — isso anula a proteção do evento;
+- **nunca** faça checkout do código do fork em um workflow `pull_request_target` e em seguida execute esse código (`npm install && npm run build`, `npm test`, scripts arbitrários) sem sanitização: isso anula a proteção do evento;
 - se precisar comentar no PR, aplicar labels ou rodar validações que dependem de secrets, mantenha o checkout restrito ao código do repo base (padrão do `actions/checkout` sem `ref` explícito para o fork);
-- prefira `pull_request` sempre que possível — ele não expõe secrets do repo base e é suficiente para a maioria dos casos (lint, testes, build);
+- prefira `pull_request` sempre que possível: ele não expõe secrets do repo base e é suficiente para a maioria dos casos (lint, testes, build);
 - quando `pull_request_target` for realmente necessário (ex.: comentar automaticamente em PRs externos), use um "approval gate": um mantenedor precisa aprovar manualmente a execução (ou separar em dois workflows, um `pull_request` sem privilégio para build/teste e outro `pull_request_target` mínimo, sem checkout do fork, só para a ação privilegiada).
 
-Esse é um tema de segurança avançada — errar aqui é uma das formas mais comuns de vazar secrets de produção via GitHub Actions.
+Esse é um tema de segurança avançada. Errar aqui é uma das formas mais comuns de vazar secrets de produção via GitHub Actions.
 
 ---
 
@@ -2931,7 +2931,7 @@ Isso cobre actions referenciadas em qualquer workflow de `.github/workflows/`, i
 
 Cada PR gerado deve passar pelo CI antes do merge, como qualquer outra mudança.
 
-Prefira sempre fixar a versão da action por tag maior (`@v4`) ou, em cenários de maior exigência de segurança, por SHA de commit — o Dependabot também sabe atualizar SHAs fixados, mantendo um comentário com a tag correspondente.
+Prefira sempre fixar a versão da action por tag maior (`@v4`) ou, em cenários de maior exigência de segurança, por SHA de commit. O Dependabot também sabe atualizar SHAs fixados, mantendo um comentário com a tag correspondente.
 
 ---
 
@@ -3166,7 +3166,7 @@ rigoroso o suficiente para gerar confiança
 
 ## 137. Pipeline em camadas
 
-Camada 1 — segundos/minutos:
+Camada 1 (segundos/minutos):
 
 ```text
 lint

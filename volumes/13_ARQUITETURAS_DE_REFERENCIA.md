@@ -210,7 +210,7 @@ Cada um possui CI próprio, com seu ciclo de release independente.
 
 - mudanças que cruzam frontend+backend exigem coordenar dois PRs, em dois repos;
 - duplicação de configuração de workflow entre repos (mitigada com **reusable workflows**, ver 10.1);
-- contrato entre serviços precisa de disciplina (versionamento de API, contract testing — ver seção 18);
+- contrato entre serviços precisa de disciplina (versionamento de API, contract testing; ver seção 18);
 - dependências compartilhadas (design system, tipos, SDK interno) exigem publicação em pacote (npm/registry privado) em vez de import direto de arquivo.
 
 Integração pode rodar em DEV ou em pipeline coordenado (workflow que dispara o deploy de ambos após os dois CIs passarem).
@@ -263,7 +263,7 @@ Pontos importantes:
 
 - o repositório que expõe o workflow reusável precisa ser público, ou a organização precisa habilitar explicitamente "Access to this repository" para os repositórios consumidores (Settings → Actions → General);
 - fixar a referência (`@main`, `@v1`, ou melhor, um SHA) define o quão "congelado" o comportamento fica; usar uma tag semver (`@v1`) é o meio-termo recomendado entre reprodutibilidade e manutenção;
-- secrets **não** são herdados automaticamente entre organizações/repos — cada chamador precisa repassar explicitamente o que o workflow reusável declara em `secrets:`;
+- secrets **não** são herdados automaticamente entre organizações/repos: cada chamador precisa repassar explicitamente o que o workflow reusável declara em `secrets:`;
 - reusable workflows podem encadear (um workflow reusável pode chamar outro), mas o GitHub limita a profundidade de aninhamento a 9 níveis de workflows reusáveis mais o chamador, e o número de workflows chamados por execução.
 
 ---
@@ -338,7 +338,7 @@ Alternativas de ferramenta para detectar mudanças em monorepo: Nx e Turborepo o
 
 ### 11.1 Composite Actions vs Reusable Workflows
 
-As duas mecânicas resolvem duplicação, mas em escopos diferentes — confundi-las é o erro mais comum ao organizar CI em GitHub Actions.
+As duas mecânicas resolvem duplicação, mas em escopos diferentes. Confundi-las é o erro mais comum ao organizar CI em GitHub Actions.
 
 | | Composite action | Reusable workflow |
 |---|---|---|
@@ -536,8 +536,8 @@ jobs:
 
 Pontos que valem a pena fixar:
 
-- `fail-fast: true` (padrão) cancela toda a matrix assim que uma combinação falha — bom para feedback rápido em PR, ruim quando se quer ver o resultado de todas as combinações (ex.: matriz de compatibilidade de versões). Usar `fail-fast: false` nesse segundo caso;
-- `max-parallel` limita quantos jobs da matrix rodam ao mesmo tempo — essencial em runners self-hosted com capacidade finita, para não estourar todos os runners de uma vez com uma única matrix grande;
+- `fail-fast: true` (padrão) cancela toda a matrix assim que uma combinação falha. Bom para feedback rápido em PR, ruim quando se quer ver o resultado de todas as combinações (ex.: matriz de compatibilidade de versões). Usar `fail-fast: false` nesse segundo caso;
+- `max-parallel` limita quantos jobs da matrix rodam ao mesmo tempo. É essencial em runners self-hosted com capacidade finita, para não estourar todos os runners de uma vez com uma única matrix grande;
 - `include` adiciona combinações extras (ou acrescenta campos a uma combinação já gerada), `exclude` remove combinações específicas do produto cartesiano;
 - combinar `continue-on-error` com uma entrada marcada (ex.: `experimental: true` via `include`) implementa "allow failure" seletivo, útil para testar versões futuras (Node "current") sem quebrar o pipeline;
 - em microsserviços, uma matrix por serviço só faz sentido quando os serviços compartilham o mesmo tipo de build/teste; serviços com stacks muito diferentes (Node vs PHP) são melhor servidos por workflows separados (ver seção 10.1).
@@ -581,7 +581,7 @@ Nginx continua excelente opção quando a topologia é estável (poucos serviço
 
 ### 21.1 Isolamento por Produto/Stack com Traefik
 
-Em uma infraestrutura com múltiplos produtos na mesma borda, cada stack deve expor apenas as labels do seu próprio roteamento — nunca reutilizar rede, banco ou fila de outro produto só porque estão na mesma máquina. Exemplo de labels típicas por serviço:
+Em uma infraestrutura com múltiplos produtos na mesma borda, cada stack deve expor apenas as labels do seu próprio roteamento. Nunca reutilizar rede, banco ou fila de outro produto só porque estão na mesma máquina. Exemplo de labels típicas por serviço:
 
 ```yaml
 services:
@@ -644,7 +644,7 @@ mantém green de pé por um tempo (rollback = trocar a rota de volta)
 depois de validado, desliga green
 ```
 
-Em Coolify isso é obtido subindo uma segunda instância da mesma aplicação (ou usando "Preview Deployments"/ambientes distintos) e trocando o `Host()`/prioridade da rota no Traefik só depois de validar a instância nova — o corte de tráfego é atômico porque é o Traefik reconfigurando o roteamento, não um restart de container. O custo é rodar as duas versões simultaneamente durante a janela de validação (recursos duplicados).
+Em Coolify isso é obtido subindo uma segunda instância da mesma aplicação (ou usando "Preview Deployments"/ambientes distintos) e trocando o `Host()`/prioridade da rota no Traefik só depois de validar a instância nova. O corte de tráfego é atômico porque é o Traefik reconfigurando o roteamento, não um restart de container. O custo é rodar as duas versões simultaneamente durante a janela de validação (recursos duplicados).
 
 **Canary:**
 
@@ -746,7 +746,7 @@ Repositório produto-b
     produto-b-prod
 ```
 
-Cada environment carrega seu próprio conjunto de secrets e variáveis — um secret `DB_URL` em `produto-a-prod` nunca vaza para um job rodando em `produto-a-dev`, mesmo que ambos os jobs estejam no mesmo workflow:
+Cada environment carrega seu próprio conjunto de secrets e variáveis. Um secret `DB_URL` em `produto-a-prod` nunca vaza para um job rodando em `produto-a-dev`, mesmo que ambos os jobs estejam no mesmo workflow:
 
 ```yaml
 jobs:
@@ -765,7 +765,7 @@ Regras de proteção configuráveis por environment:
 - **wait timer** — atraso mínimo obrigatório antes do job rodar, útil como janela de "arrependimento" antes de um deploy automático;
 - **deployment branches** — restringe quais branches podem disparar deploy para aquele environment (ex.: só `main` pode implantar em `produto-a-prod`), impedindo que uma branch de feature acidentalmente rode um job com `environment: produto-a-prod` e acesse os secrets de produção.
 
-Isso substitui a prática antiga de prefixar secrets manualmente (`PRODUTO_A_PROD_DB_URL`, `PRODUTO_A_DEV_DB_URL`) no nível do repositório: com Environments, o nome do secret é o mesmo (`DB_URL`) em todos os ambientes, e o isolamento vem de qual environment o job declara — reduzindo o risco de copiar/colar o secret errado ao escrever o workflow. Para múltiplos produtos na mesma infraestrutura, o mesmo princípio de "nunca cruzar banco/fila/container entre produtos" se aplica um nível acima: nunca reaproveitar o mesmo environment do GitHub para dois produtos diferentes, mesmo que compartilhem o host.
+Isso substitui a prática antiga de prefixar secrets manualmente (`PRODUTO_A_PROD_DB_URL`, `PRODUTO_A_DEV_DB_URL`) no nível do repositório: com Environments, o nome do secret é o mesmo (`DB_URL`) em todos os ambientes, e o isolamento vem de qual environment o job declara, reduzindo o risco de copiar/colar o secret errado ao escrever o workflow. Para múltiplos produtos na mesma infraestrutura, o mesmo princípio de "nunca cruzar banco/fila/container entre produtos" se aplica um nível acima: nunca reaproveitar o mesmo environment do GitHub para dois produtos diferentes, mesmo que compartilhem o host.
 
 ---
 

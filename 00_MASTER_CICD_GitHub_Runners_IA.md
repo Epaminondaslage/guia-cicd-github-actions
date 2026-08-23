@@ -208,7 +208,7 @@ Uso de componentes existentes.
 
 #### Capítulo 03.7 — Secrets
 
-Gerenciamento seguro de credenciais. Inclui OIDC (OpenID Connect) como alternativa preferencial a secrets estáticos de longa duração para autenticação com provedores cloud (AWS, Azure, GCP) — o workflow recebe um token de curta duração assinado pelo GitHub, sem chave permanente armazenada no repositório.
+Gerenciamento seguro de credenciais. Inclui OIDC (OpenID Connect) como alternativa preferencial a secrets estáticos de longa duração para autenticação com provedores cloud (AWS, Azure, GCP): o workflow recebe um token de curta duração assinado pelo GitHub, sem chave permanente armazenada no repositório.
 
 #### Capítulo 03.8 — Variables
 
@@ -232,7 +232,7 @@ Redução de duplicação via `workflow_call` (workflows reutilizáveis) e compo
 
 #### Capítulo 03.13 — Permissões do `GITHUB_TOKEN`
 
-Uso do bloco `permissions:` no nível de workflow e de job para aplicar o princípio do menor privilégio — o padrão recomendado é `permissions: {}` no topo do arquivo e elevar apenas o necessário (`contents: read`, `pull-requests: write` etc.) em cada job.
+Uso do bloco `permissions:` no nível de workflow e de job para aplicar o princípio do menor privilégio. O padrão recomendado é `permissions: {}` no topo do arquivo, elevando apenas o necessário (`contents: read`, `pull-requests: write` etc.) em cada job.
 
 #### Capítulo 03.14 — Versionamento de actions e sintaxe atual
 
@@ -290,7 +290,7 @@ Escalabilidade.
 
 #### Capítulo 04.10 — Segurança
 
-Isolamento, permissões e riscos de execução de código. Ponto crítico: self-hosted runners **não devem** ser habilitados para workflows disparados por `pull_request` em repositórios públicos sem revisão — um PR malicioso de um fork pode executar código arbitrário no runner. Cuidados obrigatórios:
+Isolamento, permissões e riscos de execução de código. Ponto crítico: self-hosted runners **não devem** ser habilitados para workflows disparados por `pull_request` em repositórios públicos sem revisão, pois um PR malicioso de um fork pode executar código arbitrário no runner. Cuidados obrigatórios:
 
 - restringir execução de workflows em PRs de forks (aprovação manual do mantenedor antes de rodar);
 - nunca usar `pull_request_target` combinado com checkout do código do fork sem sanitização — esse evento roda com o contexto (e secrets) do branch base, ampliando o risco;
@@ -574,7 +574,7 @@ Procedimento seguro.
 
 #### Capítulo 09.7 — Deploy com Docker
 
-Atualização de containers. Pode ser feito diretamente via SSH/Docker Compose ou delegado a um orquestrador de deploy (ex.: Coolify), que recebe o webhook do GitHub Actions e cuida do build, health check e substituição do container — reduzindo a lógica de deploy mantida dentro do próprio workflow.
+Atualização de containers. Pode ser feito diretamente via SSH/Docker Compose ou delegado a um orquestrador de deploy (ex.: Coolify), que recebe o webhook do GitHub Actions e cuida do build, health check e substituição do container, reduzindo a lógica de deploy mantida dentro do próprio workflow.
 
 #### Capítulo 09.8 — Blue/Green Deployment
 

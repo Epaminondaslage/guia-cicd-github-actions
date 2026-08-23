@@ -62,7 +62,7 @@ software aprovado é implantado automaticamente
 
 Neste guia, produção mantém gate humano.
 
-Isso não torna Continuous Deployment automático "errado" — é uma opção igualmente válida, adotada por muitos times maduros. A diferença é o risco que cada modelo aceita:
+Continuous Deployment automático não é "errado": é uma opção igualmente válida, adotada por muitos times maduros. A diferença é o risco que cada modelo aceita:
 
 ```text
 Deploy com gate manual
@@ -81,7 +81,7 @@ Settings -> Environments -> production
   Required reviewers: 1+ pessoas
 ```
 
-Com isso, mesmo um workflow disparado automaticamente por push em `main` **pausa** antes de rodar o job com `environment: production`, aguardando aprovação na própria interface do GitHub. Ou seja: "CD automático" e "gate humano" não são mutuamente exclusivos — required reviewers é a forma do GitHub aplicar gate humano dentro de um pipeline desenhado como automático. A escolha real é onde a aprovação vive:
+Com isso, mesmo um workflow disparado automaticamente por push em `main` **pausa** antes de rodar o job com `environment: production`, aguardando aprovação na própria interface do GitHub. Ou seja: "CD automático" e "gate humano" não são mutuamente exclusivos, pois required reviewers é a forma do GitHub aplicar gate humano dentro de um pipeline desenhado como automático. A escolha real é onde a aprovação vive:
 
 ```text
 gate via workflow_dispatch manual   -> operador decide quando disparar
@@ -397,7 +397,7 @@ Na prática, o recurso mais importante do environment `production` é:
 Required reviewers
 ```
 
-Sem reviewers configurados, `environment: production` no YAML é só um rótulo — não bloqueia nada sozinho. É a combinação `environment de proteção com reviewers` + `job aponta para esse environment` que efetivamente impede o job de rodar sem aprovação, mesmo em planos gratuitos de repositório público (em repositórios privados, esse recurso exige GitHub Team/Enterprise).
+Sem reviewers configurados, `environment: production` no YAML é só um rótulo, e não bloqueia nada sozinho. É a combinação `environment de proteção com reviewers` + `job aponta para esse environment` que efetivamente impede o job de rodar sem aprovação, mesmo em planos gratuitos de repositório público (em repositórios privados, esse recurso exige GitHub Team/Enterprise).
 
 ---
 
@@ -475,7 +475,7 @@ Rollback rápido depende de decisões tomadas *antes* do incidente, não durante
    nunca rebuildar ou recriar a versão antiga a partir do código.
 ```
 
-Isso implica não fazer `docker image prune` agressivo em PROD logo após o deploy — mantenha pelo menos a imagem N-1 disponível localmente por um período, para que o rollback não dependa de baixar a imagem do registry sob pressão (e não falhe se o registry estiver indisponível justamente durante o incidente que motivou o rollback).
+Isso implica não fazer `docker image prune` agressivo em PROD logo após o deploy: mantenha pelo menos a imagem N-1 disponível localmente por um período, para que o rollback não dependa de baixar a imagem do registry sob pressão (e não falhe se o registry estiver indisponível justamente durante o incidente que motivou o rollback).
 
 Rollback bom é aquele que:
 
@@ -606,7 +606,7 @@ dump prévio
  conferir resultado
 ```
 
-"Verificado" significa confirmar que o dump foi gerado com sucesso (tamanho não-zero, sem erro no `stderr` do processo de backup) antes de prosseguir — um backup que falhou em silêncio é o mesmo que não ter backup.
+"Verificado" significa confirmar que o dump foi gerado com sucesso (tamanho não-zero, sem erro no `stderr` do processo de backup) antes de prosseguir. Um backup que falhou em silêncio é o mesmo que não ter backup.
 
 ---
 
@@ -876,7 +876,7 @@ Custa mais recursos e complexidade: dobro de instâncias rodando durante a troca
 
 ## 54a. Quando NÃO vale a pena
 
-Para a maioria dos setups pequenos/médios — um único servidor de aplicação, uma equipe pequena, um domínio de negócio que tolera alguns segundos de indisponibilidade em janela combinada — blue/green e canary custam mais do que entregam:
+Para a maioria dos setups pequenos/médios (um único servidor de aplicação, uma equipe pequena, um domínio de negócio que tolera alguns segundos de indisponibilidade em janela combinada), blue/green e canary custam mais do que entregam:
 
 ```text
 setup simples:
@@ -886,7 +886,7 @@ setup simples:
   -> blue/green é complexidade desnecessária
 ```
 
-Nesses casos, o que realmente reduz risco é o que já foi descrito neste volume: artifact imutável, health check obrigatório, rollback rápido testado e gate humano antes de produção (Seções 4, 14, 18, 23a). Blue/green e canary resolvem um problema diferente — *impacto de usuários durante a janela de deploy em sistemas com tráfego contínuo e várias instâncias* — não são pré-requisito de um pipeline de CI/CD maduro.
+Nesses casos, o que realmente reduz risco é o que já foi descrito neste volume: artifact imutável, health check obrigatório, rollback rápido testado e gate humano antes de produção (Seções 4, 14, 18, 23a). Blue/green e canary resolvem um problema diferente (*impacto de usuários durante a janela de deploy em sistemas com tráfego contínuo e várias instâncias*) e não são pré-requisito de um pipeline de CI/CD maduro.
 
 Adote blue/green ou canary quando o custo de alguns segundos de indisponibilidade for realmente alto (SLA contratual, tráfego 24/7 relevante) ou quando já existir infraestrutura (load balancer, múltiplas instâncias) que os suporte sem esforço extra significativo.
 
@@ -1234,7 +1234,7 @@ if ! deploy "$NEW"; then
 fi
 ```
 
-O mecanismo real deve ser robusto contra falhas parciais.
+O mecanismo real precisa tolerar falhas parciais.
 
 ---
 

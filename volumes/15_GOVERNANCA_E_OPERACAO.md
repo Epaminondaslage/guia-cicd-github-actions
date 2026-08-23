@@ -325,7 +325,7 @@ Ao usar **Environments** (Settings > Environments) em cada job de deploy do work
 
 Regras de proteção de Environment (reviewers obrigatórios, wait timer, branches permitidas) também servem como o "approval" da política acima: só quem está na lista de reviewers do Environment pode aprovar a promoção para PROD, e essa aprovação fica registrada.
 
-O **audit log** (organização, planos Team/Enterprise) complementa registrando quem alterou configurações sensíveis — proteção de branch, secrets, membros, Environments — não o conteúdo do deploy em si.
+O **audit log** (organização, planos Team/Enterprise) complementa registrando quem alterou configurações sensíveis (proteção de branch, secrets, membros, Environments), não o conteúdo do deploy em si.
 
 ### 18.2 Autenticação do runner: prefira OIDC a secrets de longa duração
 
@@ -338,7 +338,7 @@ provedor emite credencial de curta duração
 job usa a credencial e ela expira
 ```
 
-Vantagens: nada fica salvo em segredo permanente para vazar, e o próprio provedor externo passa a registrar por qual repositório/branch/environment cada acesso foi originado — reforçando a trilha de auditoria da seção 18.1.
+Vantagens: nada fica salvo em segredo permanente para vazar, e o próprio provedor externo passa a registrar por qual repositório/branch/environment cada acesso foi originado, reforçando a trilha de auditoria da seção 18.1.
 
 Para infraestrutura própria sem suporte nativo a OIDC (por exemplo, um runner self-hosted acessando um servidor via SSH), a alternativa é reduzir o TTL do que for possível e aplicar a rotação da seção 37.
 
@@ -542,7 +542,7 @@ Periodicamente reveja:
 - production access;
 - registry.
 
-Onde for possível, prefira OIDC (seção 18.2) a tokens de longa duração: reduz a superfície da própria revisão, já que não há credencial permanente para revogar — apenas a confiança configurada no provedor externo (repo/branch/environment autorizados).
+Onde for possível, prefira OIDC (seção 18.2) a tokens de longa duração: reduz a superfície da própria revisão, já que não há credencial permanente para revogar, apenas a confiança configurada no provedor externo (repo/branch/environment autorizados).
 
 ---
 
@@ -647,7 +647,7 @@ Pode documentar como reportar vulnerabilidades.
 
 Use em áreas sensíveis se equipe crescer.
 
-Arquivo `CODEOWNERS`, em `.github/CODEOWNERS`, `CODEOWNERS` (raiz) ou `docs/CODEOWNERS`. Sintaxe (padrões `.gitignore`, avaliados de cima para baixo — a **última** linha que casa vence):
+Arquivo `CODEOWNERS`, em `.github/CODEOWNERS`, `CODEOWNERS` (raiz) ou `docs/CODEOWNERS`. Sintaxe (padrões `.gitignore`, avaliados de cima para baixo: a **última** linha que casa vence):
 
 ```text
 # comentário
@@ -661,7 +661,7 @@ Arquivo `CODEOWNERS`, em `.github/CODEOWNERS`, `CODEOWNERS` (raiz) ou `docs/CODE
 
 Donos podem ser `@usuario`, `@org/time` (o time precisa ter permissão de escrita/leitura no repo) ou e-mail associado a conta do GitHub.
 
-Isso só passa a bloquear merge quando combinado com a proteção de branch/ruleset da seção 3: ative "Require review from Code Owners" (clássico) ou a regra equivalente em Rulesets. Sem essa opção marcada, o CODEOWNERS apenas sugere revisores automaticamente — não impede merge sem a aprovação deles.
+Isso só passa a bloquear merge quando combinado com a proteção de branch/ruleset da seção 3: ative "Require review from Code Owners" (clássico) ou a regra equivalente em Rulesets. Sem essa opção marcada, o CODEOWNERS apenas sugere revisores automaticamente e não impede merge sem a aprovação deles.
 
 Cuidados comuns:
 

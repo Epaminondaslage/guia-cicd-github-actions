@@ -648,7 +648,7 @@ Uploads devem ocorrer especialmente em falha.
     path: playwright-report/
 ```
 
-**Atenção com `actions/upload-artifact@v4` e `actions/download-artifact@v4`:** a partir da v4, cada `name` de artifact precisa ser único dentro do run — não é mais possível fazer múltiplos uploads acumulando no mesmo nome (comportamento da v3). Em uma matrix, gere nomes únicos por combinação:
+**Atenção com `actions/upload-artifact@v4` e `actions/download-artifact@v4`:** a partir da v4, cada `name` de artifact precisa ser único dentro do run: não é mais possível fazer múltiplos uploads acumulando no mesmo nome (comportamento da v3). Em uma matrix, gere nomes únicos por combinação:
 
 ```yaml
 - uses: actions/upload-artifact@v4
@@ -702,7 +702,7 @@ Para baixar todos os artifacts de um run de uma vez (útil em jobs de consolida�
 
 ### 33.2 Outputs entre jobs
 
-Para valores pequenos (strings, flags, versões, SHAs) — não arquivos — use `needs.<job>.outputs` em vez de artifacts. O job produtor declara `outputs:` e escreve em `$GITHUB_OUTPUT`; nunca use o comando depreciado `set-output`, removido pelo GitHub em 2023 por questões de segurança:
+Para valores pequenos (strings, flags, versões, SHAs), e não arquivos, use `needs.<job>.outputs` em vez de artifacts. O job produtor declara `outputs:` e escreve em `$GITHUB_OUTPUT`; nunca use o comando depreciado `set-output`, removido pelo GitHub em 2023 por questões de segurança:
 
 ```yaml
 jobs:
@@ -773,7 +773,7 @@ Suporta `maven`, `gradle` e `sbt`.
 
 ### 34.4 actions/cache para o caso genérico
 
-Quando não existe cache nativo (ex.: cache de build do Composer, cache de ferramentas customizadas), use `actions/cache@v4` diretamente. A chave deve incluir algo que mude quando as dependências mudam — normalmente o hash do lockfile — e um `restore-keys` como fallback parcial:
+Quando não existe cache nativo (ex.: cache de build do Composer, cache de ferramentas customizadas), use `actions/cache@v4` diretamente. A chave deve incluir algo que mude quando as dependências mudam (normalmente o hash do lockfile) e um `restore-keys` como fallback parcial:
 
 ```yaml
 - uses: actions/cache@v4
@@ -794,7 +794,7 @@ Regras de ouro para a chave:
 | `restore-keys` em cascata | Permite reaproveitar cache parcial em vez de começar do zero |
 | Nunca usar chave fixa | "Cache sempre igual" nunca invalida e passa a mentir |
 
-Em runners self-hosted, avalie se o cache do GitHub Actions (limitado por repositório) compensa frente a um cache local persistente no próprio runner — muitas vezes o segundo é mais rápido e não conta contra a cota do GitHub.
+Em runners self-hosted, avalie se o cache do GitHub Actions (limitado por repositório) compensa frente a um cache local persistente no próprio runner: muitas vezes o segundo é mais rápido e não conta contra a cota do GitHub.
 
 ---
 
@@ -802,7 +802,7 @@ Em runners self-hosted, avalie se o cache do GitHub Actions (limitado por reposi
 
 Composer não tem uma setup-action oficial mantida pelo GitHub com cache nativo equivalente ao `setup-node`. A prática recomendada é combinar `shivammathur/setup-php` (ou instalar o Composer disponível no runner) com `actions/cache@v4`, como mostrado em 34.4, usando `composer.lock` na chave.
 
-Evite caches globais sem chave apropriada — um cache sem hash do lockfile na chave serve dependências desatualizadas silenciosamente.
+Evite caches globais sem chave apropriada: um cache sem hash do lockfile na chave serve dependências desatualizadas silenciosamente.
 
 ---
 
@@ -825,7 +825,7 @@ Depois adicione cache distribuído, por exemplo com `docker/build-push-action@v6
     cache-to: type=gha,mode=max
 ```
 
-Em runners self-hosted persistentes, o próprio cache local do Docker (`docker build` reutilizando layers já baixadas) já entrega boa parte do ganho sem configuração extra — meça antes de adicionar cache remoto.
+Em runners self-hosted persistentes, o próprio cache local do Docker (`docker build` reutilizando layers já baixadas) já entrega boa parte do ganho sem configuração extra. Meça antes de adicionar cache remoto.
 
 ---
 
@@ -1354,7 +1354,7 @@ Pontos importantes:
 | Inputs/secrets explícitos | Só o que é declarado em `workflow_call` fica visível ao chamador |
 | `secrets: inherit` | Repassa todos os secrets do chamador (use com cautela) |
 
-Versione o workflow central (`@v1`, `@v1.2.0` ou SHA fixo) para não quebrar todos os consumidores ao alterar a lógica interna. Trate o workflow reutilizável como uma dependência com contrato — mudanças breaking exigem uma nova major tag.
+Versione o workflow central (`@v1`, `@v1.2.0` ou SHA fixo) para não quebrar todos os consumidores ao alterar a lógica interna. Trate o workflow reutilizável como uma dependência com contrato: mudanças breaking exigem uma nova major tag.
 
 ---
 

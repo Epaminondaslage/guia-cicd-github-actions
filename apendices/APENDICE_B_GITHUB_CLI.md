@@ -74,7 +74,7 @@ gh variable set NOME --body "valor"
 gh variable delete NOME
 ```
 
-Nunca passe secrets em texto puro na linha de comando quando puder usar entrada via stdin/prompt (`gh secret set NOME < arquivo` ou digitando interativamente). `gh secret set` nunca expõe o valor de volta — apenas confirma a criação/atualização.
+Nunca passe secrets em texto puro na linha de comando quando puder usar entrada via stdin/prompt (`gh secret set NOME < arquivo` ou digitando interativamente). `gh secret set` nunca expõe o valor de volta, apenas confirma a criação/atualização.
 
 ## Releases
 

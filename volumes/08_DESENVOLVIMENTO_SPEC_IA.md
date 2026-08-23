@@ -65,7 +65,7 @@ Aprovação
 PROD
 ```
 
-Duas revisões humanas nunca devem ser puladas: a da SPEC/plano (antes de codar) e a do código gerado (antes do merge). São coisas diferentes — a primeira valida o "o quê" e o "por quê"; a segunda valida o "como" foi implementado de fato.
+Duas revisões humanas nunca devem ser puladas: a da SPEC/plano (antes de codar) e a do código gerado (antes do merge). São coisas diferentes: a primeira valida o "o quê" e o "por quê"; a segunda valida o "como" foi implementado.
 
 ---
 
@@ -96,7 +96,7 @@ a implementação fica verificável.
 
 ## 3. Brainstorm antes da entrevista formal
 
-Antes de qualquer SPEC, vale uma etapa curta e deliberadamente aberta de brainstorm — não confundir com a entrevista de requisitos (seção seguinte).
+Antes de qualquer SPEC, vale uma etapa curta e deliberadamente aberta de brainstorm, que não se confunde com a entrevista de requisitos (seção seguinte).
 
 Objetivo do brainstorm:
 
@@ -114,7 +114,7 @@ Brainstorm  -> "que problema é esse, de fato? quais caminhos existem?"
 Entrevista  -> "dado o caminho escolhido, quais são os detalhes concretos?"
 ```
 
-Pular o brainstorm e ir direto para a SPEC costuma produzir specs tecnicamente corretas, mas que resolvem o problema errado — porque ninguém questionou a premissa inicial.
+Pular o brainstorm e ir direto para a SPEC costuma produzir specs tecnicamente corretas, mas que resolvem o problema errado, porque ninguém questionou a premissa inicial.
 
 Sinal de que vale a pena brainstormar: o pedido veio como solução pronta ("adicionar um botão X") em vez de problema ("usuário não consegue fazer Y"). Nesse caso, volte um passo e pergunte pelo problema antes de aceitar a solução.
 
@@ -524,7 +524,7 @@ Nenhum desses sinais substitui a leitura do diff por uma pessoa. Um agente pode 
 ### Checklist mínimo de revisão humana
 
 - [ ] Todo o diff foi lido, não só o resumo gerado pelo agente.
-- [ ] Cada trecho alterado corresponde a um item do plano/SPEC — nada "a mais".
+- [ ] Cada trecho alterado corresponde a um item do plano/SPEC, nada "a mais".
 - [ ] Nenhuma dependência, API ou função usada foi inventada; existe e faz o que o código presume.
 - [ ] Testes novos realmente testam o comportamento do critério de aceitação, não apenas "não quebra nada".
 - [ ] Nenhum teste existente foi enfraquecido, comentado ou apagado para fazer a suíte passar.
@@ -532,9 +532,9 @@ Nenhum desses sinais substitui a leitura do diff por uma pessoa. Um agente pode 
 - [ ] Tratamento de erro e casos de borda fazem sentido, não só o caminho feliz.
 - [ ] Mudanças em banco de dados são compatíveis e reversíveis.
 - [ ] Estilo e padrões seguem o restante do projeto (revisão automática de lint não garante isso sozinha).
-- [ ] O revisor entende o código a ponto de conseguir explicá-lo — se não entende, não aprova.
+- [ ] O revisor entende o código a ponto de conseguir explicá-lo; se não entende, não aprova.
 
-Regra prática: se a pessoa que aprova não consegue explicar o que o código faz e por quê, a revisão não está completa — independentemente de quem (humano ou IA) escreveu o código.
+Regra prática: se a pessoa que aprova não consegue explicar o que o código faz e por quê, a revisão não está completa, independentemente de quem (humano ou IA) escreveu o código.
 
 ---
 
@@ -758,7 +758,7 @@ Um exemplo concreto vale mais que uma descrição abstrata. Sempre que possível
 
 - um exemplo de entrada e saída esperada (ou de tela antes/depois);
 - um trecho de código já existente no projeto que segue o padrão desejado;
-- os critérios de aceitação da SPEC, copiados literalmente — não parafraseados;
+- os critérios de aceitação da SPEC, copiados literalmente, não parafraseados;
 - a definição explícita de "pronto" (ver Definition of Done, seção seguinte).
 
 Exemplo de prompt bem formado:
@@ -783,14 +783,14 @@ npm run test:unit -- DashboardTable
 npm run lint
 ```
 
-Prompt vago — a evitar:
+Prompt vago, a evitar:
 
 ```text
 melhora a tabela do dashboard pra mostrar os chamados urgentes primeiro,
 segue o padrão que já tem no projeto
 ```
 
-O segundo exemplo obriga o agente a adivinhar "qual padrão" e "o que é urgente" — exatamente o tipo de ambiguidade que a SPEC deveria ter eliminado antes de chegar ao prompt.
+O segundo exemplo obriga o agente a adivinhar "qual padrão" e "o que é urgente", exatamente o tipo de ambiguidade que a SPEC deveria ter eliminado antes de chegar ao prompt.
 
 ---
 
@@ -1594,7 +1594,7 @@ PROD validado
 - [ ] Nenhum secret.
 - [ ] Commits coerentes.
 - [ ] SPEC atual continua atendida.
-- [ ] Nenhuma API/dependência usada foi alucinada — todas existem e fazem o que o código presume.
+- [ ] Nenhuma API/dependência usada foi alucinada; todas existem e fazem o que o código presume.
 - [ ] Revisor consegue explicar o que o código faz, sem depender da explicação do agente.
 
 ---
@@ -1745,7 +1745,7 @@ PROD
 
 ## 96. Vibe coding vs. o fluxo deste volume
 
-"Vibe coding" é o termo popularizado para descrever aceitar o que o agente de IA produz sem revisar linha a linha — pedir, rodar, ver que "funciona" na tela e seguir em frente. Funciona para protótipo descartável. Não deveria ser aceito como prática para código que vai para produção.
+"Vibe coding" é o termo popularizado para descrever aceitar o que o agente de IA produz sem revisar linha a linha: pedir, rodar, ver que "funciona" na tela e seguir em frente. Funciona para protótipo descartável. Não deveria ser aceito como prática para código que vai para produção.
 
 O fluxo deste volume (seção 95) existe justamente como antídoto estrutural ao vibe coding, mantendo a velocidade de gerar código com IA sem herdar seu principal risco: aceitar código que ninguém entende de fato.
 
@@ -1756,12 +1756,12 @@ Diferenças concretas:
 | Prompt vago, direto para o código | Brainstorm + entrevista antes de especificar (seções 2-4) |
 | Sem spec; requisito vive só no prompt | SPEC escrita e revisada por humano (seções 5-15) |
 | Implementação sem plano | Plano de implementação revisado antes de codar (seções 16-24) |
-| Aceitar o diff porque "rodou" | Revisão humana obrigatória, linha a linha, antes do merge (seção 26) — nunca dispensada, nem quando os testes passam |
+| Aceitar o diff porque "rodou" | Revisão humana obrigatória, linha a linha, antes do merge (seção 26); nunca dispensada, nem quando os testes passam |
 | Um agente escreve e aprova a si mesmo | Separação escritor/revisor: revisão do diff por um agente diferente do que implementou, ou por subagente adversarial (seção 25) |
 | Sem rastro do porquê | PR como unidade de auditoria; SPEC e plano documentam a decisão (seção 27) |
 | Erro descoberto em produção | Gate humano antes de produção, validação em DEV, rollback documentado (Volume 09) |
 
-Consequência prática: o tempo "economizado" pulando revisão humana costuma reaparecer depois, como incidente em produção, dependência inventada pelo agente que não existe, ou lógica que passou nos testes mas não faz o que a spec pedia — os riscos que a checklist da seção 26 lista explicitamente. O fluxo deste guia é mais lento por PR do que vibe coding puro, mas o custo médio por linha de código que chega em produção é menor, porque o erro é pego na revisão humana e não no chamado de suporte.
+Consequência prática: o tempo "economizado" pulando revisão humana costuma reaparecer depois, como incidente em produção, dependência inventada pelo agente que não existe, ou lógica que passou nos testes mas não faz o que a spec pedia. São os riscos que a checklist da seção 26 lista explicitamente. O fluxo deste guia é mais lento por PR do que vibe coding puro, mas o custo médio por linha de código que chega em produção é menor, porque o erro é pego na revisão humana e não no chamado de suporte.
 
 ---
 

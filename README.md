@@ -1,12 +1,12 @@
 # Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA
 
-> Esta é a estrutura que uso nos meus projetos pessoais. Serve como ponto de partida e referência de boas práticas, mas exige ajuste antes de ser adotada em projetos corporativos — políticas de segurança, compliance, governança de acesso e requisitos de infraestrutura variam de empresa para empresa.
+> Esta é a estrutura que uso nos meus projetos pessoais. Serve como ponto de partida e referência de boas práticas, mas exige ajuste antes de ser adotada em projetos corporativos: políticas de segurança, compliance, governança de acesso e requisitos de infraestrutura variam de empresa para empresa.
 
 Guia  cobrindo fundamentos de Git, GitHub Actions, runners self-hosted, Docker no pipeline, testes, deploy contínuo, segurança, observabilidade, infraestrutura, arquiteturas de referência, otimização e governança.
 
 ## Sobre vibe coding e IA neste guia
 
-"Vibe coding" — deixar um agente de IA gerar código e aceitar o resultado sem revisão criteriosa — virou um movimento global à medida que ferramentas como GitHub Copilot, Cursor e Claude Code tornaram trivial produzir código funcional em minutos. É rápido para prototipar, mas descontrolado é um risco real em produção: código que "funciona na tela" pode conter dependência inventada, lógica que não bate com o requisito real, ou falha de segurança que só aparece sob carga.
+"Vibe coding" (deixar um agente de IA gerar código e aceitar o resultado sem revisão criteriosa) virou um movimento global à medida que ferramentas como GitHub Copilot, Cursor e Claude Code tornaram trivial produzir código funcional em minutos. É rápido para prototipar, mas descontrolado é um risco real em produção: código que "funciona na tela" pode conter dependência inventada, lógica que não bate com o requisito real, ou falha de segurança que só aparece sob carga.
 
 Este guia adota IA no desenvolvimento de forma deliberada, não pelo hype: agentes aceleram a escrita de código, mas nunca substituem a responsabilidade humana pelo que é aprovado e enviado a produção. Na prática isso significa spec e plano revisados antes de codar, revisão humana obrigatória do diff linha a linha antes do merge, e agentes distintos para escrever e para revisar — os mesmos princípios de qualquer boa prática de engenharia, aplicados também ao código que a IA ajuda a gerar. O detalhamento completo está no [Volume 08 — Desenvolvimento com Spec + IA](volumes/08_DESENVOLVIMENTO_SPEC_IA.md), incluindo uma comparação direta entre vibe coding descontrolado e o fluxo adotado aqui.
 
