@@ -554,23 +554,9 @@ Testes pós-deploy.
 
 Modelo adotado:
 
-```text
-CI passou
-   |
-Deploy DEV
-   |
-Validação
-   |
-   v
-Aprovar produção?
-   |
- +----+----+
- |         |
-Não       Sim
-           |
-           v
-         PROD
-```
+<p align="center">
+  <img src="img9.png" alt="Fluxo pós-CI: CI passou, deploy DEV, validação, aprovar produção? — se não, ajustes e novo ciclo; se sim, deploy em PROD" width="480">
+</p>
 
 #### Capítulo 09.5 — GitHub Environments
 
