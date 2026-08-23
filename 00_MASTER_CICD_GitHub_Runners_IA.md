@@ -372,17 +372,9 @@ Ambiente descartável por execução.
 
 #### Capítulo 06.1 — Pirâmide de testes
 
-```text
-          /\
-         /E2E\
-        /----\
-       / API  \
-      /--------\
-     /Integração\
-    /------------\
-   /   Unitários  \
-  /________________\
-```
+<p align="center">
+  <img src="img5.png" alt="Pirâmide de testes: unitários na base (mais rápidos e baratos), depois integração, API e E2E no topo (mais lentos e caros), com objetivos e características de cada camada" width="720">
+</p>
 
 #### Capítulo 06.2 — Testes unitários
 
