@@ -36,7 +36,8 @@ O documento 00_MASTER funciona como mapa de todo o projeto. Cada capítulo poder
 Fluxo de referência:
 
 <p align="center">
-  <img src="img1.png" alt="Fluxo de referência: da ideia à produção, passando por spec, plano, branch, implementação, PR, GitHub Actions, self-hosted runner, deploy dev, validação, gate humano e monitoramento" width="720">
+  <img src="img1.png#gh-light-mode-only" alt="Fluxo de referência: da ideia à produção, passando por spec, plano, branch, implementação, PR, GitHub Actions, self-hosted runner, deploy dev, validação, gate humano e monitoramento" width="720">
+  <img src="img1-dark.png#gh-dark-mode-only" alt="Fluxo de referência: da ideia à produção, passando por spec, plano, branch, implementação, PR, GitHub Actions, self-hosted runner, deploy dev, validação, gate humano e monitoramento" width="720">
 </p>
 
 Um princípio central será separar **CI** de **CD**.
@@ -109,7 +110,8 @@ Uso de branches para desenvolvimento isolado.
 Exemplo:
 
 <p align="center">
-  <img src="img3.png" alt="Anatomia de branches: main como branch estável, com feature/login, fix/dashboard e feature/relatorios derivadas dela, cada uma com propósito e exemplos de entrega" width="720">
+  <img src="img3.png#gh-light-mode-only" alt="Anatomia de branches: main como branch estável, com feature/login, fix/dashboard e feature/relatorios derivadas dela, cada uma com propósito e exemplos de entrega" width="720">
+  <img src="img3-dark.png#gh-dark-mode-only" alt="Anatomia de branches: main como branch estável, com feature/login, fix/dashboard e feature/relatorios derivadas dela, cada uma com propósito e exemplos de entrega" width="720">
 </p>
 
 #### Capítulo 01.5 — Merge
@@ -141,7 +143,8 @@ Organização profissional de um projeto.
 Ciclo completo de uma PR.
 
 <p align="center">
-  <img src="img2.png" alt="Ciclo completo de uma PR: branch, commits, pull request com revisão, testes, comentários e correções, até o merge" width="480">
+  <img src="img2.png#gh-light-mode-only" alt="Ciclo completo de uma PR: branch, commits, pull request com revisão, testes, comentários e correções, até o merge" width="480">
+  <img src="img2-dark.png#gh-dark-mode-only" alt="Ciclo completo de uma PR: branch, commits, pull request com revisão, testes, comentários e correções, até o merge" width="480">
 </p>
 
 #### Capítulo 02.3 — PRs independentes
@@ -185,7 +188,8 @@ Introdução aos workflows.
 Anatomia de:
 
 <p align="center">
-  <img src="img7.png" alt="Estrutura de workflows no GitHub Actions: pasta .github/workflows/ com ci.yml, e2e.yml e deploy.yml, cada um com seu propósito, disparadores comuns e trecho de YAML" width="720">
+  <img src="img7.png#gh-light-mode-only" alt="Estrutura de workflows no GitHub Actions: pasta .github/workflows/ com ci.yml, e2e.yml e deploy.yml, cada um com seu propósito, disparadores comuns e trecho de YAML" width="720">
+  <img src="img7-dark.png#gh-dark-mode-only" alt="Estrutura de workflows no GitHub Actions: pasta .github/workflows/ com ci.yml, e2e.yml e deploy.yml, cada um com seu propósito, disparadores comuns e trecho de YAML" width="720">
 </p>
 
 #### Capítulo 03.3 — Events
@@ -255,7 +259,8 @@ Diferença entre GitHub-hosted e self-hosted.
 #### Capítulo 04.2 — Arquitetura recomendada
 
 <p align="center">
-  <img src="img4.png" alt="Arquitetura do self-hosted runner: GitHub conecta via HTTPS a um runner Ubuntu Linux, que expõe Docker, Node.js, PHP, Composer, npm, Playwright e ferramentas de teste" width="640">
+  <img src="img4.png#gh-light-mode-only" alt="Arquitetura do self-hosted runner: GitHub conecta via HTTPS a um runner Ubuntu Linux, que expõe Docker, Node.js, PHP, Composer, npm, Playwright e ferramentas de teste" width="640">
+  <img src="img4-dark.png#gh-dark-mode-only" alt="Arquitetura do self-hosted runner: GitHub conecta via HTTPS a um runner Ubuntu Linux, que expõe Docker, Node.js, PHP, Composer, npm, Playwright e ferramentas de teste" width="640">
 </p>
 
 #### Capítulo 04.3 — Requisitos de hardware
@@ -283,7 +288,8 @@ Inicialização automática.
 Exemplo:
 
 <p align="center">
-  <img src="img6.png" alt="GitHub Actions runs-on: exemplo de workflow.yml com runs-on self-hosted, linux e docker; explicação de que o job só roda em runner com TODOS os rótulos (lógica AND), o que cada rótulo representa e como funciona a correspondência" width="720">
+  <img src="img6.png#gh-light-mode-only" alt="GitHub Actions runs-on: exemplo de workflow.yml com runs-on self-hosted, linux e docker; explicação de que o job só roda em runner com TODOS os rótulos (lógica AND), o que cada rótulo representa e como funciona a correspondência" width="720">
+  <img src="img6-dark.png#gh-dark-mode-only" alt="GitHub Actions runs-on: exemplo de workflow.yml com runs-on self-hosted, linux e docker; explicação de que o job só roda em runner com TODOS os rótulos (lógica AND), o que cada rótulo representa e como funciona a correspondência" width="720">
 </p>
 
 #### Capítulo 04.9 — Múltiplos runners
@@ -366,7 +372,8 @@ Ambiente descartável por execução.
 #### Capítulo 06.1 — Pirâmide de testes
 
 <p align="center">
-  <img src="img5.png" alt="Pirâmide de testes: unitários na base (mais rápidos e baratos), depois integração, API e E2E no topo (mais lentos e caros), com objetivos e características de cada camada" width="720">
+  <img src="img5.png#gh-light-mode-only" alt="Pirâmide de testes: unitários na base (mais rápidos e baratos), depois integração, API e E2E no topo (mais lentos e caros), com objetivos e características de cada camada" width="720">
+  <img src="img5-dark.png#gh-dark-mode-only" alt="Pirâmide de testes: unitários na base (mais rápidos e baratos), depois integração, API e E2E no topo (mais lentos e caros), com objetivos e características de cada camada" width="720">
 </p>
 
 #### Capítulo 06.2 — Testes unitários
@@ -428,7 +435,8 @@ Execução de suítes extensas fora do ciclo da PR.
 #### Capítulo 07.1 — Pipeline mínimo
 
 <p align="center">
-  <img src="img8.png" alt="Pipeline mínimo de CI: checkout, install, lint, unit, integration e build, com o que acontece em cada etapa" width="720">
+  <img src="img8.png#gh-light-mode-only" alt="Pipeline mínimo de CI: checkout, install, lint, unit, integration e build, com o que acontece em cada etapa" width="720">
+  <img src="img8-dark.png#gh-dark-mode-only" alt="Pipeline mínimo de CI: checkout, install, lint, unit, integration e build, com o que acontece em cada etapa" width="720">
 </p>
 
 #### Capítulo 07.2 — Pipeline para Node.js
@@ -555,7 +563,8 @@ Testes pós-deploy.
 Modelo adotado:
 
 <p align="center">
-  <img src="img9.png" alt="Fluxo pós-CI: CI passou, deploy DEV, validação, aprovar produção? — se não, ajustes e novo ciclo; se sim, deploy em PROD" width="480">
+  <img src="img9.png#gh-light-mode-only" alt="Fluxo pós-CI: CI passou, deploy DEV, validação, aprovar produção? — se não, ajustes e novo ciclo; se sim, deploy em PROD" width="480">
+  <img src="img9-dark.png#gh-dark-mode-only" alt="Fluxo pós-CI: CI passou, deploy DEV, validação, aprovar produção? — se não, ajustes e novo ciclo; se sim, deploy em PROD" width="480">
 </p>
 
 #### Capítulo 09.5 — GitHub Environments
