@@ -906,30 +906,10 @@ Um objetivo importante será evitar que o crescimento do sistema torne cada PR e
 
 Pipeline recomendado:
 
-```text
-PR
- |
- +--> Lint
- +--> Unitários
- +--> Integração
- +--> Build
- +--> Smoke E2E
- |
- v
-MERGE / DEV
- |
- +--> Testes de integração
- +--> E2E relevantes
- |
- v
-APROVAÇÃO HUMANA
- |
- v
-PRODUÇÃO
- |
- +--> Health Check
- +--> Smoke pós-deploy
-```
+<p align="center">
+  <img src="img10.png#gh-light-mode-only" alt="Pipeline de entrega contínua: PR (lint, unitários, integração, build, smoke E2E) → merge/DEV (testes de integração, E2E relevantes) → aprovação humana → produção (health check, smoke pós-deploy)" width="720">
+  <img src="img10-dark.png#gh-dark-mode-only" alt="Pipeline de entrega contínua: PR (lint, unitários, integração, build, smoke E2E) → merge/DEV (testes de integração, E2E relevantes) → aprovação humana → produção (health check, smoke pós-deploy)" width="720">
+</p>
 
 Suítes completas e demoradas poderão ser executadas:
 
