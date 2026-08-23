@@ -1,6 +1,6 @@
 # Volume 05 — Docker no Pipeline de CI/CD
 
-**Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
+**Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 05_DOCKER_NO_PIPELINE.md  
 **Versão:** 0.1.0  
 **Status:** Primeira versão para expansão incremental  

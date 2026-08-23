@@ -1,6 +1,6 @@
 # Volume 13 — Arquiteturas de Referência
 
-**Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
+**Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 13_ARQUITETURAS_DE_REFERENCIA.md  
 **Versão:** 0.2.0
 

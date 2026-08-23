@@ -1,6 +1,6 @@
 # Volume 01 — Fundamentos de Git e Controle de Versão
 
-**Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
+**Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 01_FUNDAMENTOS_GIT.md  
 **Versão:** 0.1.0  
 **Status:** Primeira versão para expansão incremental

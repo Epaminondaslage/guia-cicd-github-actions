@@ -1,6 +1,6 @@
 # Volume 16 — Laboratório Completo: do Repositório à Produção
 
-**Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
+**Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 16_LABORATORIO_COMPLETO.md  
 **Versão:** 0.1.0  
 **Objetivo:** consolidar todo o guia em um laboratório executável.

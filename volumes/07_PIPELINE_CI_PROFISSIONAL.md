@@ -1,6 +1,6 @@
 # Volume 07 — Pipeline CI Profissional
 
-**Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
+**Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 07_PIPELINE_CI_PROFISSIONAL.md  
 **Versão:** 0.1.0  
 **Pré-requisitos:** Volumes 01 a 06

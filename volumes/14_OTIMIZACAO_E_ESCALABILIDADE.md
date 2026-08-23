@@ -1,6 +1,6 @@
 # Volume 14 — Otimização e Escalabilidade do CI/CD
 
-**Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
+**Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 14_OTIMIZACAO_E_ESCALABILIDADE.md  
 **Versão:** 0.1.0
 

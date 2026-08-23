@@ -1,6 +1,6 @@
 # Volume 02 — GitHub e Pull Requests
 
-**Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
+**Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 02_GITHUB_PULL_REQUESTS.md  
 **Versão:** 0.2.0  
 **Status:** Revisado. Pull Requests, branch protection, CODEOWNERS e merge atualizados (2026)

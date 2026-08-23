@@ -1,6 +1,6 @@
 # Volume 10 — segurança do pipeline CI/CD
 
-**Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
+**Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 10_SEGURANCA_DO_PIPELINE.md  
 **Versão:** 0.2.0  
 **Pré-requisitos:** Volumes 01 a 09

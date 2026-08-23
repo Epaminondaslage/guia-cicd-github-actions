@@ -1,6 +1,6 @@
 # Volume 11 — Observabilidade do Pipeline e das Aplicações
 
-**Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
+**Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 11_OBSERVABILIDADE.md  
 **Versão:** 0.2.0
 

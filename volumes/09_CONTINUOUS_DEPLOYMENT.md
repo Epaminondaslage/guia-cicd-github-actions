@@ -1,6 +1,6 @@
 # Volume 09 — Continuous Deployment: DEV, Aprovação e Produção
 
-**Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
+**Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 09_CONTINUOUS_DEPLOYMENT.md  
 **Versão:** 0.1.0  
 **Pré-requisitos:** Volumes 01 a 08

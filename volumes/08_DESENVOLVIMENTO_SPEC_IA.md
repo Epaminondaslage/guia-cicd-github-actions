@@ -1,6 +1,6 @@
 # Volume 08 — Desenvolvimento Orientado por Especificação e IA
 
-**Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
+**Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 08_DESENVOLVIMENTO_SPEC_IA.md  
 **Versão:** 0.2.0  
 **Pré-requisitos:** Volumes 01 a 07

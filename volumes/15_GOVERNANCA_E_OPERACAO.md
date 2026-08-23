@@ -1,6 +1,6 @@
 # Volume 15 — Governança e Operação do Ciclo de Desenvolvimento
 
-**Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
+**Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 15_GOVERNANCA_E_OPERACAO.md  
 **Versão:** 0.1.0
 

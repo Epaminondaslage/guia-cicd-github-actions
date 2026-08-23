@@ -1,6 +1,6 @@
 # Volume 04 — Self-Hosted Runners com Ubuntu e Docker
 
-**Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
+**Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 04_SELF_HOSTED_RUNNERS.md  
 **Versão:** 0.1.0  
 **Status:** Primeira versão para expansão incremental  

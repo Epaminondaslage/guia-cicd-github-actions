@@ -1,6 +1,6 @@
 # Volume 03 — GitHub Actions: CI, Testes e Automação
 
-**Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
+**Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 03_GITHUB_ACTIONS.md  
 **Versão:** 0.1.0  
 **Status:** Primeira versão para expansão incremental  
