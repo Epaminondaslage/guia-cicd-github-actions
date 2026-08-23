@@ -264,7 +264,7 @@ Pontos importantes:
 - o repositório que expõe o workflow reusável precisa ser público, ou a organização precisa habilitar explicitamente "Access to this repository" para os repositórios consumidores (Settings → Actions → General);
 - fixar a referência (`@main`, `@v1`, ou melhor, um SHA) define o quão "congelado" o comportamento fica; usar uma tag semver (`@v1`) é o meio-termo recomendado entre reprodutibilidade e manutenção;
 - secrets **não** são herdados automaticamente entre organizações/repos — cada chamador precisa repassar explicitamente o que o workflow reusável declara em `secrets:`;
-- reusable workflows podem encadear (um workflow reusável pode chamar outro), mas o GitHub limita a profundidade de aninhamento (4 níveis) e o número de workflows chamados por execução.
+- reusable workflows podem encadear (um workflow reusável pode chamar outro), mas o GitHub limita a profundidade de aninhamento a 9 níveis de workflows reusáveis mais o chamador, e o número de workflows chamados por execução.
 
 ---
 
@@ -1089,7 +1089,7 @@ rollback
 
 ### GitHub Actions — Reusable Workflows e Composite Actions
 
-- [Reusing workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows) — GitHub Docs oficial: sustenta `workflow_call`, a exigência de repassar `secrets:` explicitamente (não há herança automática entre chamador e workflow reusável, salvo `secrets: inherit`) e o limite de aninhamento de workflows reusáveis (a documentação atual indica até 9 níveis de workflows reusáveis mais o chamador, valor a conferir/ajustar no texto que hoje cita "4 níveis").
+- [Reusing workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows) — GitHub Docs oficial: sustenta `workflow_call`, a exigência de repassar `secrets:` explicitamente (não há herança automática entre chamador e workflow reusável, salvo `secrets: inherit`) e o limite de aninhamento de 9 níveis de workflows reusáveis mais o chamador.
 - [Creating a composite action](https://docs.github.com/en/actions/sharing-automations/creating-actions/creating-a-composite-action) — GitHub Docs oficial: confirma que uma composite action agrupa vários steps em uma única action, executada como um único step dentro do job chamador (seção 11.1).
 
 ### GitHub Actions — Matrix e Environments
