@@ -184,13 +184,9 @@ Introdução aos workflows.
 
 Anatomia de:
 
-```text
-.github/
-└── workflows/
-    ├── ci.yml
-    ├── e2e.yml
-    └── deploy.yml
-```
+<p align="center">
+  <img src="img7.png" alt="Estrutura de workflows no GitHub Actions: pasta .github/workflows/ com ci.yml, e2e.yml e deploy.yml, cada um com seu propósito, disparadores comuns e trecho de YAML" width="720">
+</p>
 
 #### Capítulo 03.3 — Events
 
