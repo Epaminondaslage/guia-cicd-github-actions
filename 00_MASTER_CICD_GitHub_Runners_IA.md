@@ -35,64 +35,9 @@ O documento 00_MASTER funciona como mapa de todo o projeto. Cada capítulo poder
 
 Fluxo de referência:
 
-```text
-IDEIA / NECESSIDADE
-        |
-        v
-DISCUSSÃO E LEVANTAMENTO
-        |
-        v
-SPEC
-        |
-        v
-REVISÃO DA SPEC
-        |
-        v
-PLANO DE IMPLEMENTAÇÃO
-        |
-        v
-BRANCH
-        |
-        v
-IMPLEMENTAÇÃO
-        |
-        v
-TESTES LOCAIS
-        |
-        v
-PULL REQUEST
-        |
-        v
-GITHUB ACTIONS
-        |
-        +--> Lint
-        +--> Unit Tests
-        +--> Integration Tests
-        +--> Build
-        +--> Smoke Tests
-        +--> E2E selecionados
-        |
-        v
-SELF-HOSTED RUNNER
-        |
-        v
-DEPLOY DEV
-        |
-        v
-VALIDAÇÃO
-        |
-        v
-GATE HUMANO
-   "Publicar?"
-     /     \
-   NÃO     SIM
-            |
-            v
-       PRODUÇÃO
-            |
-            v
-       MONITORAMENTO
-```
+<p align="center">
+  <img src="img1.png" alt="Fluxo de referência: da ideia à produção, passando por spec, plano, branch, implementação, PR, GitHub Actions, self-hosted runner, deploy dev, validação, gate humano e monitoramento" width="720">
+</p>
 
 Um princípio central será separar **CI** de **CD**.
 
@@ -201,23 +146,9 @@ Organização profissional de um projeto.
 
 Ciclo completo de uma PR.
 
-```text
-Branch
-  |
-  v
-Commits
-  |
-  v
-PR
-  |
-  +--> revisão
-  +--> testes
-  +--> comentários
-  +--> correções
-  |
-  v
-Merge
-```
+<p align="center">
+  <img src="img2.png" alt="Ciclo completo de uma PR: branch, commits, pull request com revisão, testes, comentários e correções, até o merge" width="480">
+</p>
 
 #### Capítulo 02.3 — PRs independentes
 
