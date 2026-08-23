@@ -4,36 +4,42 @@ Guia completo cobrindo fundamentos de Git, GitHub Actions, runners self-hosted, 
 
 ## Estrutura
 
-- [`00_MASTER_CICD_GitHub_Runners_IA.md`](00_MASTER_CICD_GitHub_Runners_IA.md) — visão geral e índice mestre
-- [`volumes/`](volumes/) — 16 volumes temáticos (01 a 16)
-- [`apendices/`](apendices/) — apêndices de referência rápida (A a H)
+| Caminho | Conteúdo |
+|---|---|
+| [`00_MASTER_CICD_GitHub_Runners_IA.md`](00_MASTER_CICD_GitHub_Runners_IA.md) | Visão geral e índice mestre |
+| [`volumes/`](volumes/) | 16 volumes temáticos |
+| [`apendices/`](apendices/) | 8 apêndices de referência rápida |
 
 ## Volumes
 
-01. Fundamentos de Git
-02. GitHub Pull Requests
-03. GitHub Actions
-04. Self-Hosted Runners (Ubuntu/Docker)
-05. Docker no Pipeline
-06. Estratégia Profissional de Testes
-07. Pipeline CI Profissional
-08. Desenvolvimento com Spec + IA
-09. Continuous Deployment
-10. Segurança do Pipeline
-11. Observabilidade
-12. Infraestrutura de Servidor CI/CD
-13. Arquiteturas de Referência
-14. Otimização e Escalabilidade
-15. Governança e Operação
-16. Laboratório Completo
+| # | Título | Arquivo |
+|---|---|---|
+| 01 | Fundamentos de Git | [volumes/01_FUNDAMENTOS_GIT.md](volumes/01_FUNDAMENTOS_GIT.md) |
+| 02 | GitHub Pull Requests | [volumes/02_GITHUB_PULL_REQUESTS.md](volumes/02_GITHUB_PULL_REQUESTS.md) |
+| 03 | GitHub Actions | [volumes/03_GITHUB_ACTIONS.md](volumes/03_GITHUB_ACTIONS.md) |
+| 04 | Self-Hosted Runners (Ubuntu/Docker) | [volumes/04_SELF_HOSTED_RUNNERS_Ubuntu_Docker.md](volumes/04_SELF_HOSTED_RUNNERS_Ubuntu_Docker.md) |
+| 05 | Docker no Pipeline | [volumes/05_DOCKER_NO_PIPELINE.md](volumes/05_DOCKER_NO_PIPELINE.md) |
+| 06 | Estratégia Profissional de Testes | [volumes/06_ESTRATEGIA_PROFISSIONAL_DE_TESTES.md](volumes/06_ESTRATEGIA_PROFISSIONAL_DE_TESTES.md) |
+| 07 | Pipeline CI Profissional | [volumes/07_PIPELINE_CI_PROFISSIONAL.md](volumes/07_PIPELINE_CI_PROFISSIONAL.md) |
+| 08 | Desenvolvimento com Spec + IA | [volumes/08_DESENVOLVIMENTO_SPEC_IA.md](volumes/08_DESENVOLVIMENTO_SPEC_IA.md) |
+| 09 | Continuous Deployment | [volumes/09_CONTINUOUS_DEPLOYMENT.md](volumes/09_CONTINUOUS_DEPLOYMENT.md) |
+| 10 | Segurança do Pipeline | [volumes/10_SEGURANCA_DO_PIPELINE.md](volumes/10_SEGURANCA_DO_PIPELINE.md) |
+| 11 | Observabilidade | [volumes/11_OBSERVABILIDADE.md](volumes/11_OBSERVABILIDADE.md) |
+| 12 | Infraestrutura de Servidor CI/CD | [volumes/12_INFRAESTRUTURA_SERVIDOR_CICD.md](volumes/12_INFRAESTRUTURA_SERVIDOR_CICD.md) |
+| 13 | Arquiteturas de Referência | [volumes/13_ARQUITETURAS_DE_REFERENCIA.md](volumes/13_ARQUITETURAS_DE_REFERENCIA.md) |
+| 14 | Otimização e Escalabilidade | [volumes/14_OTIMIZACAO_E_ESCALABILIDADE.md](volumes/14_OTIMIZACAO_E_ESCALABILIDADE.md) |
+| 15 | Governança e Operação | [volumes/15_GOVERNANCA_E_OPERACAO.md](volumes/15_GOVERNANCA_E_OPERACAO.md) |
+| 16 | Laboratório Completo | [volumes/16_LABORATORIO_COMPLETO.md](volumes/16_LABORATORIO_COMPLETO.md) |
 
 ## Apêndices
 
-A. Comandos Git
-B. GitHub CLI
-C. Docker CLI
-D. Linux para CI/CD
-E. YAML
-F. Expressões do GitHub Actions
-G. Troubleshooting
-H. Checklists
+| # | Título | Arquivo |
+|---|---|---|
+| A | Comandos Git | [apendices/APENDICE_A_COMANDOS_GIT.md](apendices/APENDICE_A_COMANDOS_GIT.md) |
+| B | GitHub CLI | [apendices/APENDICE_B_GITHUB_CLI.md](apendices/APENDICE_B_GITHUB_CLI.md) |
+| C | Docker CLI | [apendices/APENDICE_C_DOCKER_CLI.md](apendices/APENDICE_C_DOCKER_CLI.md) |
+| D | Linux para CI/CD | [apendices/APENDICE_D_LINUX_CICD.md](apendices/APENDICE_D_LINUX_CICD.md) |
+| E | YAML | [apendices/APENDICE_E_YAML.md](apendices/APENDICE_E_YAML.md) |
+| F | Expressões do GitHub Actions | [apendices/APENDICE_F_GITHUB_ACTIONS_EXPRESSOES.md](apendices/APENDICE_F_GITHUB_ACTIONS_EXPRESSOES.md) |
+| G | Troubleshooting | [apendices/APENDICE_G_TROUBLESHOOTING.md](apendices/APENDICE_G_TROUBLESHOOTING.md) |
+| H | Checklists | [apendices/APENDICE_H_CHECKLISTS.md](apendices/APENDICE_H_CHECKLISTS.md) |
