@@ -31,7 +31,7 @@ O documento 00_MASTER funciona como mapa de todo o projeto. Cada capítulo poder
 
 ---
 
-# 2. Arquitetura conceitual do fluxo
+## 2. Arquitetura conceitual do fluxo
 
 Fluxo de referência:
 
@@ -102,15 +102,15 @@ CD controla como uma versão validada chega aos ambientes de execução.
 
 ---
 
-# 3. Estrutura global
+## 3. Estrutura global
 
-## VOLUME 00 — Documento Mestre
+### Volume 00 — Documento Mestre
 
-### Capítulo 00.1 — Visão geral
+#### Capítulo 00.1 — Visão geral
 
 Apresenta os objetivos, arquitetura, público-alvo e organização do projeto.
 
-### Capítulo 00.2 — Filosofia do pipeline
+#### Capítulo 00.2 — Filosofia do pipeline
 
 Define os princípios utilizados durante todo o guia:
 
@@ -123,7 +123,7 @@ Define os princípios utilizados durante todo o guia:
 - infraestrutura versionada;
 - aprovação humana para operações críticas.
 
-### Capítulo 00.3 — Convenções
+#### Capítulo 00.3 — Convenções
 
 Padronização de:
 
@@ -137,27 +137,27 @@ Padronização de:
 - releases;
 - documentação.
 
-### Capítulo 00.4 — Glossário
+#### Capítulo 00.4 — Glossário
 
 Glossário evolutivo contendo Git, CI/CD, DevOps, runners, Actions, artifacts, E2E, smoke test, rollback, deployment, entre outros.
 
 ---
 
-# VOLUME 01 — Fundamentos de Git e Controle de Versão
+### Volume 01 — Fundamentos de Git e Controle de Versão
 
-## Capítulo 01.1 — Git
+#### Capítulo 01.1 — Git
 
 Conceitos fundamentais do Git e funcionamento de um repositório distribuído.
 
-## Capítulo 01.2 — Repositório
+#### Capítulo 01.2 — Repositório
 
 Working tree, staging area e histórico.
 
-## Capítulo 01.3 — Commit
+#### Capítulo 01.3 — Commit
 
 Como estruturar commits pequenos, rastreáveis e semanticamente claros.
 
-## Capítulo 01.4 — Branches
+#### Capítulo 01.4 — Branches
 
 Uso de branches para desenvolvimento isolado.
 
@@ -173,31 +173,31 @@ main
  +--- feature/relatorios
 ```
 
-## Capítulo 01.5 — Merge
+#### Capítulo 01.5 — Merge
 
 Estratégias de integração entre branches.
 
-## Capítulo 01.6 — Rebase
+#### Capítulo 01.6 — Rebase
 
 Quando utilizar rebase e seus riscos.
 
-## Capítulo 01.7 — Conflitos
+#### Capítulo 01.7 — Conflitos
 
 Diagnóstico e resolução segura de conflitos.
 
-## Capítulo 01.8 — Tags
+#### Capítulo 01.8 — Tags
 
 Versionamento de releases.
 
 ---
 
-# VOLUME 02 — GitHub e Pull Requests
+### Volume 02 — GitHub e Pull Requests
 
-## Capítulo 02.1 — Estrutura de um repositório GitHub
+#### Capítulo 02.1 — Estrutura de um repositório GitHub
 
 Organização profissional de um projeto.
 
-## Capítulo 02.2 — Pull Request
+#### Capítulo 02.2 — Pull Request
 
 Ciclo completo de uma PR.
 
@@ -219,43 +219,43 @@ PR
 Merge
 ```
 
-## Capítulo 02.3 — PRs independentes
+#### Capítulo 02.3 — PRs independentes
 
 Como desenvolver várias funcionalidades simultaneamente.
 
-## Capítulo 02.4 — PRs dependentes
+#### Capítulo 02.4 — PRs dependentes
 
 Tratamento de alterações encadeadas.
 
-## Capítulo 02.5 — Code Review
+#### Capítulo 02.5 — Code Review
 
 Processo técnico de revisão.
 
-## Capítulo 02.6 — Branch Protection
+#### Capítulo 02.6 — Branch Protection
 
 Proteção do branch principal.
 
-## Capítulo 02.7 — CODEOWNERS
+#### Capítulo 02.7 — CODEOWNERS
 
 Definição de responsáveis por partes do código.
 
-## Capítulo 02.8 — Issues e PRs
+#### Capítulo 02.8 — Issues e PRs
 
 Rastreabilidade entre necessidade, implementação e entrega.
 
-## Capítulo 02.9 — Templates
+#### Capítulo 02.9 — Templates
 
 Templates para Issues e Pull Requests.
 
 ---
 
-# VOLUME 03 — GitHub Actions
+### Volume 03 — GitHub Actions
 
-## Capítulo 03.1 — Conceitos
+#### Capítulo 03.1 — Conceitos
 
 Introdução aos workflows.
 
-## Capítulo 03.2 — Estrutura YAML
+#### Capítulo 03.2 — Estrutura YAML
 
 Anatomia de:
 
@@ -267,7 +267,7 @@ Anatomia de:
     └── deploy.yml
 ```
 
-## Capítulo 03.3 — Events
+#### Capítulo 03.3 — Events
 
 Execução em:
 
@@ -277,61 +277,61 @@ Execução em:
 - schedule;
 - release.
 
-## Capítulo 03.4 — Jobs
+#### Capítulo 03.4 — Jobs
 
 Separação lógica das tarefas.
 
-## Capítulo 03.5 — Steps
+#### Capítulo 03.5 — Steps
 
 Execução dos comandos.
 
-## Capítulo 03.6 — Actions reutilizáveis
+#### Capítulo 03.6 — Actions reutilizáveis
 
 Uso de componentes existentes.
 
-## Capítulo 03.7 — Secrets
+#### Capítulo 03.7 — Secrets
 
 Gerenciamento seguro de credenciais. Inclui OIDC (OpenID Connect) como alternativa preferencial a secrets estáticos de longa duração para autenticação com provedores cloud (AWS, Azure, GCP) — o workflow recebe um token de curta duração assinado pelo GitHub, sem chave permanente armazenada no repositório.
 
-## Capítulo 03.8 — Variables
+#### Capítulo 03.8 — Variables
 
 Configurações não secretas.
 
-## Capítulo 03.9 — Artifacts
+#### Capítulo 03.9 — Artifacts
 
 Persistência de resultados de builds e testes.
 
-## Capítulo 03.10 — Cache
+#### Capítulo 03.10 — Cache
 
 Cache de npm, Composer e dependências.
 
-## Capítulo 03.11 — Matrices
+#### Capítulo 03.11 — Matrices
 
 Testes com múltiplas versões.
 
-## Capítulo 03.12 — Workflows e composite actions reutilizáveis
+#### Capítulo 03.12 — Workflows e composite actions reutilizáveis
 
 Redução de duplicação via `workflow_call` (workflows reutilizáveis) e composite actions locais.
 
-## Capítulo 03.13 — Permissões do `GITHUB_TOKEN`
+#### Capítulo 03.13 — Permissões do `GITHUB_TOKEN`
 
 Uso do bloco `permissions:` no nível de workflow e de job para aplicar o princípio do menor privilégio — o padrão recomendado é `permissions: {}` no topo do arquivo e elevar apenas o necessário (`contents: read`, `pull-requests: write` etc.) em cada job.
 
-## Capítulo 03.14 — Versionamento de actions e sintaxe atual
+#### Capítulo 03.14 — Versionamento de actions e sintaxe atual
 
 Fixação de actions em versões major suportadas (ex.: `actions/checkout@v4`, `actions/setup-node@v4`, `actions/upload-artifact@v4`) e substituição de comandos legados (`::set-output::`, `::save-state::`, `::set-env::`) pelos arquivos de ambiente `$GITHUB_OUTPUT`, `$GITHUB_STATE` e `$GITHUB_ENV`, obrigatórios desde a desativação dos comandos antigos.
 
 ---
 
-# VOLUME 04 — Self-Hosted Runners
+### Volume 04 — Self-Hosted Runners
 
 Este será um dos volumes centrais do projeto.
 
-## Capítulo 04.1 — O que é um runner
+#### Capítulo 04.1 — O que é um runner
 
 Diferença entre GitHub-hosted e self-hosted.
 
-## Capítulo 04.2 — Arquitetura recomendada
+#### Capítulo 04.2 — Arquitetura recomendada
 
 ```text
 GitHub
@@ -350,27 +350,27 @@ Ubuntu Linux
    +--> ferramentas de teste
 ```
 
-## Capítulo 04.3 — Requisitos de hardware
+#### Capítulo 04.3 — Requisitos de hardware
 
 Dimensionamento de CPU, RAM, disco e rede.
 
-## Capítulo 04.4 — Ubuntu Server
+#### Capítulo 04.4 — Ubuntu Server
 
 Preparação do sistema operacional.
 
-## Capítulo 04.5 — Criação de usuário dedicado
+#### Capítulo 04.5 — Criação de usuário dedicado
 
 Execução do runner sem privilégios desnecessários.
 
-## Capítulo 04.6 — Instalação oficial do GitHub Actions Runner
+#### Capítulo 04.6 — Instalação oficial do GitHub Actions Runner
 
 Download, registro e configuração.
 
-## Capítulo 04.7 — Runner como serviço systemd
+#### Capítulo 04.7 — Runner como serviço systemd
 
 Inicialização automática.
 
-## Capítulo 04.8 — Labels
+#### Capítulo 04.8 — Labels
 
 Exemplo:
 
@@ -381,11 +381,11 @@ runs-on:
   - docker
 ```
 
-## Capítulo 04.9 — Múltiplos runners
+#### Capítulo 04.9 — Múltiplos runners
 
 Escalabilidade.
 
-## Capítulo 04.10 — Segurança
+#### Capítulo 04.10 — Segurança
 
 Isolamento, permissões e riscos de execução de código. Ponto crítico: self-hosted runners **não devem** ser habilitados para workflows disparados por `pull_request` em repositórios públicos sem revisão — um PR malicioso de um fork pode executar código arbitrário no runner. Cuidados obrigatórios:
 
@@ -394,71 +394,71 @@ Isolamento, permissões e riscos de execução de código. Ponto crítico: self-
 - runners self-hosted em repositórios públicos, quando inevitáveis, devem ser efêmeros (uma execução por VM/container descartável) para evitar persistência de artefatos maliciosos entre jobs;
 - isolar o runner em rede própria, sem acesso direto a outros sistemas internos.
 
-## Capítulo 04.11 — Atualizações
+#### Capítulo 04.11 — Atualizações
 
 Manutenção do runner, incluindo acompanhamento do fim de suporte de versões de Node.js usadas pelo runner e pelas actions (ex.: Node 16 já descontinuado; runners atuais exigem Node 20+).
 
-## Capítulo 04.12 — Monitoramento
+#### Capítulo 04.12 — Monitoramento
 
 Verificação de disponibilidade.
 
-## Capítulo 04.13 — Backup e recuperação
+#### Capítulo 04.13 — Backup e recuperação
 
 Reconstrução rápida de runners.
 
 ---
 
-# VOLUME 05 — Docker no Pipeline
+### Volume 05 — Docker no Pipeline
 
-## Capítulo 05.1 — Fundamentos
+#### Capítulo 05.1 — Fundamentos
 
 Containers versus máquinas virtuais.
 
-## Capítulo 05.2 — Docker Engine
+#### Capítulo 05.2 — Docker Engine
 
 Instalação no Ubuntu.
 
-## Capítulo 05.3 — Dockerfile
+#### Capítulo 05.3 — Dockerfile
 
 Criação de imagens reproduzíveis.
 
-## Capítulo 05.4 — Docker Compose
+#### Capítulo 05.4 — Docker Compose
 
 Ambientes multi-container.
 
-## Capítulo 05.5 — Node.js em Docker
+#### Capítulo 05.5 — Node.js em Docker
 
 Boas práticas.
 
-## Capítulo 05.6 — PHP em Docker
+#### Capítulo 05.6 — PHP em Docker
 
 PHP-FPM, Apache/Nginx e Composer.
 
-## Capítulo 05.7 — MySQL/MariaDB
+#### Capítulo 05.7 — MySQL/MariaDB
 
 Banco de testes.
 
-## Capítulo 05.8 — MQTT
+#### Capítulo 05.8 — MQTT
 
 Uso de Mosquitto em pipelines de automação/IoT.
 
-## Capítulo 05.9 — Redes Docker
+#### Capítulo 05.9 — Redes Docker
 
 Isolamento dos serviços.
 
-## Capítulo 05.10 — Volumes
+#### Capítulo 05.10 — Volumes
 
 Persistência e dados temporários.
 
-## Capítulo 05.11 — Docker Compose para testes
+#### Capítulo 05.11 — Docker Compose para testes
 
 Ambiente descartável por execução.
 
 ---
 
-# VOLUME 06 — Estratégia Profissional de Testes
+### Volume 06 — Estratégia Profissional de Testes
 
-## Capítulo 06.1 — Pirâmide de testes
+#### Capítulo 06.1 — Pirâmide de testes
 
 ```text
           /\
@@ -472,63 +472,63 @@ Ambiente descartável por execução.
   /________________\
 ```
 
-## Capítulo 06.2 — Testes unitários
+#### Capítulo 06.2 — Testes unitários
 
 Testes rápidos e isolados.
 
-## Capítulo 06.3 — Testes de integração
+#### Capítulo 06.3 — Testes de integração
 
 Comunicação entre componentes.
 
-## Capítulo 06.4 — Testes de API
+#### Capítulo 06.4 — Testes de API
 
 Validação de endpoints.
 
-## Capítulo 06.5 — Testes E2E
+#### Capítulo 06.5 — Testes E2E
 
 Fluxo completo do usuário.
 
-## Capítulo 06.6 — Playwright
+#### Capítulo 06.6 — Playwright
 
 Automação moderna de navegadores.
 
-## Capítulo 06.7 — Cypress
+#### Capítulo 06.7 — Cypress
 
 Alternativa para testes de frontend.
 
-## Capítulo 06.8 — PHPUnit
+#### Capítulo 06.8 — PHPUnit
 
 Testes para aplicações PHP.
 
-## Capítulo 06.9 — Jest/Vitest
+#### Capítulo 06.9 — Jest/Vitest
 
 Testes JavaScript/Node.js.
 
-## Capítulo 06.10 — Smoke Tests
+#### Capítulo 06.10 — Smoke Tests
 
 Conjunto mínimo para verificar funcionamento básico.
 
-## Capítulo 06.11 — Regression Tests
+#### Capítulo 06.11 — Regression Tests
 
 Proteção contra regressões.
 
-## Capítulo 06.12 — Testes seletivos
+#### Capítulo 06.12 — Testes seletivos
 
 Executar somente testes afetados pela alteração.
 
-## Capítulo 06.13 — Paralelização
+#### Capítulo 06.13 — Paralelização
 
 Redução do tempo total.
 
-## Capítulo 06.14 — Testes noturnos
+#### Capítulo 06.14 — Testes noturnos
 
 Execução de suítes extensas fora do ciclo da PR.
 
 ---
 
-# VOLUME 07 — Pipeline CI
+### Volume 07 — Pipeline CI
 
-## Capítulo 07.1 — Pipeline mínimo
+#### Capítulo 07.1 — Pipeline mínimo
 
 ```text
 Checkout
@@ -544,45 +544,45 @@ Integration
 Build
 ```
 
-## Capítulo 07.2 — Pipeline para Node.js
+#### Capítulo 07.2 — Pipeline para Node.js
 
 Exemplo completo.
 
-## Capítulo 07.3 — Pipeline para PHP
+#### Capítulo 07.3 — Pipeline para PHP
 
 Composer, PHPUnit e análise estática.
 
-## Capítulo 07.4 — Pipeline híbrido
+#### Capítulo 07.4 — Pipeline híbrido
 
 Projetos Node.js + PHP.
 
-## Capítulo 07.5 — Banco de dados temporário
+#### Capítulo 07.5 — Banco de dados temporário
 
 MySQL/MariaDB no CI.
 
-## Capítulo 07.6 — MQTT no CI
+#### Capítulo 07.6 — MQTT no CI
 
 Testes de aplicações que utilizam broker.
 
-## Capítulo 07.7 — Quality Gates
+#### Capítulo 07.7 — Quality Gates
 
 Critérios objetivos para aprovação.
 
 ---
 
-# VOLUME 08 — Desenvolvimento Orientado por Especificação e IA
+### Volume 08 — Desenvolvimento Orientado por Especificação e IA
 
 Este volume documentará o fluxo de desenvolvimento assistido por agentes.
 
-## Capítulo 08.1 — Da ideia à especificação
+#### Capítulo 08.1 — Da ideia à especificação
 
 Transformação de uma necessidade em requisitos claros.
 
-## Capítulo 08.2 — Entrevista de requisitos pela IA
+#### Capítulo 08.2 — Entrevista de requisitos pela IA
 
 Perguntas antes da implementação.
 
-## Capítulo 08.3 — SPEC
+#### Capítulo 08.3 — SPEC
 
 Estrutura recomendada:
 
@@ -596,31 +596,31 @@ Casos de teste
 Fora de escopo
 ```
 
-## Capítulo 08.4 — Revisão da SPEC
+#### Capítulo 08.4 — Revisão da SPEC
 
 Validação humana.
 
-## Capítulo 08.5 — Plano de implementação
+#### Capítulo 08.5 — Plano de implementação
 
 Transformação da especificação em tarefas técnicas.
 
-## Capítulo 08.6 — Implementação assistida
+#### Capítulo 08.6 — Implementação assistida
 
 Uso de agentes para produção do código.
 
-## Capítulo 08.7 — Revisão automática
+#### Capítulo 08.7 — Revisão automática
 
 Análise do código antes da PR.
 
-## Capítulo 08.8 — IA e testes
+#### Capítulo 08.8 — IA e testes
 
 Geração e execução de testes.
 
-## Capítulo 08.9 — IA e E2E
+#### Capítulo 08.9 — IA e E2E
 
 Validação dos critérios de aceitação.
 
-## Capítulo 08.10 — Alteração posterior de funcionalidades
+#### Capítulo 08.10 — Alteração posterior de funcionalidades
 
 Nova SPEC referenciando PRs anteriores.
 
@@ -639,31 +639,31 @@ SPEC de refinamento
 Nova PR #57
 ```
 
-## Capítulo 08.11 — Contexto e documentação
+#### Capítulo 08.11 — Contexto e documentação
 
 Como impedir que agentes alterem partes fora do escopo.
 
-## Capítulo 08.12 — Desenvolvimento paralelo com agentes
+#### Capítulo 08.12 — Desenvolvimento paralelo com agentes
 
 Uso seguro de múltiplas branches e PRs.
 
 ---
 
-# VOLUME 09 — Continuous Deployment
+### Volume 09 — Continuous Deployment
 
-## Capítulo 09.1 — Conceitos de CD
+#### Capítulo 09.1 — Conceitos de CD
 
 Diferença entre entrega e implantação contínua.
 
-## Capítulo 09.2 — Ambiente DEV
+#### Capítulo 09.2 — Ambiente DEV
 
 Deploy automático após validação.
 
-## Capítulo 09.3 — Validação em DEV
+#### Capítulo 09.3 — Validação em DEV
 
 Testes pós-deploy.
 
-## Capítulo 09.4 — Gate humano
+#### Capítulo 09.4 — Gate humano
 
 Modelo adotado:
 
@@ -685,339 +685,310 @@ Não       Sim
          PROD
 ```
 
-## Capítulo 09.5 — GitHub Environments
+#### Capítulo 09.5 — GitHub Environments
 
 Proteção de ambientes.
 
-## Capítulo 09.6 — Deploy via SSH
+#### Capítulo 09.6 — Deploy via SSH
 
 Procedimento seguro.
 
-## Capítulo 09.7 — Deploy com Docker
+#### Capítulo 09.7 — Deploy com Docker
 
 Atualização de containers. Pode ser feito diretamente via SSH/Docker Compose ou delegado a um orquestrador de deploy (ex.: Coolify), que recebe o webhook do GitHub Actions e cuida do build, health check e substituição do container — reduzindo a lógica de deploy mantida dentro do próprio workflow.
 
-## Capítulo 09.8 — Blue/Green Deployment
+#### Capítulo 09.8 — Blue/Green Deployment
 
 Estratégia futura para sistemas críticos.
 
-## Capítulo 09.9 — Rollback
+#### Capítulo 09.9 — Rollback
 
 Retorno rápido à versão anterior.
 
 ---
 
-# VOLUME 10 — Segurança do Pipeline
+### Volume 10 — Segurança do Pipeline
 
-## Capítulo 10.1 — Threat Model
+#### Capítulo 10.1 — Threat Model
 
 Identificação das superfícies de ataque.
 
-## Capítulo 10.2 — Secrets
+#### Capítulo 10.2 — Secrets
 
 Proteção de senhas, tokens e chaves.
 
-## Capítulo 10.3 — SSH
+#### Capítulo 10.3 — SSH
 
 Chaves dedicadas ao CI/CD.
 
-## Capítulo 10.4 — Princípio do menor privilégio
+#### Capítulo 10.4 — Princípio do menor privilégio
 
 Permissões mínimas, incluindo o bloco `permissions:` do `GITHUB_TOKEN` (workflow e por job) e uso de OIDC em vez de secrets estáticos para autenticação com serviços externos.
 
-## Capítulo 10.5 — Segurança de self-hosted runners
+#### Capítulo 10.5 — Segurança de self-hosted runners
 
 Riscos específicos.
 
-## Capítulo 10.6 — Dependências
+#### Capítulo 10.6 — Dependências
 
 Análise de vulnerabilidades.
 
-## Capítulo 10.7 — Dependabot
+#### Capítulo 10.7 — Dependabot
 
 Atualizações automáticas.
 
-## Capítulo 10.8 — Secret scanning
+#### Capítulo 10.8 — Secret scanning
 
 Detecção de credenciais expostas.
 
-## Capítulo 10.9 — Code scanning
+#### Capítulo 10.9 — Code scanning
 
 Análise estática.
 
-## Capítulo 10.10 — Supply Chain Security
+#### Capítulo 10.10 — Supply Chain Security
 
 Proteção da cadeia de software.
 
 ---
 
-# VOLUME 11 — Observabilidade
+### Volume 11 — Observabilidade
 
-## Capítulo 11.1 — Logs
+#### Capítulo 11.1 — Logs
 
 Centralização e retenção.
 
-## Capítulo 11.2 — Métricas
+#### Capítulo 11.2 — Métricas
 
 CPU, memória, containers e aplicações.
 
-## Capítulo 11.3 — Prometheus
+#### Capítulo 11.3 — Prometheus
 
 Coleta de métricas.
 
-## Capítulo 11.4 — Grafana
+#### Capítulo 11.4 — Grafana
 
 Dashboards.
 
-## Capítulo 11.5 — Loki
+#### Capítulo 11.5 — Loki
 
 Centralização de logs.
 
-## Capítulo 11.6 — Alertas
+#### Capítulo 11.6 — Alertas
 
 Detecção de falhas após deploy.
 
-## Capítulo 11.7 — Health Checks
+#### Capítulo 11.7 — Health Checks
 
 Verificação automática de serviços.
 
 ---
 
-# VOLUME 12 — Infraestrutura do Servidor CI/CD
+### Volume 12 — Infraestrutura do Servidor CI/CD
 
-## Capítulo 12.1 — Servidor físico ou VM
+#### Capítulo 12.1 — Servidor físico ou VM
 
 Critérios de escolha.
 
-## Capítulo 12.2 — Dimensionamento
+#### Capítulo 12.2 — Dimensionamento
 
 CPU, RAM, SSD e rede.
 
-## Capítulo 12.3 — Linux Ubuntu Server
+#### Capítulo 12.3 — Linux Ubuntu Server
 
 Configuração base.
 
-## Capítulo 12.4 — Firewall
+#### Capítulo 12.4 — Firewall
 
 UFW/nftables.
 
-## Capítulo 12.5 — SSH
+#### Capítulo 12.5 — SSH
 
 Hardening.
 
-## Capítulo 12.6 — Docker
+#### Capítulo 12.6 — Docker
 
 Runtime principal.
 
-## Capítulo 12.7 — Reverse Proxy
+#### Capítulo 12.7 — Reverse Proxy
 
 Nginx ou Traefik.
 
-## Capítulo 12.8 — DNS e TLS
+#### Capítulo 12.8 — DNS e TLS
 
 HTTPS e certificados.
 
-## Capítulo 12.9 — Backup
+#### Capítulo 12.9 — Backup
 
 Estratégia de recuperação.
 
-## Capítulo 12.10 — UPS e disponibilidade
+#### Capítulo 12.10 — UPS e disponibilidade
 
 Proteção da infraestrutura local.
 
 ---
 
-# VOLUME 13 — Arquiteturas de Referência
+### Volume 13 — Arquiteturas de Referência
 
-## Capítulo 13.1 — Projeto Node.js simples
+#### Capítulo 13.1 — Projeto Node.js simples
 
 CI/CD completo.
 
-## Capítulo 13.2 — Node.js + MySQL
+#### Capítulo 13.2 — Node.js + MySQL
 
 Aplicação com banco.
 
-## Capítulo 13.3 — PHP + MariaDB
+#### Capítulo 13.3 — PHP + MariaDB
 
 Pipeline para aplicações PHP existentes.
 
-## Capítulo 13.4 — Node.js + MQTT
+#### Capítulo 13.4 — Node.js + MQTT
 
 Aplicações de automação.
 
-## Capítulo 13.5 — PHP + MQTT
+#### Capítulo 13.5 — PHP + MQTT
 
 Integração com sistemas legados.
 
-## Capítulo 13.6 — Aplicação frontend + backend
+#### Capítulo 13.6 — Aplicação frontend + backend
 
 Testes completos.
 
-## Capítulo 13.7 — Microsserviços Docker
+#### Capítulo 13.7 — Microsserviços Docker
 
 Pipeline multi-container.
 
 ---
 
-# VOLUME 14 — Otimização e Escalabilidade
+### Volume 14 — Otimização e Escalabilidade
 
-## Capítulo 14.1 — Redução do tempo de CI
+#### Capítulo 14.1 — Redução do tempo de CI
 
 Medição e otimização.
 
-## Capítulo 14.2 — Cache avançado
+#### Capítulo 14.2 — Cache avançado
 
 npm, Composer, Docker e Playwright.
 
-## Capítulo 14.3 — Testes afetados
+#### Capítulo 14.3 — Testes afetados
 
 Seleção baseada nas mudanças da PR.
 
-## Capítulo 14.4 — Paralelização
+#### Capítulo 14.4 — Paralelização
 
 Distribuição de testes.
 
-## Capítulo 14.5 — Múltiplos runners
+#### Capítulo 14.5 — Múltiplos runners
 
 Pool de execução.
 
-## Capítulo 14.6 — Runner dedicado para E2E
+#### Capítulo 14.6 — Runner dedicado para E2E
 
 Separação das cargas pesadas.
 
-## Capítulo 14.7 — Runner efêmero
+#### Capítulo 14.7 — Runner efêmero
 
 Execução isolada e descartável.
 
 ---
 
-# VOLUME 15 — Governança e Operação
+### Volume 15 — Governança e Operação
 
-## Capítulo 15.1 — Política de branches
+#### Capítulo 15.1 — Política de branches
 
 Regras formais.
 
-## Capítulo 15.2 — Política de PR
+#### Capítulo 15.2 — Política de PR
 
 Critérios para merge.
 
-## Capítulo 15.3 — Definition of Done
+#### Capítulo 15.3 — Definition of Done
 
 Quando uma implementação está realmente concluída.
 
-## Capítulo 15.4 — Releases
+#### Capítulo 15.4 — Releases
 
 Controle de versões.
 
-## Capítulo 15.5 — Changelog
+#### Capítulo 15.5 — Changelog
 
 Histórico de alterações.
 
-## Capítulo 15.6 — Incidentes
+#### Capítulo 15.6 — Incidentes
 
 Procedimentos quando um deploy falha.
 
-## Capítulo 15.7 — Post-mortem
+#### Capítulo 15.7 — Post-mortem
 
 Aprendizado após incidentes.
 
 ---
 
-# VOLUME 16 — Laboratório Completo
+### Volume 16 — Laboratório Completo
 
 Este volume consolidará todo o conhecimento.
 
-## Capítulo 16.1 — Preparação do servidor
+#### Capítulo 16.1 — Preparação do servidor
 
 Ubuntu limpo.
 
-## Capítulo 16.2 — Docker
+#### Capítulo 16.2 — Docker
 
 Instalação e configuração.
 
-## Capítulo 16.3 — Runner
+#### Capítulo 16.3 — Runner
 
 Registro no GitHub.
 
-## Capítulo 16.4 — Repositório de laboratório
+#### Capítulo 16.4 — Repositório de laboratório
 
 Projeto exemplo.
 
-## Capítulo 16.5 — CI
+#### Capítulo 16.5 — CI
 
 Lint, testes e build.
 
-## Capítulo 16.6 — E2E
+#### Capítulo 16.6 — E2E
 
 Playwright.
 
-## Capítulo 16.7 — Deploy DEV
+#### Capítulo 16.7 — Deploy DEV
 
 Implantação automática.
 
-## Capítulo 16.8 — Aprovação
+#### Capítulo 16.8 — Aprovação
 
 Gate manual.
 
-## Capítulo 16.9 — Deploy PROD
+#### Capítulo 16.9 — Deploy PROD
 
 Implantação controlada.
 
-## Capítulo 16.10 — Rollback
+#### Capítulo 16.10 — Rollback
 
 Simulação de falha.
 
-## Capítulo 16.11 — Monitoramento
+#### Capítulo 16.11 — Monitoramento
 
 Logs, métricas e health checks.
 
 ---
 
-# APÊNDICES
+### Apêndices
 
-## Apêndice A — Comandos Git
-
-Cheat sheet operacional.
-
-## Apêndice B — GitHub CLI
-
-Uso do `gh`.
-
-## Apêndice C — Docker CLI
-
-Comandos essenciais.
-
-## Apêndice D — Linux
-
-Comandos administrativos utilizados no laboratório.
-
-## Apêndice E — YAML
-
-Referência rápida.
-
-## Apêndice F — Expressões GitHub Actions
-
-Sintaxe de conditions e contexts.
-
-## Apêndice G — Troubleshooting
-
-Falhas recorrentes e diagnóstico.
-
-## Apêndice H — Checklists
-
-Checklists para:
-
-- nova PR;
-- novo workflow;
-- novo runner;
-- deploy DEV;
-- deploy PROD;
-- rollback;
-- incidente.
+| Apêndice | Título | Conteúdo |
+|---|---|---|
+| A | Comandos Git | Cheat sheet operacional. |
+| B | GitHub CLI | Uso do `gh`. |
+| C | Docker CLI | Comandos essenciais. |
+| D | Linux | Comandos administrativos utilizados no laboratório. |
+| E | YAML | Referência rápida. |
+| F | Expressões GitHub Actions | Sintaxe de conditions e contexts. |
+| G | Troubleshooting | Falhas recorrentes e diagnóstico. |
+| H | Checklists | Checklists para: nova PR; novo workflow; novo runner; deploy DEV; deploy PROD; rollback; incidente. |
 
 ---
 
-# 4. Stack preferencial
+## 4. Stack preferencial
 
 Sempre que tecnicamente adequado, o projeto dará preferência a ferramentas de código aberto.
 
@@ -1047,7 +1018,7 @@ Alguns componentes da plataforma GitHub são serviços proprietários, mas o gui
 
 ---
 
-# 5. Estratégia de execução dos testes
+## 5. Estratégia de execução dos testes
 
 Um objetivo importante será evitar que o crescimento do sistema torne cada PR excessivamente lenta.
 
@@ -1087,7 +1058,7 @@ Suítes completas e demoradas poderão ser executadas:
 
 ---
 
-# 6. Princípios arquiteturais
+## 6. Princípios arquiteturais
 
 O projeto seguirá os seguintes princípios.
 
@@ -1108,7 +1079,7 @@ O projeto seguirá os seguintes princípios.
 
 ---
 
-# 7. Organização futura dos arquivos
+## 7. Organização futura dos arquivos
 
 Estrutura sugerida:
 
@@ -1143,7 +1114,7 @@ docs/
 
 ---
 
-# 8. Próximas etapas
+## 8. Próximas etapas
 
 A partir deste documento mestre, os capítulos poderão ser implementados independentemente.
 
@@ -1175,7 +1146,7 @@ Essa ordem permite construir primeiro uma infraestrutura funcional e, posteriorm
 
 ---
 
-# 9. Controle de evolução do guia
+## 9. Controle de evolução do guia
 
 O documento será tratado como um projeto versionado.
 

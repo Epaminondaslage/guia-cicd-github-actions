@@ -59,7 +59,7 @@ Nightly
 
 ---
 
-# 2. Por que os testes ficam lentos
+## 2. Por que os testes ficam lentos
 
 À medida que o sistema cresce, aumentam:
 
@@ -80,7 +80,7 @@ A solução não é apenas adicionar CPU.
 
 ---
 
-# 3. Pirâmide de testes
+## 3. Pirâmide de testes
 
 ```text
              E2E
@@ -108,7 +108,7 @@ Características:
 | Integração | Média | Médio | Médio |
 | E2E | Baixa | Baixo | Alto |
 
-## Variações modernas
+### Variações modernas
 
 Algumas equipes adotam o **testing trophy** (Kent C. Dodds), que redistribui o peso relativo dando mais espaço à integração — sob a tese de que testes de integração capturam mais bugs reais por esforço investido, especialmente em aplicações com bastante lógica de composição entre componentes:
 
@@ -125,7 +125,7 @@ Isso não contradiz a pirâmide: a base ampla e o topo estreito continuam valend
 
 ---
 
-# 4. Testes unitários
+## 4. Testes unitários
 
 Validam pequenas unidades de lógica.
 
@@ -149,7 +149,7 @@ Não precisam abrir browser nem subir banco real.
 
 ---
 
-# 5. Características desejadas dos unitários
+## 5. Características desejadas dos unitários
 
 - rápidos;
 - determinísticos;
@@ -162,7 +162,7 @@ Na PR, devem rodar sempre.
 
 ---
 
-# 6. Jest e Vitest
+## 6. Jest e Vitest
 
 Para Node.js/JavaScript:
 
@@ -191,7 +191,7 @@ npm run test:unit
 
 ---
 
-# 7. PHPUnit
+## 7. PHPUnit
 
 Para PHP:
 
@@ -213,7 +213,7 @@ O importante é expor um comando padronizado ao CI.
 
 ---
 
-# 8. Testes de integração
+## 8. Testes de integração
 
 Validam colaboração entre componentes.
 
@@ -230,7 +230,7 @@ São mais caros que unitários, mas ainda devem ser relativamente rápidos.
 
 ---
 
-# 9. Infraestrutura descartável
+## 9. Infraestrutura descartável
 
 Com Docker:
 
@@ -281,7 +281,7 @@ O `--health-cmd` é importante: sem ele o job pode tentar conectar antes do MySQ
 
 ---
 
-# 10. Testes de API
+## 10. Testes de API
 
 Podem validar endpoints sem browser.
 
@@ -299,7 +299,7 @@ Portanto, grande parte da regra funcional pode ser coberta na camada de API.
 
 ---
 
-# 11. Contract tests
+## 11. Contract tests
 
 Testes de contrato verificam compatibilidade entre componentes.
 
@@ -319,7 +319,7 @@ Se backend alterar o contrato inesperadamente, o teste deve detectar.
 
 ---
 
-# 12. E2E
+## 12. E2E
 
 End-to-End testa o fluxo real.
 
@@ -348,7 +348,7 @@ consulta chamado
 
 ---
 
-# 13. O valor do E2E
+## 13. O valor do E2E
 
 E2E encontra problemas que unitários podem não encontrar:
 
@@ -366,7 +366,7 @@ Mas custa mais tempo.
 
 ---
 
-# 14. Smoke E2E
+## 14. Smoke E2E
 
 Smoke é um subconjunto pequeno e crítico.
 
@@ -386,7 +386,7 @@ Objetivo:
 
 ---
 
-# 15. Full E2E
+## 15. Full E2E
 
 A suíte completa pode conter:
 
@@ -406,7 +406,7 @@ Não precisa necessariamente executar em todo push.
 
 ---
 
-# 16. Classificação por tags
+## 16. Classificação por tags
 
 Playwright:
 
@@ -430,9 +430,9 @@ npx playwright test
 
 ---
 
-# 17. Estratégia por evento
+## 17. Estratégia por evento
 
-## Pull Request
+### Pull Request
 
 ```text
 lint
@@ -441,7 +441,7 @@ integration
 smoke E2E
 ```
 
-## Merge em main
+### Merge em main
 
 ```text
 build
@@ -449,14 +449,14 @@ deploy DEV
 E2E relacionado
 ```
 
-## Nightly
+### Nightly
 
 ```text
 full E2E
 regression
 ```
 
-## Produção
+### Produção
 
 ```text
 health
@@ -465,7 +465,7 @@ smoke seguro
 
 ---
 
-# 18. Testes afetados
+## 18. Testes afetados
 
 Se apenas:
 
@@ -491,7 +491,7 @@ Não implemente seleção agressiva sem cobertura alternativa.
 
 ---
 
-# 19. Test impact analysis
+## 19. Test impact analysis
 
 Ferramentas e arquiteturas podem inferir quais testes são impactados por uma mudança.
 
@@ -514,7 +514,7 @@ Por isso a suíte completa continua existindo em algum ciclo.
 
 ---
 
-# 20. Testes noturnos
+## 20. Testes noturnos
 
 Workflow:
 
@@ -534,7 +534,7 @@ npm run test:e2e
 
 ---
 
-# 21. Testes antes de release
+## 21. Testes antes de release
 
 Uma release importante pode exigir:
 
@@ -551,7 +551,7 @@ Nem todo commit precisa pagar esse custo.
 
 ---
 
-# 22. Paralelização
+## 22. Paralelização
 
 Playwright suporta múltiplos workers.
 
@@ -573,7 +573,7 @@ Limites podem ser:
 
 ---
 
-# 23. Sharding
+## 23. Sharding
 
 Uma suíte pode ser dividida:
 
@@ -592,7 +592,7 @@ Exemplo conceitual:
 npx playwright test --shard=1/4
 ```
 
-## Exemplo completo de workflow (GitHub Actions)
+### Exemplo completo de workflow (GitHub Actions)
 
 Um workflow atual e completo para Playwright, cobrindo instalação de browsers, execução contra um ambiente efêmero, sharding e artifacts de falha:
 
@@ -667,7 +667,7 @@ Um passo de merge dos relatórios de shard (`npx playwright merge-reports`) pode
 
 ---
 
-# 24. Runner único
+## 24. Runner único
 
 Se existe somente um runner:
 
@@ -683,7 +683,7 @@ Nesse caso, sharding não traz ganho real de paralelismo.
 
 ---
 
-# 25. Múltiplos runners
+## 25. Múltiplos runners
 
 ```text
 runner-e2e-01 -> shard 1
@@ -696,7 +696,7 @@ Esse é um cenário futuro de escalabilidade.
 
 ---
 
-# 26. Testes flaky
+## 26. Testes flaky
 
 Um teste flaky falha sem regressão real.
 
@@ -717,7 +717,7 @@ Causas comuns:
 - seletor instável;
 - ambiente não determinístico (paralelismo mal configurado, recursos compartilhados).
 
-## Mitigação
+### Mitigação
 
 - **isolamento de dados por teste**: cada teste cria e usa seus próprios registros (ver seção 31), nunca reaproveita dado de outro teste;
 - **setup dentro do próprio teste** (ou dentro do `try`/fixture do teste), nunca em estado global mutável compartilhado entre casos — isso evita que um teste anterior deixe resíduo que quebra o próximo;
@@ -727,7 +727,7 @@ Causas comuns:
 
 ---
 
-# 27. Não normalizar flaky tests
+## 27. Não normalizar flaky tests
 
 Se a equipe sempre clica:
 
@@ -741,7 +741,7 @@ Flaky test deve gerar investigação, não apenas nova tentativa.
 
 ---
 
-# 28. Seletores E2E
+## 28. Seletores E2E
 
 Prefira seletores estáveis.
 
@@ -761,7 +761,7 @@ Evite seletores acoplados a detalhes frágeis de CSS quando não necessário.
 
 ---
 
-# 29. Auto-waiting
+## 29. Auto-waiting
 
 Frameworks modernos como Playwright aguardam automaticamente certas condições.
 
@@ -777,7 +777,7 @@ Espere o estado correto.
 
 ---
 
-# 30. Dados de teste
+## 30. Dados de teste
 
 Cada teste deve controlar seus dados.
 
@@ -797,7 +797,7 @@ cleanup remove
 
 ---
 
-# 31. Identificadores únicos
+## 31. Identificadores únicos
 
 Exemplo:
 
@@ -815,7 +815,7 @@ Evita colisões entre execuções.
 
 ---
 
-# 32. Fixtures
+## 32. Fixtures
 
 Fixtures ajudam a preparar contexto previsível.
 
@@ -832,7 +832,7 @@ Fixtures devem ser versionadas e reproduzíveis.
 
 ---
 
-# 33. Seed de teste
+## 33. Seed de teste
 
 Fluxo:
 
@@ -853,7 +853,7 @@ O seed não deve conter dados reais sensíveis.
 
 ---
 
-# 34. Test isolation
+## 34. Test isolation
 
 Um teste não deve depender da execução anterior.
 
@@ -877,7 +877,7 @@ C depende do resultado de B
 
 ---
 
-# 35. Ordem aleatória
+## 35. Ordem aleatória
 
 Quando possível, executar testes em ordem variável pode revelar dependências ocultas.
 
@@ -885,7 +885,7 @@ A suíte deveria continuar passando.
 
 ---
 
-# 36. Database transaction
+## 36. Database transaction
 
 Em testes de backend, uma estratégia é abrir uma transaction por teste e fazer rollback.
 
@@ -909,7 +909,7 @@ A regra que nunca pode ser quebrada: **um teste não deve gravar em uma tabela c
 
 ---
 
-# 37. Mock
+## 37. Mock
 
 Mock substitui uma dependência.
 
@@ -927,7 +927,7 @@ Não transforme todos os testes em mocks a ponto de não validar integração re
 
 ---
 
-# 38. Stub
+## 38. Stub
 
 Stub fornece respostas controladas.
 
@@ -941,7 +941,7 @@ API externa -> resposta fixa
 
 ---
 
-# 39. Fake
+## 39. Fake
 
 Uma implementação simplificada funcional.
 
@@ -955,7 +955,7 @@ Pode ser útil em testes rápidos.
 
 ---
 
-# 40. Serviços externos
+## 40. Serviços externos
 
 Não dependa de:
 
@@ -971,7 +971,7 @@ Use doubles ou ambientes controlados.
 
 ---
 
-# 41. Testes contra serviços reais
+## 41. Testes contra serviços reais
 
 Podem existir em uma camada específica:
 
@@ -987,7 +987,7 @@ executada:
 
 ---
 
-# 42. Testes visuais
+## 42. Testes visuais
 
 E2E funcional não garante aparência.
 
@@ -1007,7 +1007,7 @@ comparação
 
 ---
 
-# 43. Revisão visual humana
+## 43. Revisão visual humana
 
 Mesmo com teste visual, mudanças intencionais precisam de aprovação.
 
@@ -1022,7 +1022,7 @@ humano aprova baseline novo
 
 ---
 
-# 44. Responsive testing
+## 44. Responsive testing
 
 Frontend pode ser validado em viewports:
 
@@ -1038,7 +1038,7 @@ Selecione representações importantes.
 
 ---
 
-# 45. Browsers
+## 45. Browsers
 
 Playwright:
 
@@ -1067,7 +1067,7 @@ npx playwright install --with-deps chromium
 
 ---
 
-# 46. Testes de performance
+## 46. Testes de performance
 
 Não são substitutos de E2E.
 
@@ -1082,7 +1082,7 @@ Ferramentas podem incluir k6 ou outras.
 
 ---
 
-# 47. Performance gate
+## 47. Performance gate
 
 Evite bloquear PR por microvariações instáveis.
 
@@ -1099,7 +1099,7 @@ em ambiente controlado.
 
 ---
 
-# 48. Load test
+## 48. Load test
 
 Não execute carga pesada no mesmo runner de CI sem planejamento.
 
@@ -1109,7 +1109,7 @@ Prefira ambiente dedicado.
 
 ---
 
-# 49. Security tests
+## 49. Security tests
 
 Camadas:
 
@@ -1125,7 +1125,7 @@ Serão aprofundadas no Volume 10.
 
 ---
 
-# 50. Mutation testing
+## 50. Mutation testing
 
 Mutation testing altera o código propositalmente e verifica se os testes detectam.
 
@@ -1135,7 +1135,7 @@ Mutation testing altera o código propositalmente e verifica se os testes detect
 
 ---
 
-# 51. Coverage
+## 51. Coverage
 
 Coverage ajuda a identificar áreas não exercitadas.
 
@@ -1155,7 +1155,7 @@ Coverage mede execução, não qualidade das assertions.
 
 ---
 
-# 52. Quality gate de coverage
+## 52. Quality gate de coverage
 
 Pode existir:
 
@@ -1175,7 +1175,7 @@ UI decorativa, scripts descartáveis                          -> baixa prioridad
 
 Priorize código crítico. Um gate de 80% aplicado uniformemente ao projeto inteiro tende a gerar testes artificiais só para "bater o número" — o que é pior do que não ter a métrica.
 
-## Ferramentas de coverage por stack
+### Ferramentas de coverage por stack
 
 ```text
 Node.js/TypeScript -> Vitest (coverage via V8, integra c8) ou Jest (Istanbul embutido)
@@ -1203,7 +1203,7 @@ O relatório de coverage deve ser um insumo para revisão (onde faltam testes), 
 
 ---
 
-# 53. Testes por risco
+## 53. Testes por risco
 
 Classifique:
 
@@ -1223,7 +1223,7 @@ Fluxos críticos merecem:
 
 ---
 
-# 54. Exemplo de matriz de risco
+## 54. Exemplo de matriz de risco
 
 | Função | Risco | Estratégia |
 |---|---|---|
@@ -1234,7 +1234,7 @@ Fluxos críticos merecem:
 
 ---
 
-# 55. Critérios de aceitação
+## 55. Critérios de aceitação
 
 SPEC:
 
@@ -1252,7 +1252,7 @@ E2E -> mensagem correta ao usuário
 
 ---
 
-# 56. Test traceability
+## 56. Test traceability
 
 Podemos manter relação:
 
@@ -1268,7 +1268,7 @@ Nem sempre precisa ser formal, mas sistemas críticos se beneficiam.
 
 ---
 
-# 57. TDD
+## 57. TDD
 
 Test Driven Development:
 
@@ -1288,7 +1288,7 @@ Não é obrigatório para toda funcionalidade.
 
 ---
 
-# 58. Desenvolvimento assistido por IA
+## 58. Desenvolvimento assistido por IA
 
 Fluxo útil:
 
@@ -1312,7 +1312,7 @@ A IA não deve decidir sozinha o que constitui sucesso do negócio.
 
 ---
 
-# 59. Test-first para bugs
+## 59. Test-first para bugs
 
 Ao corrigir bug:
 
@@ -1327,7 +1327,7 @@ Isso protege contra regressão futura.
 
 ---
 
-# 60. Regression test
+## 60. Regression test
 
 Todo bug significativo corrigido deveria, quando possível, deixar um teste.
 
@@ -1342,7 +1342,7 @@ teste permanente
 
 ---
 
-# 61. Smoke pós-deploy
+## 61. Smoke pós-deploy
 
 Produção:
 
@@ -1360,7 +1360,7 @@ Deve ser rápido.
 
 ---
 
-# 62. Synthetic monitoring
+## 62. Synthetic monitoring
 
 Uma evolução é executar continuamente pequenos fluxos sintéticos.
 
@@ -1380,7 +1380,7 @@ Isso é observabilidade, não CI.
 
 ---
 
-# 63. Tempo de feedback
+## 63. Tempo de feedback
 
 Métrica importante:
 
@@ -1396,7 +1396,7 @@ Objetivo:
 
 ---
 
-# 64. Orçamento de tempo
+## 64. Orçamento de tempo
 
 Exemplo inicial:
 
@@ -1413,7 +1413,7 @@ Use como metas locais depois de medir.
 
 ---
 
-# 65. Sequencial versus paralelo
+## 65. Sequencial versus paralelo
 
 Se runner é único:
 
@@ -1433,7 +1433,7 @@ Otimize conforme capacidade real.
 
 ---
 
-# 66. Fail fast
+## 66. Fail fast
 
 Testes baratos primeiro:
 
@@ -1454,7 +1454,7 @@ Se lint falha, economizamos os testes caros.
 
 ---
 
-# 67. Pipeline híbrido
+## 67. Pipeline híbrido
 
 Podemos paralelizar:
 
@@ -1473,7 +1473,7 @@ Isso equilibra latência e custo.
 
 ---
 
-# 68. Cache
+## 68. Cache
 
 Cache pode reduzir:
 
@@ -1488,7 +1488,7 @@ Sempre permita reconstrução limpa.
 
 ---
 
-# 69. Cache poisoning
+## 69. Cache poisoning
 
 Em ambientes não confiáveis, cache compartilhado também é superfície de segurança.
 
@@ -1496,7 +1496,7 @@ Será aprofundado em segurança.
 
 ---
 
-# 70. Artifact de falha
+## 70. Artifact de falha
 
 Em E2E, preserve:
 
@@ -1512,7 +1512,7 @@ Somente quando necessário para evitar armazenamento excessivo.
 
 ---
 
-# 71. Trace on first retry
+## 71. Trace on first retry
 
 Playwright pode ser configurado para gerar trace em retry.
 
@@ -1520,7 +1520,7 @@ Isso reduz artifact em execuções bem-sucedidas.
 
 ---
 
-# 72. Retry
+## 72. Retry
 
 Retries podem ser úteis para coletar evidências, mas não devem mascarar flaky tests.
 
@@ -1535,7 +1535,7 @@ e relatório deve mostrar que houve retry.
 
 ---
 
-# 73. Quarantine
+## 73. Quarantine
 
 Se um teste está flaky e bloqueia todo desenvolvimento:
 
@@ -1549,7 +1549,7 @@ Não transforme quarantine em cemitério permanente.
 
 ---
 
-# 74. Test owner
+## 74. Test owner
 
 Em equipes, cada suíte ou domínio pode possuir responsável.
 
@@ -1562,7 +1562,7 @@ qual requisito cobre
 
 ---
 
-# 75. Naming
+## 75. Naming
 
 Nomes de teste devem descrever comportamento.
 
@@ -1580,7 +1580,7 @@ teste 7
 
 ---
 
-# 76. Arrange / Act / Assert
+## 76. Arrange / Act / Assert
 
 Estrutura:
 
@@ -1599,7 +1599,7 @@ Melhora legibilidade.
 
 ---
 
-# 77. Given / When / Then
+## 77. Given / When / Then
 
 Alternativa:
 
@@ -1613,7 +1613,7 @@ Then acesso é negado
 
 ---
 
-# 78. Testes de data/hora
+## 78. Testes de data/hora
 
 Evite depender do relógio real.
 
@@ -1627,7 +1627,7 @@ Isso reduz flakiness.
 
 ---
 
-# 79. Testes de timezone
+## 79. Testes de timezone
 
 Se o sistema possui regras locais, inclua cenários de timezone explicitamente.
 
@@ -1635,7 +1635,7 @@ Datas são fonte comum de bugs.
 
 ---
 
-# 80. Random
+## 80. Random
 
 Se utiliza dados aleatórios, preserve seed para reproduzir falha.
 
@@ -1649,7 +1649,7 @@ Sem reprodução, debugging fica difícil.
 
 ---
 
-# 81. CI reproducibility
+## 81. CI reproducibility
 
 Uma falha no CI deve ser reproduzível localmente.
 
@@ -1669,7 +1669,7 @@ são úteis.
 
 ---
 
-# 82. Comando único
+## 82. Comando único
 
 Ideal:
 
@@ -1681,7 +1681,7 @@ pode executar a sequência local equivalente aos checks rápidos.
 
 ---
 
-# 83. E2E local
+## 83. E2E local
 
 Desenvolvedor deve poder executar:
 
@@ -1695,7 +1695,7 @@ CI não deve ser o único lugar onde testes funcionam.
 
 ---
 
-# 84. Docker test environment
+## 84. Docker test environment
 
 Um comando:
 
@@ -1709,7 +1709,7 @@ O desenho deve ser ajustado ao projeto.
 
 ---
 
-# 85. Testcontainers
+## 85. Testcontainers
 
 Bibliotecas Testcontainers permitem subir containers diretamente a partir dos testes.
 
@@ -1725,7 +1725,7 @@ Pode ser interessante para Node/PHP conforme suporte.
 
 ---
 
-# 86. Compose versus Testcontainers
+## 86. Compose versus Testcontainers
 
 Compose:
 
@@ -1743,7 +1743,7 @@ Escolha conforme complexidade.
 
 ---
 
-# 87. Banco compartilhado no DEV
+## 87. Banco compartilhado no DEV
 
 E2E de PR não deve poluir banco DEV compartilhado.
 
@@ -1753,7 +1753,7 @@ Se isso ainda não for possível, use namespaces/dados únicos e cleanup rigoros
 
 ---
 
-# 88. Preview environments
+## 88. Preview environments
 
 Uma evolução futura:
 
@@ -1776,7 +1776,7 @@ ambiente destruído
 
 ---
 
-# 89. Sem staging
+## 89. Sem staging
 
 Se o fluxo é:
 
@@ -1795,7 +1795,7 @@ Isso aumenta importância de:
 
 ---
 
-# 90. Gate humano
+## 90. Gate humano
 
 Automação responde:
 
@@ -1813,7 +1813,7 @@ São decisões diferentes.
 
 ---
 
-# 91. Frontend
+## 91. Frontend
 
 Para frontend, inclua:
 
@@ -1828,7 +1828,7 @@ conforme risco.
 
 ---
 
-# 92. Accessibility
+## 92. Accessibility
 
 Ferramentas automáticas podem detectar parte dos problemas de acessibilidade.
 
@@ -1838,7 +1838,7 @@ Pode ser um check específico.
 
 ---
 
-# 93. Testes de autorização
+## 93. Testes de autorização
 
 Não teste apenas:
 
@@ -1856,7 +1856,7 @@ Security behavior merece testes negativos.
 
 ---
 
-# 94. Testes de erro
+## 94. Testes de erro
 
 Inclua:
 
@@ -1870,7 +1870,7 @@ Sistemas falham também nos caminhos de erro.
 
 ---
 
-# 95. Resiliência
+## 95. Resiliência
 
 Alguns testes podem validar:
 
@@ -1884,7 +1884,7 @@ Especialmente em automação/IoT.
 
 ---
 
-# 96. Testes MQTT
+## 96. Testes MQTT
 
 Exemplo:
 
@@ -1905,7 +1905,7 @@ Use broker isolado.
 
 ---
 
-# 97. Mensagens assíncronas
+## 97. Mensagens assíncronas
 
 Testes assíncronos devem esperar condição real, não dormir tempo arbitrário.
 
@@ -1923,7 +1923,7 @@ sleep 10 e torcer
 
 ---
 
-# 98. Teste de idempotência
+## 98. Teste de idempotência
 
 Para webhooks, jobs e eventos:
 
@@ -1935,7 +1935,7 @@ não deveria criar efeitos duplicados quando a operação deve ser idempotente.
 
 ---
 
-# 99. Teste de migrations
+## 99. Teste de migrations
 
 CI deve validar:
 
@@ -1951,7 +1951,7 @@ versão anterior -> latest
 
 ---
 
-# 100. Teste de rollback de migration
+## 100. Teste de rollback de migration
 
 Só se a estratégia de banco realmente suportar rollback.
 
@@ -1959,7 +1959,7 @@ Muitas migrations de produção são melhor tratadas como forward-only com expan
 
 ---
 
-# 101. Testes de backup/restore
+## 101. Testes de backup/restore
 
 Backup deve ser testado.
 
@@ -1981,7 +1981,7 @@ Pode ser tarefa periódica.
 
 ---
 
-# 102. Testes de deploy
+## 102. Testes de deploy
 
 Podemos testar scripts de deploy em ambiente de laboratório.
 
@@ -1989,7 +1989,7 @@ O script de PROD não deveria ser a primeira vez executado durante uma emergênc
 
 ---
 
-# 103. Teste de rollback
+## 103. Teste de rollback
 
 Laboratório:
 
@@ -2004,7 +2004,7 @@ Meça e documente.
 
 ---
 
-# 104. Quality gates sugeridos
+## 104. Quality gates sugeridos
 
 PR:
 
@@ -2033,7 +2033,7 @@ smoke seguro PASS
 
 ---
 
-# 105. Quando bloquear merge
+## 105. Quando bloquear merge
 
 Bloqueie por testes que são:
 
@@ -2046,7 +2046,7 @@ Não transforme testes experimentais em required check antes de estabilizá-los.
 
 ---
 
-# 106. Dashboard de testes
+## 106. Dashboard de testes
 
 Métricas úteis:
 
@@ -2062,7 +2062,7 @@ Com o tempo, isso orienta otimização.
 
 ---
 
-# 107. Slow test report
+## 107. Slow test report
 
 Classifique os testes mais lentos.
 
@@ -2070,7 +2070,7 @@ Frequentemente poucos testes dominam o tempo total.
 
 ---
 
-# 108. Otimização
+## 108. Otimização
 
 Ordem sugerida:
 
@@ -2087,7 +2087,7 @@ Não comece comprando hardware sem medir.
 
 ---
 
-# 109. Teste como documentação
+## 109. Teste como documentação
 
 Um bom teste explica comportamento esperado.
 
@@ -2095,7 +2095,7 @@ Quando a SPEC muda, testes devem mudar conscientemente.
 
 ---
 
-# 110. IA e revisão de testes
+## 110. IA e revisão de testes
 
 Use IA para:
 
@@ -2113,7 +2113,7 @@ Mas revise:
 
 ---
 
-# 111. Tautological test
+## 111. Tautological test
 
 Exemplo ruim:
 
@@ -2126,7 +2126,7 @@ O teste não oferece independência real.
 
 ---
 
-# 112. Testes de regressão dirigidos por incidentes
+## 112. Testes de regressão dirigidos por incidentes
 
 Após incidente:
 
@@ -2141,7 +2141,7 @@ Isso aumenta maturidade do sistema.
 
 ---
 
-# 113. Checklist de PR
+## 113. Checklist de PR
 
 - [ ] Unitários pertinentes.
 - [ ] Integração pertinente.
@@ -2155,7 +2155,7 @@ Isso aumenta maturidade do sistema.
 
 ---
 
-# 114. Checklist de E2E
+## 114. Checklist de E2E
 
 - [ ] Fluxo realmente merece E2E.
 - [ ] Seletor estável.
@@ -2169,7 +2169,7 @@ Isso aumenta maturidade do sistema.
 
 ---
 
-# 115. Estratégia inicial recomendada
+## 115. Estratégia inicial recomendada
 
 ```text
 PR:
@@ -2193,7 +2193,7 @@ PROD:
 
 ---
 
-# 116. Meta de evolução
+## 116. Meta de evolução
 
 Quando o sistema crescer:
 
@@ -2210,7 +2210,7 @@ devem ser adicionados apenas quando trouxerem valor mensurável.
 
 ---
 
-# 117. Próximo volume
+## 117. Próximo volume
 
 **Volume 07 — Pipeline CI Profissional**
 

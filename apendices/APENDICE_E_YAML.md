@@ -1,4 +1,4 @@
-# Apêndice E — YAML: Referência Rápida para CI/CD
+# Apêndice E — YAML: referência rápida para CI/CD
 
 ## Mapeamentos
 ```yaml

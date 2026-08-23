@@ -36,7 +36,7 @@ Quality Gate
 
 ---
 
-# 2. O que é CI
+## 2. O que é CI
 
 Continuous Integration significa integrar alterações frequentemente e validar automaticamente se elas permanecem compatíveis com o sistema.
 
@@ -53,7 +53,7 @@ gera artifact válido?
 
 ---
 
-# 3. CI não é deploy
+## 3. CI não é deploy
 
 Separação:
 
@@ -66,7 +66,7 @@ Uma PR deve poder executar CI sem possuir qualquer acesso a produção.
 
 ---
 
-# 4. Estrutura de workflows
+## 4. Estrutura de workflows
 
 Sugestão:
 
@@ -84,7 +84,7 @@ Este volume concentra-se em `ci.yml`.
 
 ---
 
-# 5. Quality Gates
+## 5. Quality gates
 
 Checks iniciais:
 
@@ -111,7 +111,7 @@ phpunit
 
 ---
 
-# 6. Ordem dos testes
+## 6. Ordem dos testes
 
 Uma sequência econômica:
 
@@ -135,7 +135,7 @@ Se lint falhar, o pipeline evita gastar recursos em E2E.
 
 ---
 
-# 7. Quando paralelizar
+## 7. Quando paralelizar
 
 Com vários runners:
 
@@ -153,7 +153,7 @@ lint -> unit -> integration -> build -> E2E
 
 A arquitetura deve refletir a capacidade real.
 
-## 7.1 Matrix strategy
+### 7.1 Matrix strategy
 
 Quando o mesmo job precisa rodar contra várias versões, sistemas operacionais ou shards, use `strategy.matrix` em vez de duplicar jobs manualmente:
 
@@ -182,17 +182,17 @@ jobs:
 
 Pontos importantes:
 
-```text
-fail-fast: true (padrão)  -> uma falha cancela todas as outras combinações
-fail-fast: false           -> cada combinação roda até o fim, útil para ver o panorama completo
-max-parallel                 -> limita quantos jobs da matrix rodam ao mesmo tempo (proteção de runners self-hosted)
-```
+| Opção | Efeito |
+|---|---|
+| `fail-fast: true` (padrão) | Uma falha cancela todas as outras combinações |
+| `fail-fast: false` | Cada combinação roda até o fim, útil para ver o panorama completo |
+| `max-parallel` | Limita quantos jobs da matrix rodam ao mesmo tempo (proteção de runners self-hosted) |
 
 Em runners self-hosted com capacidade limitada, `max-parallel` evita que uma matrix grande esgote todos os runners disponíveis e trave outros workflows.
 
 ---
 
-# 8. Pipeline Node.js básico
+## 8. Pipeline Node.js básico
 
 ```yaml
 name: CI
@@ -234,7 +234,7 @@ jobs:
 
 ---
 
-# 9. Scripts do package.json
+## 9. Scripts do package.json
 
 Evite lógica específica demais no YAML.
 
@@ -256,7 +256,7 @@ Assim os mesmos comandos funcionam localmente.
 
 ---
 
-# 10. Pipeline PHP básico
+## 10. Pipeline PHP básico
 
 ```yaml
 name: CI PHP
@@ -283,7 +283,7 @@ jobs:
 
 ---
 
-# 11. Composer lock
+## 11. Composer lock
 
 Versione:
 
@@ -297,7 +297,7 @@ CI deve instalar versões reproduzíveis.
 
 ---
 
-# 12. npm lockfile
+## 12. npm lockfile
 
 Versione:
 
@@ -315,7 +315,7 @@ no pipeline.
 
 ---
 
-# 13. Integração com MariaDB
+## 13. Integração com MariaDB
 
 ```text
 CI
@@ -335,7 +335,7 @@ compose.test.yml
 
 ---
 
-# 14. Exemplo Compose
+## 14. Exemplo Compose
 
 ```yaml
 services:
@@ -355,7 +355,7 @@ services:
 
 ---
 
-# 15. Subir ambiente
+## 15. Subir ambiente
 
 ```yaml
 - name: Start integration stack
@@ -368,7 +368,7 @@ services:
 
 ---
 
-# 16. Executar migrations
+## 16. Executar migrations
 
 Exemplo:
 
@@ -381,7 +381,7 @@ O banco deve nascer vazio.
 
 ---
 
-# 17. Executar integração
+## 17. Executar integração
 
 ```yaml
 - name: Integration tests
@@ -390,7 +390,7 @@ O banco deve nascer vazio.
 
 ---
 
-# 18. Coletar logs
+## 18. Coletar logs
 
 ```yaml
 - name: Collect logs
@@ -404,7 +404,7 @@ O banco deve nascer vazio.
 
 ---
 
-# 19. Cleanup
+## 19. Cleanup
 
 ```yaml
 - name: Cleanup
@@ -418,7 +418,7 @@ O banco deve nascer vazio.
 
 ---
 
-# 20. MQTT no CI
+## 20. MQTT no CI
 
 Adicionar:
 
@@ -446,7 +446,7 @@ assertion
 
 ---
 
-# 21. Redis
+## 21. Redis
 
 ```yaml
 redis:
@@ -462,7 +462,7 @@ redis:
 
 ---
 
-# 22. Build Docker
+## 22. Build Docker
 
 Depois dos testes:
 
@@ -476,7 +476,7 @@ Depois dos testes:
 
 ---
 
-# 23. Smoke da imagem
+## 23. Smoke da imagem
 
 ```yaml
 - name: Start image
@@ -491,7 +491,7 @@ A publicação dinâmica de porta exige descobrir a porta atribuída ou usar net
 
 ---
 
-# 24. Health check
+## 24. Health check
 
 ```bash
 curl --fail http://ENDERECO/health
@@ -501,7 +501,7 @@ O objetivo é testar o artifact real.
 
 ---
 
-# 25. E2E separado
+## 25. E2E separado
 
 `e2e-smoke.yml`:
 
@@ -529,7 +529,7 @@ Separar E2E facilita:
 
 ---
 
-# 26. Dependencies
+## 26. Dependencies
 
 Podemos executar E2E somente se CI básico passou.
 
@@ -546,7 +546,7 @@ e2e:
 
 ---
 
-# 27. Required Checks
+## 27. Required checks
 
 No GitHub, configure checks obrigatórios da branch principal.
 
@@ -562,7 +562,7 @@ Sem PASS, merge bloqueado.
 
 ---
 
-# 28. Concurrency
+## 28. Concurrency
 
 ```yaml
 concurrency:
@@ -581,7 +581,7 @@ cancelar execução antiga da mesma branch
 
 ---
 
-# 29. Timeout
+## 29. Timeout
 
 ```yaml
 timeout-minutes: 20
@@ -593,7 +593,7 @@ Isso evita pipelines presos.
 
 ---
 
-# 30. Retry
+## 30. Retry
 
 Retry deve ser usado com disciplina.
 
@@ -611,7 +611,7 @@ pipeline "verde" por insistência
 
 ---
 
-# 31. Artifacts
+## 31. Artifacts
 
 Resultados úteis:
 
@@ -627,7 +627,7 @@ Uploads devem ocorrer especialmente em falha.
 
 ---
 
-# 32. Coverage artifact
+## 32. Coverage artifact
 
 ```yaml
 - uses: actions/upload-artifact@v4
@@ -638,7 +638,7 @@ Uploads devem ocorrer especialmente em falha.
 
 ---
 
-# 33. Playwright report
+## 33. Playwright report
 
 ```yaml
 - uses: actions/upload-artifact@v4
@@ -659,7 +659,7 @@ Uploads devem ocorrer especialmente em falha.
     retention-days: 7
 ```
 
-## 33.1 Passando artifacts entre jobs
+### 33.1 Passando artifacts entre jobs
 
 Artifacts são o mecanismo padrão para levar arquivos de um job para outro (jobs não compartilham filesystem). Fluxo típico: `build` gera o artifact, `deploy` ou `e2e` baixa e usa:
 
@@ -700,7 +700,7 @@ Para baixar todos os artifacts de um run de uma vez (útil em jobs de consolida�
     path: all-artifacts/
 ```
 
-## 33.2 Outputs entre jobs
+### 33.2 Outputs entre jobs
 
 Para valores pequenos (strings, flags, versões, SHAs) — não arquivos — use `needs.<job>.outputs` em vez de artifacts. O job produtor declara `outputs:` e escreve em `$GITHUB_OUTPUT`; nunca use o comando depreciado `set-output`, removido pelo GitHub em 2023 por questões de segurança:
 
@@ -729,7 +729,7 @@ O mesmo vale para variáveis de ambiente dentro de um step: use `$GITHUB_ENV`, n
 
 ---
 
-# 34. Cache de dependências
+## 34. Cache de dependências
 
 Cache reduz o tempo gasto reinstalando dependências que não mudaram. Existem duas abordagens:
 
@@ -738,7 +738,7 @@ cache nativo das setup-actions  -> mais simples, cobre o caso comum
 actions/cache                   -> controle total de chave, paths e política de restore
 ```
 
-## 34.1 Cache nativo em setup-node
+### 34.1 Cache nativo em setup-node
 
 ```yaml
 - uses: actions/setup-node@v4
@@ -749,7 +749,7 @@ actions/cache                   -> controle total de chave, paths e política de
 
 O `cache: npm` usa o hash do `package-lock.json` como parte da chave automaticamente. Também funciona com `yarn` e `pnpm` (nesse caso, informe `cache-dependency-path` se o lockfile não estiver na raiz).
 
-## 34.2 Cache nativo em setup-python
+### 34.2 Cache nativo em setup-python
 
 ```yaml
 - uses: actions/setup-python@v5
@@ -759,7 +759,7 @@ O `cache: npm` usa o hash do `package-lock.json` como parte da chave automaticam
     cache-dependency-path: requirements.txt
 ```
 
-## 34.3 Cache nativo em setup-java
+### 34.3 Cache nativo em setup-java
 
 ```yaml
 - uses: actions/setup-java@v4
@@ -771,7 +771,7 @@ O `cache: npm` usa o hash do `package-lock.json` como parte da chave automaticam
 
 Suporta `maven`, `gradle` e `sbt`.
 
-## 34.4 actions/cache para o caso genérico
+### 34.4 actions/cache para o caso genérico
 
 Quando não existe cache nativo (ex.: cache de build do Composer, cache de ferramentas customizadas), use `actions/cache@v4` diretamente. A chave deve incluir algo que mude quando as dependências mudam — normalmente o hash do lockfile — e um `restore-keys` como fallback parcial:
 
@@ -787,18 +787,18 @@ Quando não existe cache nativo (ex.: cache de build do Composer, cache de ferra
 
 Regras de ouro para a chave:
 
-```text
-incluir runner.os        -> caches de SOs diferentes não são compatíveis
-incluir hash do lockfile -> cache muda quando as dependências mudam
-restore-keys em cascata  -> permite reaproveitar cache parcial em vez de começar do zero
-nunca usar chave fixa    -> "cache sempre igual" nunca invalida e passa a mentir
-```
+| Regra | Motivo |
+|---|---|
+| Incluir `runner.os` | Caches de SOs diferentes não são compatíveis |
+| Incluir hash do lockfile | Cache muda quando as dependências mudam |
+| `restore-keys` em cascata | Permite reaproveitar cache parcial em vez de começar do zero |
+| Nunca usar chave fixa | "Cache sempre igual" nunca invalida e passa a mentir |
 
 Em runners self-hosted, avalie se o cache do GitHub Actions (limitado por repositório) compensa frente a um cache local persistente no próprio runner — muitas vezes o segundo é mais rápido e não conta contra a cota do GitHub.
 
 ---
 
-# 35. Cache Composer
+## 35. Cache Composer
 
 Composer não tem uma setup-action oficial mantida pelo GitHub com cache nativo equivalente ao `setup-node`. A prática recomendada é combinar `shivammathur/setup-php` (ou instalar o Composer disponível no runner) com `actions/cache@v4`, como mostrado em 34.4, usando `composer.lock` na chave.
 
@@ -806,7 +806,7 @@ Evite caches globais sem chave apropriada — um cache sem hash do lockfile na c
 
 ---
 
-# 36. Docker layer cache
+## 36. Docker layer cache
 
 Em builds frequentes, BuildKit/buildx pode reutilizar layers.
 
@@ -829,7 +829,7 @@ Em runners self-hosted persistentes, o próprio cache local do Docker (`docker b
 
 ---
 
-# 37. CI híbrido Node + PHP
+## 37. CI híbrido Node + PHP
 
 Arquitetura:
 
@@ -846,7 +846,7 @@ Cada stack possui job próprio.
 
 ---
 
-# 38. Paths filters
+## 38. Paths filters
 
 Podemos evitar jobs quando nenhum arquivo relevante mudou.
 
@@ -861,7 +861,7 @@ Mas dependências compartilhadas exigem cuidado.
 
 ---
 
-# 39. Monorepo
+## 39. Monorepo
 
 Em monorepo:
 
@@ -877,7 +877,7 @@ Documente a matriz de dependências.
 
 ---
 
-# 40. Path filtering conservador
+## 40. Path filtering conservador
 
 Comece com filtros simples.
 
@@ -889,7 +889,7 @@ Só adote seleção avançada quando:
 
 ---
 
-# 41. Lint antes do E2E
+## 41. Lint antes do E2E
 
 Não faz sentido executar 20 minutos de browser se:
 
@@ -901,7 +901,7 @@ poderia ser detectado em segundos.
 
 ---
 
-# 42. Typecheck
+## 42. Typecheck
 
 TypeScript:
 
@@ -913,7 +913,7 @@ pode ser um gate rápido e valioso.
 
 ---
 
-# 43. Static analysis PHP
+## 43. Static analysis PHP
 
 Ferramentas como PHPStan/Psalm podem detectar problemas antes de runtime.
 
@@ -921,7 +921,7 @@ Podem ser adicionadas ao quality job.
 
 ---
 
-# 44. Security baseline
+## 44. Security baseline
 
 CI pode incluir verificações rápidas:
 
@@ -935,7 +935,7 @@ Checks pesados ficam em fluxo separado.
 
 ---
 
-# 45. npm audit
+## 45. npm audit
 
 Pode fornecer sinal de dependências vulneráveis.
 
@@ -943,7 +943,7 @@ Não configure bloqueio cego sem política de severidade e capacidade de tratame
 
 ---
 
-# 46. Build metadata
+## 46. Build metadata
 
 Gere:
 
@@ -958,7 +958,7 @@ Isso pode ser incorporado à aplicação.
 
 ---
 
-# 47. Endpoint version
+## 47. Endpoint version
 
 Exemplo:
 
@@ -978,7 +978,7 @@ Ajuda a confirmar qual artifact está rodando.
 
 ---
 
-# 48. CI summary
+## 48. CI summary
 
 Ao final:
 
@@ -995,7 +995,7 @@ Um summary bem organizado reduz tempo de diagnóstico.
 
 ---
 
-# 49. Status vermelho é útil
+## 49. Status vermelho é útil
 
 Pipeline falho não é problema por si só.
 
@@ -1015,7 +1015,7 @@ falso positivo recorrente
 
 ---
 
-# 50. CI local
+## 50. CI local
 
 Desenvolvedor deve poder executar:
 
@@ -1029,7 +1029,7 @@ antes do push.
 
 ---
 
-# 51. Pre-commit
+## 51. Pre-commit
 
 Hooks locais podem executar verificações rápidas.
 
@@ -1037,7 +1037,7 @@ Não substituem o CI porque podem ser ignorados ou variar por máquina.
 
 ---
 
-# 52. Pre-push
+## 52. Pre-push
 
 Pode executar:
 
@@ -1052,7 +1052,7 @@ Evite hooks locais que demoram demais.
 
 ---
 
-# 53. IA antes do push
+## 53. IA antes do push
 
 Agente pode executar:
 
@@ -1068,7 +1068,7 @@ Ainda assim o GitHub Actions repete os gates essenciais.
 
 ---
 
-# 54. Independência da validação
+## 54. Independência da validação
 
 Fluxo:
 
@@ -1089,7 +1089,7 @@ Isso evita confiar apenas no relato do agente.
 
 ---
 
-# 55. CI para PR em Draft
+## 55. CI para PR em draft
 
 Estratégia opcional:
 
@@ -1104,7 +1104,7 @@ A lógica deve ser implementada explicitamente.
 
 ---
 
-# 56. Cancelamento de runs antigas
+## 56. Cancelamento de runs antigas
 
 Especialmente útil com agentes que fazem vários pushes durante refinamento.
 
@@ -1116,7 +1116,7 @@ push 3 -> atual
 
 ---
 
-# 57. Job queue
+## 57. Job queue
 
 Métrica:
 
@@ -1128,7 +1128,7 @@ Se fila cresce, gargalo é capacidade de runner, não teste.
 
 ---
 
-# 58. Runner labels
+## 58. Runner labels
 
 Exemplo:
 
@@ -1144,7 +1144,7 @@ Não use dezenas de labels desnecessárias.
 
 ---
 
-# 59. Runner groups
+## 59. Runner groups
 
 Em organizações maiores, grupos controlam quais repositórios podem utilizar determinados runners.
 
@@ -1158,7 +1158,7 @@ produção
 
 ---
 
-# 60. Segredos no CI
+## 60. Segredos no CI
 
 PR CI idealmente usa poucos secrets.
 
@@ -1174,7 +1174,7 @@ não precisa ser secret crítico.
 
 ---
 
-# 61. Secrets de PROD
+## 61. Secrets de PROD
 
 Nunca disponibilize secrets de produção em job de PR.
 
@@ -1188,7 +1188,7 @@ PROD secrets
 
 ---
 
-# 62. Pull Requests externas
+## 62. Pull requests externas
 
 Código não confiável não deve executar livremente em runner interno com privilégios.
 
@@ -1196,7 +1196,7 @@ Configure política conforme origem das contribuições.
 
 ---
 
-# 63. CI e branch protection
+## 63. CI e branch protection
 
 A branch protection transforma workflow em regra operacional:
 
@@ -1211,7 +1211,7 @@ Sem proteção, pipeline pode virar apenas informativo.
 
 ---
 
-# 64. Merge após PASS
+## 64. Merge após PASS
 
 Fluxo:
 
@@ -1231,7 +1231,7 @@ Depois do merge, entra o CD.
 
 ---
 
-# 65. Não fazer deploy dentro do CI de PR
+## 65. Não fazer deploy dentro do CI de PR
 
 Evite:
 
@@ -1243,7 +1243,7 @@ CI deve ser seguro para experimentação.
 
 ---
 
-# 66. Build oficial em main
+## 66. Build oficial em main
 
 Após merge:
 
@@ -1258,7 +1258,7 @@ Esse artifact será promovido.
 
 ---
 
-# 67. Reuso de artifact
+## 67. Reuso de artifact
 
 Ideal:
 
@@ -1277,7 +1277,7 @@ Não reconstruir em PROD.
 
 ---
 
-# 68. Pipeline modular
+## 68. Pipeline modular
 
 Evite um único YAML gigantesco.
 
@@ -1285,7 +1285,7 @@ Separe responsabilidades.
 
 ---
 
-# 69. Reusable workflows
+## 69. Reusable workflows
 
 Projetos semelhantes podem reutilizar lógica através de um workflow chamável (`workflow_call`), em vez de copiar YAML entre repositórios.
 
@@ -1348,24 +1348,24 @@ jobs:
 
 Pontos importantes:
 
-```text
-uses: org/repo@ref        -> sempre referencie por tag/branch/SHA, nunca sem versão
-inputs/secrets explícitos -> só o que é declarado em workflow_call fica visível ao chamador
-secrets: inherit          -> repassa todos os secrets do chamador (use com cautela)
-```
+| Item | Descrição |
+|---|---|
+| `uses: org/repo@ref` | Sempre referencie por tag/branch/SHA, nunca sem versão |
+| Inputs/secrets explícitos | Só o que é declarado em `workflow_call` fica visível ao chamador |
+| `secrets: inherit` | Repassa todos os secrets do chamador (use com cautela) |
 
 Versione o workflow central (`@v1`, `@v1.2.0` ou SHA fixo) para não quebrar todos os consumidores ao alterar a lógica interna. Trate o workflow reutilizável como uma dependência com contrato — mudanças breaking exigem uma nova major tag.
 
 ---
 
-# 70. Composite actions vs reusable workflows
+## 70. Composite actions vs reusable workflows
 
 Ambos evitam duplicação, mas resolvem problemas diferentes:
 
-```text
-composite action      -> reutiliza uma sequência de STEPS dentro de um job existente
-reusable workflow      -> reutiliza um ou mais JOBS inteiros, com seu próprio runs-on, matrix e needs
-```
+| Mecanismo | O que reutiliza |
+|---|---|
+| Composite action | Uma sequência de STEPS dentro de um job existente |
+| Reusable workflow | Um ou mais JOBS inteiros, com seu próprio `runs-on`, matrix e `needs` |
 
 Composite action, útil para sequências repetidas como:
 
@@ -1407,14 +1407,14 @@ Uso no workflow:
 
 Regra prática para escolher:
 
-```text
-precisa de vários jobs, matrix própria ou runs-on diferente -> reusable workflow
-precisa só encapsular alguns steps dentro de um job         -> composite action
-```
+| Necessidade | Escolha |
+|---|---|
+| Vários jobs, matrix própria ou `runs-on` diferente | Reusable workflow |
+| Só encapsular alguns steps dentro de um job | Composite action |
 
 ---
 
-# 71. Scripts versionados
+## 71. Scripts versionados
 
 Exemplo:
 
@@ -1429,7 +1429,7 @@ Testáveis localmente.
 
 ---
 
-# 72. ShellCheck
+## 72. ShellCheck
 
 Scripts shell podem ser analisados por ShellCheck.
 
@@ -1437,7 +1437,7 @@ Scripts shell podem ser analisados por ShellCheck.
 
 ---
 
-# 73. YAML lint
+## 73. YAML lint
 
 Valide YAML para evitar erros simples.
 
@@ -1445,7 +1445,7 @@ Pode ser executado em PRs que alteram workflows.
 
 ---
 
-# 74. actionlint
+## 74. actionlint
 
 `actionlint` é uma ferramenta open source especializada em GitHub Actions workflows.
 
@@ -1453,7 +1453,7 @@ Pode ser incorporada ao CI.
 
 ---
 
-# 75. Pipeline self-test
+## 75. Pipeline self-test
 
 O próprio pipeline precisa de testes.
 
@@ -1461,7 +1461,7 @@ Mudanças em `.github/workflows` devem receber atenção especial.
 
 ---
 
-# 76. Falha de infraestrutura versus código
+## 76. Falha de infraestrutura versus código
 
 Classifique:
 
@@ -1477,7 +1477,7 @@ Isso melhora diagnóstico.
 
 ---
 
-# 77. Retry de infraestrutura
+## 77. Retry de infraestrutura
 
 Um retry automático pode ser aceitável para falhas claramente transitórias de infraestrutura.
 
@@ -1485,7 +1485,7 @@ Não para assertion funcional.
 
 ---
 
-# 78. Métricas do CI
+## 78. Métricas do CI
 
 Acompanhe:
 
@@ -1499,7 +1499,7 @@ Acompanhe:
 
 ---
 
-# 79. SLO de CI
+## 79. SLO de CI
 
 Pode existir meta interna:
 
@@ -1511,7 +1511,7 @@ O valor depende da equipe/projeto.
 
 ---
 
-# 80. Otimização orientada por métricas
+## 80. Otimização orientada por métricas
 
 Se 60% do tempo está em:
 
@@ -1531,7 +1531,7 @@ otimize estratégia E2E.
 
 ---
 
-# 81. Exemplo de pipeline completo
+## 81. Exemplo de pipeline completo
 
 ```yaml
 name: CI
@@ -1627,7 +1627,7 @@ jobs:
 
 ---
 
-# 82. Evolução futura
+## 82. Evolução futura
 
 Quando crescer:
 
@@ -1641,7 +1641,7 @@ runners efêmeros
 
 ---
 
-# 83. Checklist CI profissional
+## 83. Checklist CI profissional
 
 - [ ] PR dispara CI.
 - [ ] `main` está protegida.
@@ -1663,7 +1663,7 @@ runners efêmeros
 
 ---
 
-# 84. Próximo volume
+## 84. Próximo volume
 
 **Volume 08 — Desenvolvimento Orientado por Especificação e IA**
 

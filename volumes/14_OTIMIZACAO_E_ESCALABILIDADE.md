@@ -19,7 +19,7 @@ depois otimizar
 
 ---
 
-# 2. Métricas fundamentais
+## 2. Métricas fundamentais
 
 Meça:
 
@@ -36,7 +36,7 @@ deploy duration
 
 ---
 
-# 3. Gargalo
+## 3. Gargalo
 
 Não assuma que E2E é sempre o maior problema.
 
@@ -51,7 +51,7 @@ Pode ser:
 
 ---
 
-# 4. Pareto
+## 4. Pareto
 
 Frequentemente 20% das etapas consomem 80% do tempo.
 
@@ -59,7 +59,7 @@ Ataque primeiro os maiores custos.
 
 ---
 
-# 5. Cache npm
+## 5. Cache npm
 
 Use `actions/cache@v4` com chave derivada do lockfile via `hashFiles`, e `restore-keys` como fallback parcial:
 
@@ -80,7 +80,7 @@ Limites do cache do GitHub Actions: repositório tem teto de 10 GB (entradas mai
 
 ---
 
-# 6. Cache Composer
+## 6. Cache Composer
 
 Mesmo padrão do npm, com o cache de downloads do Composer (`~/.composer/cache` ou o path retornado por `composer config cache-files-dir`) chaveado por `hashFiles('**/composer.lock')` e `restore-keys` sem o hash para aproveitar parcialmente uma chave antiga.
 
@@ -88,7 +88,7 @@ O lockfile continua fonte de versões; o cache só evita rebaixar pacotes já re
 
 ---
 
-# 7. Docker layer cache
+## 7. Docker layer cache
 
 Dockerfile bem estruturado continua a primeira otimização:
 
@@ -114,11 +114,11 @@ Isso separa a camada de dependências (que muda pouco) da camada de código (que
 
 Opções de backend de cache:
 
-```text
-type=gha       cache hospedado pelo GitHub Actions (por repositório, mesmos limites/eviction do actions/cache)
-type=registry  cache publicado como imagem/manifesto num registry (bom p/ compartilhar entre runners self-hosted)
-type=local     cache em diretório do disco local (rápido em runner persistente, mas é o disco que se quer monitorar)
-```
+| Backend | Descrição |
+|---|---|
+| `type=gha` | Cache hospedado pelo GitHub Actions (por repositório, mesmos limites/eviction do `actions/cache`) |
+| `type=registry` | Cache publicado como imagem/manifesto num registry (bom p/ compartilhar entre runners self-hosted) |
+| `type=local` | Cache em diretório do disco local (rápido em runner persistente, mas é o disco que se quer monitorar) |
 
 `mode=max` grava todas as camadas intermediárias no cache (não só a camada final), o que é necessário para builds multi-stage aproveitarem cache entre estágios — custa mais espaço/tempo de export em troca de mais acertos de cache.
 
@@ -126,7 +126,7 @@ Em runner self-hosted persistente, `type=local` com `--cache-to type=local,dest=
 
 ---
 
-# 8. Browser cache
+## 8. Browser cache
 
 Playwright baixa browsers grandes (Chromium/Firefox/WebKit, várias centenas de MB no total).
 
@@ -138,7 +138,7 @@ Gerencie espaço: cada versão nova do Playwright normalmente não remove a ante
 
 ---
 
-# 9. Imagem de runner preparada
+## 9. Imagem de runner preparada
 
 Uma evolução:
 
@@ -154,7 +154,7 @@ reduz setup por job.
 
 ---
 
-# 10. Runners efêmeros com imagem pronta
+## 10. Runners efêmeros com imagem pronta
 
 Combina:
 
@@ -168,26 +168,16 @@ Exige provisioning automatizado.
 
 Trade-off central entre runner efêmero e persistente:
 
-```text
-efêmero (registra e desregistra a cada job)
-  + isolamento forte: job nunca herda estado/segredo/cache de job anterior
-  + reduz superfície de ataque de repo público/PR externo
-  - custo de I/O e boot a cada execução: clonar/baixar imagem, subir VM/container, instalar toolchain
-  - depende de provisioning automatizado (imagem pronta, template, orquestrador)
-
-persistente (fica registrado por dias/semanas)
-  + setup por job quase zero, sem custo de boot repetido
-  + mais simples de operar sem orquestrador
-  - risco de vazamento entre jobs (cache, variável de ambiente, processo zumbi, credencial em disco)
-  - acumula lixo (containers, imagens, workspaces, logs) — exige limpeza ativa (seções 37-39)
-  - superfície maior para repo público ou runner que roda PR de fork
-```
+| Modo | Vantagens | Desvantagens |
+|---|---|---|
+| Efêmero (registra e desregistra a cada job) | Isolamento forte: job nunca herda estado/segredo/cache de job anterior; reduz superfície de ataque de repo público/PR externo | Custo de I/O e boot a cada execução: clonar/baixar imagem, subir VM/container, instalar toolchain; depende de provisioning automatizado (imagem pronta, template, orquestrador) |
+| Persistente (fica registrado por dias/semanas) | Setup por job quase zero, sem custo de boot repetido; mais simples de operar sem orquestrador | Risco de vazamento entre jobs (cache, variável de ambiente, processo zumbi, credencial em disco); acumula lixo (containers, imagens, workspaces, logs) — exige limpeza ativa (seções 37-39); superfície maior para repo público ou runner que roda PR de fork |
 
 Para repositório público ou que aceita PR de fork, prefira efêmero — persistente com segredo em ambiente compartilhado é vetor de exfiltração. Para repositório privado com poucos contribuidores confiáveis, persistente pode ser aceitável e mais barato em I/O.
 
 ---
 
-# 11. Concurrency cancel
+## 11. Concurrency cancel
 
 ```yaml
 cancel-in-progress: true
@@ -197,7 +187,7 @@ economiza execução de commits antigos.
 
 ---
 
-# 12. Fail fast
+## 12. Fail fast
 
 ```text
 lint -> unit -> expensive tests
@@ -207,7 +197,7 @@ Falhar cedo economiza recursos.
 
 ---
 
-# 13. Paralelização
+## 13. Paralelização
 
 Com capacidade:
 
@@ -221,7 +211,7 @@ podem rodar em paralelo.
 
 ---
 
-# 14. Dependência correta
+## 14. Dependência correta
 
 Não coloque `needs` onde não existe dependência lógica.
 
@@ -229,7 +219,7 @@ Dependências artificiais aumentam tempo.
 
 ---
 
-# 15. E2E shards
+## 15. E2E shards
 
 ```text
 1/4
@@ -242,7 +232,7 @@ Com quatro runners, reduz wall-clock.
 
 ---
 
-# 16. Workers
+## 16. Workers
 
 Dentro do mesmo runner:
 
@@ -254,13 +244,13 @@ Ajuste por CPU/RAM.
 
 ---
 
-# 17. Oversubscription
+## 17. Oversubscription
 
 8 workers em máquina de 4 cores pode piorar tempo e flakiness.
 
 ---
 
-# 18. Banco compartilhado
+## 18. Banco compartilhado
 
 Paralelismo exige isolamento.
 
@@ -268,13 +258,13 @@ Use bancos/schemas/dados únicos.
 
 ---
 
-# 19. Test impact
+## 19. Test impact
 
 Mapeie mudança para testes.
 
 ---
 
-# 20. Full regression como rede de segurança
+## 20. Full regression como rede de segurança
 
 Mesmo com seleção de testes:
 
@@ -286,13 +276,13 @@ permanece.
 
 ---
 
-# 21. Path filters
+## 21. Path filters
 
 Evite workflow frontend se apenas docs independentes mudaram.
 
 ---
 
-# 22. Docs-only PR
+## 22. Docs-only PR
 
 Pode executar apenas:
 
@@ -305,7 +295,7 @@ quando seguro.
 
 ---
 
-# 23. Monorepo graph
+## 23. Monorepo graph
 
 Ferramentas de monorepo podem calcular dependências.
 
@@ -313,13 +303,13 @@ Adote somente se projeto justificar.
 
 ---
 
-# 24. Build seletivo
+## 24. Build seletivo
 
 Não reconstruir serviços não afetados.
 
 ---
 
-# 25. Artifact reuse
+## 25. Artifact reuse
 
 Não repetir:
 
@@ -333,7 +323,7 @@ Produza artifact em um job e reutilize.
 
 ---
 
-# 26. Upload/download artifact
+## 26. Upload/download artifact
 
 Útil quando jobs estão em runners diferentes.
 
@@ -341,7 +331,7 @@ Compare custo de transferência com rebuild.
 
 ---
 
-# 27. Workspace compartilhado
+## 27. Workspace compartilhado
 
 Em self-hosted persistente, não dependa implicitamente do workspace entre jobs.
 
@@ -349,7 +339,7 @@ Isso reduz portabilidade.
 
 ---
 
-# 28. Runner count
+## 28. Runner count
 
 Se queue time cresce:
 
@@ -361,7 +351,7 @@ pode ser melhor que otimizar testes.
 
 ---
 
-# 29. Runner especializado
+## 29. Runner especializado
 
 ```text
 ci
@@ -372,7 +362,7 @@ arm64
 
 ---
 
-# 30. Scale-up
+## 30. Scale-up
 
 Mais CPU/RAM.
 
@@ -380,7 +370,7 @@ Bom quando job único é pesado.
 
 ---
 
-# 31. Scale-out
+## 31. Scale-out
 
 Mais runners.
 
@@ -388,7 +378,7 @@ Bom quando muitos jobs ficam em fila.
 
 ---
 
-# 32. Auto-scaling
+## 32. Auto-scaling
 
 Em ambiente cloud/virtualização, runners podem ser criados sob demanda a partir de um template/imagem, atendem um job (idealmente como efêmero) e são destruídos em seguida.
 
@@ -396,14 +386,14 @@ Sem Kubernetes, isso normalmente é implementado com um webhook do GitHub (event
 
 ---
 
-# 33. Actions Runner Controller
+## 33. Actions Runner Controller
 
 O **Actions Runner Controller (ARC)** é a solução oficial da GitHub para autoscaling de runners self-hosted em Kubernetes. Ele expõe dois modos de escala:
 
-```text
-RunnerDeployment (legado)   pool de runners com scale-up/down por polling
-RunnerScaleSet (atual)      escuta o job diretamente e escala com granularidade de 1 job = 1 pod efêmero
-```
+| Modo | Descrição |
+|---|---|
+| `RunnerDeployment` (legado) | Pool de runners com scale-up/down por polling |
+| `RunnerScaleSet` (atual) | Escuta o job diretamente e escala com granularidade de 1 job = 1 pod efêmero |
 
 O modelo atual (`RunnerScaleSet`, instalado via chart Helm `gha-runner-scale-set`) usa runners efêmeros por padrão: cada job sobe um pod, registra, executa e é descartado — o que resolve o problema de acúmulo de lixo em disco (seção 37) porque não há disco persistente entre jobs, mas paga o custo de I/O/boot descrito na seção 10 a cada execução (pull de imagem do runner, cold start do pod).
 
@@ -411,13 +401,13 @@ Só considerar ARC quando a escala e a operação já justificarem manter um clu
 
 ---
 
-# 34. Não adotar Kubernetes cedo
+## 34. Não adotar Kubernetes cedo
 
 Kubernetes pode adicionar mais complexidade que valor em projetos pequenos.
 
 ---
 
-# 35. VM templates
+## 35. VM templates
 
 Em Proxmox/cloud:
 
@@ -433,7 +423,7 @@ template runner
 
 ---
 
-# 36. Ephemeral registration
+## 36. Ephemeral registration
 
 Runners descartáveis devem ser registrados com a flag `--ephemeral` no `config.sh`/`config.cmd` do runner (ou equivalente no ARC/`RunnerScaleSet`, que já é efêmero por padrão). Um runner efêmero se desregistra automaticamente após concluir um único job — não confie em script externo para desregistrar manualmente, pois um crash no meio do job pode deixar o registro órfão no GitHub sem que o processo tenha rodado o cleanup.
 
@@ -441,7 +431,7 @@ Combine com fetch raso e limpeza de workspace (seção 36-A) para manter o custo
 
 ---
 
-# 36-A. Checkout raso e limpeza de workspace
+## 36-A. Checkout raso e limpeza de workspace
 
 `actions/checkout@v4` clona por padrão com `fetch-depth: 1` (raso), o que já evita baixar todo o histórico. Ajuste explicitamente quando precisar de mais:
 
@@ -465,7 +455,7 @@ runner persistente       workspace sobrevive — ganho de I/O no build increment
 
 ---
 
-# 37. Cleanup automático
+## 37. Cleanup automático
 
 Runner persistente acumula:
 
@@ -482,21 +472,21 @@ Automatize a limpeza (cron ou hook pós-job) em vez de depender de intervenção
 
 ---
 
-# 38. Disk budget
+## 38. Disk budget
 
 Defina limiares de disco e a ação em cada um:
 
-```text
-alert 70%      notificar, sem ação automática
-cleanup 75%    disparar rotina de limpeza automática (containers/imagens/workspaces)
-critical 90%   bloquear novos jobs até liberar espaço
-```
+| Limiar | Ação |
+|---|---|
+| Alert 70% | Notificar, sem ação automática |
+| Cleanup 75% | Disparar rotina de limpeza automática (containers/imagens/workspaces) |
+| Critical 90% | Bloquear novos jobs até liberar espaço |
 
 Valores são exemplos e devem ser ajustados ao tamanho real do disco e ao ritmo de crescimento observado — monitore antes de fixar o número.
 
 ---
 
-# 39. Docker build cache pruning
+## 39. Docker build cache pruning
 
 `docker buildx prune` (cache do BuildKit) e `docker system prune` (containers/imagens/redes/volumes não usados) limpam de forma controlada. Prefira flags explícitas a `--all` cego:
 
@@ -509,43 +499,43 @@ Não apagar cache durante horário de maior uso sem necessidade — um prune agr
 
 ---
 
-# 40. Test duration budget
+## 40. Test duration budget
 
 Defina metas por camada.
 
 ---
 
-# 41. Slow tests
+## 41. Slow tests
 
 Gere ranking.
 
 ---
 
-# 42. Split slow suites
+## 42. Split slow suites
 
 Uma suíte com 1 teste de 10 minutos pode precisar redesign.
 
 ---
 
-# 43. Mock external services
+## 43. Mock external services
 
 Na PR, substitua dependências lentas quando integração real não é o objetivo.
 
 ---
 
-# 44. Local service containers
+## 44. Local service containers
 
 Redis/MQTT local em Docker é mais previsível que serviços remotos.
 
 ---
 
-# 45. Network
+## 45. Network
 
 Runner local pode ter vantagem de baixa latência para DEV interno.
 
 ---
 
-# 46. E2E headless
+## 46. E2E headless
 
 CI normalmente usa browser headless.
 
@@ -553,7 +543,7 @@ Debug local pode usar headed.
 
 ---
 
-# 47. Video/trace
+## 47. Video/trace
 
 Não gravar vídeo de todos os testes se armazenamento e I/O forem gargalos.
 
@@ -561,13 +551,13 @@ Configure em falha/retry.
 
 ---
 
-# 48. Screenshot policy
+## 48. Screenshot policy
 
 Capture apenas quando útil.
 
 ---
 
-# 49. Retry cost
+## 49. Retry cost
 
 Retries multiplicam tempo.
 
@@ -575,13 +565,13 @@ Corrija flakiness.
 
 ---
 
-# 50. Test ordering
+## 50. Test ordering
 
 Testes mais rápidos ou de maior sinal podem rodar primeiro.
 
 ---
 
-# 51. Changed tests first
+## 51. Changed tests first
 
 Uma estratégia:
 
@@ -594,7 +584,7 @@ remaining smoke
 
 ---
 
-# 52. PR labels para testes
+## 52. PR labels para testes
 
 Projetos maduros podem usar label:
 
@@ -608,19 +598,19 @@ Não permita bypass de testes críticos.
 
 ---
 
-# 53. Manual full E2E
+## 53. Manual full E2E
 
 Disponibilize `workflow_dispatch`.
 
 ---
 
-# 54. Nightly capacity
+## 54. Nightly capacity
 
 Suíte pesada pode usar horário fora do expediente.
 
 ---
 
-# 55. Cost model
+## 55. Cost model
 
 Self-hosted não é custo zero.
 
@@ -636,7 +626,7 @@ administração
 
 ---
 
-# 56. Hosted versus self-hosted
+## 56. Hosted versus self-hosted
 
 Hosted:
 
@@ -654,19 +644,19 @@ Modelo híbrido pode ser ideal.
 
 ---
 
-# 57. Burst capacity
+## 57. Burst capacity
 
 Jobs comuns self-hosted e picos em hosted podem ser estratégia, se orçamento permitir.
 
 ---
 
-# 58. Security constraint
+## 58. Security constraint
 
 Não mova job privilegiado para qualquer runner apenas por velocidade.
 
 ---
 
-# 59. Benchmark
+## 59. Benchmark
 
 Antes/depois:
 
@@ -679,13 +669,13 @@ Registre resultado.
 
 ---
 
-# 60. Evitar micro-otimização
+## 60. Evitar micro-otimização
 
 Não gastar dias para economizar 5 segundos num job diário.
 
 ---
 
-# 61. Developer experience
+## 61. Developer experience
 
 CI rápido melhora:
 
@@ -695,7 +685,7 @@ CI rápido melhora:
 
 ---
 
-# 62. Lead time
+## 62. Lead time
 
 Meça:
 
@@ -705,7 +695,7 @@ primeiro commit -> produção
 
 ---
 
-# 63. Cycle time
+## 63. Cycle time
 
 Tempo de implementação/revisão.
 
@@ -713,7 +703,7 @@ CI é apenas componente.
 
 ---
 
-# 64. Queue discipline
+## 64. Queue discipline
 
 Prioridade de deploy PROD pode ser diferente de full nightly.
 
@@ -721,7 +711,7 @@ Runners especializados evitam bloqueio.
 
 ---
 
-# 65. E2E runner separado
+## 65. E2E runner separado
 
 Evita:
 
@@ -732,13 +722,13 @@ bloquear lint urgente
 
 ---
 
-# 66. Deploy runner separado
+## 66. Deploy runner separado
 
 Deploy não espera fila de testes.
 
 ---
 
-# 67. Observabilidade do CI
+## 67. Observabilidade do CI
 
 Dashboard:
 
@@ -751,7 +741,7 @@ runner utilization
 
 ---
 
-# 68. Utilização
+## 68. Utilização
 
 Runner 100% ocupado durante todo dia sugere expansão.
 
@@ -759,13 +749,13 @@ Runner 2% pode ser consolidado se segurança permitir.
 
 ---
 
-# 69. Capacity headroom
+## 69. Capacity headroom
 
 Mantenha margem para picos.
 
 ---
 
-# 70. Checklist otimização
+## 70. Checklist otimização
 
 - [ ] Baseline medido.
 - [ ] Gargalo identificado.
@@ -781,7 +771,7 @@ Mantenha margem para picos.
 
 ---
 
-# 71. Roadmap de escala
+## 71. Roadmap de escala
 
 ```text
 1 runner
@@ -804,7 +794,7 @@ ephemeral/autoscaling
 
 ---
 
-# 72. Próximo volume
+## 72. Próximo volume
 
 **Volume 15 — Governança e Operação**
 

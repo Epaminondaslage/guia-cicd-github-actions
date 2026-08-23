@@ -61,7 +61,7 @@ PROD
 
 ---
 
-# 2. Infraestrutura mínima
+## 2. Infraestrutura mínima
 
 Runner:
 
@@ -78,7 +78,7 @@ DEV e PROD podem ser VMs separadas.
 
 ---
 
-# 3. Repositório
+## 3. Repositório
 
 Estrutura:
 
@@ -103,7 +103,7 @@ Estrutura:
 
 ---
 
-# 4. Criar SPEC
+## 4. Criar SPEC
 
 ```text
 docs/specs/SPEC-001-health.md
@@ -117,7 +117,7 @@ GET /health retorna 200 e status ok
 
 ---
 
-# 5. Criar branch
+## 5. Criar branch
 
 ```bash
 git switch main
@@ -127,7 +127,7 @@ git switch -c feature/001-health
 
 ---
 
-# 6. Implementar endpoint
+## 6. Implementar endpoint
 
 Exemplo:
 
@@ -145,13 +145,13 @@ Resposta:
 
 ---
 
-# 7. Unit test
+## 7. Unit test
 
 Adicione teste da lógica quando aplicável.
 
 ---
 
-# 8. API test
+## 8. API test
 
 Valide:
 
@@ -161,7 +161,7 @@ GET /health -> 200
 
 ---
 
-# 9. Commit
+## 9. Commit
 
 ```bash
 git add .
@@ -170,7 +170,7 @@ git commit -m "feat: adiciona endpoint de health"
 
 ---
 
-# 10. Push
+## 10. Push
 
 ```bash
 git push -u origin feature/001-health
@@ -178,7 +178,7 @@ git push -u origin feature/001-health
 
 ---
 
-# 11. Abrir PR
+## 11. Abrir PR
 
 Descrição:
 
@@ -191,7 +191,7 @@ Critérios
 
 ---
 
-# 12. CI workflow
+## 12. CI workflow
 
 Arquivo:
 
@@ -201,7 +201,7 @@ Arquivo:
 
 ---
 
-# 13. CI mínimo
+## 13. CI mínimo
 
 ```yaml
 name: CI
@@ -238,7 +238,7 @@ jobs:
 
 ---
 
-# 14. Registrar runner
+## 14. Registrar runner
 
 No GitHub:
 
@@ -274,7 +274,7 @@ sudo ./svc.sh status
 
 ---
 
-# 15. Labels
+## 15. Labels
 
 Adicionar:
 
@@ -285,7 +285,7 @@ docker
 
 ---
 
-# 16. Executar PR
+## 16. Executar PR
 
 Confirme:
 
@@ -295,7 +295,7 @@ CI PASS
 
 ---
 
-# 17. Branch protection
+## 17. Branch protection
 
 Configure `main` para exigir:
 
@@ -306,7 +306,7 @@ CI PASS
 
 ---
 
-# 18. MariaDB de integração
+## 18. MariaDB de integração
 
 `compose.test.yml`:
 
@@ -321,13 +321,13 @@ services:
 
 ---
 
-# 19. Integration job
+## 19. Integration job
 
 Subir Compose, aplicar migrations e testar.
 
 ---
 
-# 20. Cleanup
+## 20. Cleanup
 
 Sempre:
 
@@ -339,13 +339,13 @@ com `if: always()` no workflow.
 
 ---
 
-# 21. MQTT opcional
+## 21. MQTT opcional
 
 Adicionar Mosquitto caso aplicação utilize eventos.
 
 ---
 
-# 22. E2E smoke
+## 22. E2E smoke
 
 Criar:
 
@@ -362,7 +362,7 @@ confirmar dashboard
 
 ---
 
-# 23. Playwright workflow
+## 23. Playwright workflow
 
 Use runner com label:
 
@@ -374,7 +374,7 @@ ou mesmo runner inicial.
 
 ---
 
-# 24. Artifacts
+## 24. Artifacts
 
 Em falha, publicar com `actions/upload-artifact@v4`:
 
@@ -399,7 +399,7 @@ logs
 
 ---
 
-# 25. Merge
+## 25. Merge
 
 Após checks:
 
@@ -409,7 +409,7 @@ Squash and merge
 
 ---
 
-# 26. Build oficial
+## 26. Build oficial
 
 Workflow em `main` (`.github/workflows/build.yml`), disparado após o merge:
 
@@ -463,7 +463,7 @@ docker buildx build \
 
 ---
 
-# 27. Registry
+## 27. Registry
 
 Utilizar registry escolhido (ex.: GitHub Container Registry — `ghcr.io`).
 
@@ -475,7 +475,7 @@ ghcr.io/org/app:sha-a91c302
 
 ---
 
-# 28. DEV
+## 28. DEV
 
 Servidor DEV possui:
 
@@ -487,7 +487,7 @@ config
 
 ---
 
-# 29. Deploy DEV
+## 29. Deploy DEV
 
 ```bash
 docker compose pull app
@@ -496,7 +496,7 @@ docker compose up -d app
 
 ---
 
-# 30. Health DEV
+## 30. Health DEV
 
 ```bash
 curl --fail https://dev.example/health
@@ -504,13 +504,13 @@ curl --fail https://dev.example/health
 
 ---
 
-# 31. E2E DEV
+## 31. E2E DEV
 
 Executar smoke contra DEV.
 
 ---
 
-# 32. Validação visual
+## 32. Validação visual
 
 Abrir frontend manualmente.
 
@@ -522,7 +522,7 @@ Verificar:
 
 ---
 
-# 33. Nova SPEC se necessário
+## 33. Nova SPEC se necessário
 
 Se frontend não agradar:
 
@@ -536,7 +536,7 @@ Nova branch e nova PR.
 
 ---
 
-# 34. Production Environment
+## 34. Production Environment
 
 Criar no GitHub:
 
@@ -548,7 +548,7 @@ Adicionar regras de proteção disponíveis.
 
 ---
 
-# 35. Secrets PROD
+## 35. Secrets PROD
 
 Configurar:
 
@@ -561,7 +561,7 @@ ou mecanismo equivalente.
 
 ---
 
-# 36. Deploy PROD manual/gated
+## 36. Deploy PROD manual/gated
 
 Workflow (`.github/workflows/deploy-prod.yml`):
 
@@ -600,7 +600,7 @@ O `environment: production` exige que o *environment* `production` esteja config
 
 ---
 
-# 37. Preflight
+## 37. Preflight
 
 Antes de alterar:
 
@@ -612,13 +612,13 @@ Antes de alterar:
 
 ---
 
-# 38. Deploy
+## 38. Deploy
 
 Promover mesma imagem de DEV.
 
 ---
 
-# 39. Health PROD
+## 39. Health PROD
 
 Verificar:
 
@@ -629,13 +629,13 @@ Verificar:
 
 ---
 
-# 40. Smoke PROD
+## 40. Smoke PROD
 
 Fluxo seguro e não destrutivo.
 
 ---
 
-# 41. Observabilidade
+## 41. Observabilidade
 
 Instalar:
 
@@ -650,7 +650,7 @@ conforme arquitetura.
 
 ---
 
-# 42. Dashboard
+## 42. Dashboard
 
 Mostrar:
 
@@ -665,13 +665,13 @@ disk
 
 ---
 
-# 43. Deployment marker
+## 43. Deployment marker
 
 Registrar horário e versão.
 
 ---
 
-# 44. Simular falha
+## 44. Simular falha
 
 Faça em laboratório uma versão com health falhando.
 
@@ -679,19 +679,19 @@ Deploy em DEV.
 
 ---
 
-# 45. Detectar
+## 45. Detectar
 
 Pipeline deve marcar falha.
 
 ---
 
-# 46. Rollback DEV
+## 46. Rollback DEV
 
 Voltar versão anterior.
 
 ---
 
-# 47. Simular PROD em ambiente seguro
+## 47. Simular PROD em ambiente seguro
 
 Não provoque falha deliberada em produção real.
 
@@ -699,7 +699,7 @@ Use VM de laboratório ou ambiente de treinamento.
 
 ---
 
-# 48. Script rollback
+## 48. Script rollback
 
 Recebe:
 
@@ -711,7 +711,7 @@ e reaplica.
 
 ---
 
-# 49. Testar restore do banco
+## 49. Testar restore do banco
 
 Em ambiente isolado:
 
@@ -723,7 +723,7 @@ validation
 
 ---
 
-# 50. Security scan
+## 50. Security scan
 
 Adicionar ao workflow de CI:
 
@@ -745,7 +745,7 @@ conforme política.
 
 ---
 
-# 51. Secret leak exercise
+## 51. Secret leak exercise
 
 Use uma string falsa de teste detectável, nunca credencial real.
 
@@ -753,7 +753,7 @@ Confirme scanner.
 
 ---
 
-# 52. Dependency update exercise
+## 52. Dependency update exercise
 
 Abrir PR de atualização.
 
@@ -761,7 +761,7 @@ Passar por CI.
 
 ---
 
-# 53. Runner outage exercise
+## 53. Runner outage exercise
 
 Parar runner:
 
@@ -775,7 +775,7 @@ Religar.
 
 ---
 
-# 54. Disk pressure exercise
+## 54. Disk pressure exercise
 
 Não encha disco real intencionalmente.
 
@@ -783,7 +783,7 @@ Use monitoramento/limites em ambiente de laboratório.
 
 ---
 
-# 55. Multiple runners
+## 55. Multiple runners
 
 Adicionar segundo runner.
 
@@ -791,13 +791,13 @@ Observar paralelismo.
 
 ---
 
-# 56. E2E sharding
+## 56. E2E sharding
 
 Dividir suite quando existirem runners suficientes.
 
 ---
 
-# 57. Nightly
+## 57. Nightly
 
 Criar `.github/workflows/e2e-nightly.yml`:
 
@@ -836,7 +836,7 @@ Executar full regression (horário em UTC).
 
 ---
 
-# 58. Release
+## 58. Release
 
 Criar tag:
 
@@ -847,7 +847,7 @@ git push origin v1.0.0
 
 ---
 
-# 59. Release notes
+## 59. Release notes
 
 Incluir:
 
@@ -858,7 +858,7 @@ Incluir:
 
 ---
 
-# 60. Audit exercise
+## 60. Audit exercise
 
 Responder:
 
@@ -874,7 +874,7 @@ Se não consegue responder, rastreabilidade precisa melhorar.
 
 ---
 
-# 61. Runbook runner offline
+## 61. Runbook runner offline
 
 Criar:
 
@@ -884,7 +884,7 @@ docs/runbooks/runner-offline.md
 
 ---
 
-# 62. Runbook deploy rollback
+## 62. Runbook deploy rollback
 
 Criar:
 
@@ -894,13 +894,13 @@ docs/runbooks/rollback.md
 
 ---
 
-# 63. Post-mortem exercise
+## 63. Post-mortem exercise
 
 Simular incidente em laboratório e escrever post-mortem.
 
 ---
 
-# 64. Checklist final de CI
+## 64. Checklist final de CI
 
 - [ ] PR.
 - [ ] Lint.
@@ -915,7 +915,7 @@ Simular incidente em laboratório e escrever post-mortem.
 
 ---
 
-# 65. Checklist final do runner
+## 65. Checklist final do runner
 
 - [ ] Usuário dedicado.
 - [ ] Docker.
@@ -928,7 +928,7 @@ Simular incidente em laboratório e escrever post-mortem.
 
 ---
 
-# 66. Checklist DEV
+## 66. Checklist DEV
 
 - [ ] Artifact por SHA.
 - [ ] Deploy automático.
@@ -940,7 +940,7 @@ Simular incidente em laboratório e escrever post-mortem.
 
 ---
 
-# 67. Checklist PROD
+## 67. Checklist PROD
 
 - [ ] Gate humano.
 - [ ] Artifact igual ao DEV.
@@ -953,7 +953,7 @@ Simular incidente em laboratório e escrever post-mortem.
 
 ---
 
-# 68. Checklist de segurança
+## 68. Checklist de segurança
 
 - [ ] MFA.
 - [ ] Least privilege.
@@ -967,7 +967,7 @@ Simular incidente em laboratório e escrever post-mortem.
 
 ---
 
-# 69. Checklist de documentação
+## 69. Checklist de documentação
 
 - [ ] README.
 - [ ] CONTRIBUTING.
@@ -980,7 +980,7 @@ Simular incidente em laboratório e escrever post-mortem.
 
 ---
 
-# 70. Resultado final esperado
+## 70. Resultado final esperado
 
 ```text
 IDEIA
@@ -1018,7 +1018,7 @@ IDEIA
 
 ---
 
-# 71. Maturidade futura
+## 71. Maturidade futura
 
 Depois do laboratório:
 
@@ -1036,7 +1036,7 @@ Somente quando necessidade justificar.
 
 ---
 
-# 72. Encerramento
+## 72. Encerramento
 
 O objetivo do guia não é maximizar quantidade de ferramentas.
 

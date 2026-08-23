@@ -37,7 +37,7 @@ Git e GitHub não são a mesma coisa.
 
 ---
 
-# 2. Repositório Git
+## 2. Repositório Git
 
 Um repositório é um projeto cujo histórico é controlado pelo Git.
 
@@ -61,7 +61,7 @@ Nunca altere manualmente seu conteúdo sem uma razão técnica específica.
 
 ---
 
-# 3. Working Tree
+## 3. Working Tree
 
 A Working Tree é a cópia dos arquivos na qual o desenvolvedor trabalha.
 
@@ -86,7 +86,7 @@ git status
 
 ---
 
-# 4. Staging Area
+## 4. Staging Area
 
 A Staging Area é a área de preparação do próximo commit.
 
@@ -131,7 +131,7 @@ histórico Git
 
 ---
 
-# 5. Commit
+## 5. Commit
 
 Um commit representa um ponto identificado no histórico.
 
@@ -164,7 +164,7 @@ refactor: separa serviço de notificações
 
 ---
 
-# 6. Histórico
+## 6. Histórico
 
 Consultar:
 
@@ -190,7 +190,7 @@ Cada commit possui um hash que o identifica.
 
 ---
 
-# 7. Branch
+## 7. Branch
 
 Uma branch é uma linha de desenvolvimento.
 
@@ -230,7 +230,7 @@ Um ponto importante: `git switch` (assim como `git checkout`) troca a branch **n
 
 ---
 
-# 8. Por que utilizar branches
+## 8. Por que utilizar branches
 
 Imagine que `main` contém a versão estável.
 
@@ -252,7 +252,7 @@ Isso é a base do fluxo com Pull Requests.
 
 ---
 
-# 9. Uma branch para cada mudança
+## 9. Uma branch para cada mudança
 
 Uma prática recomendada:
 
@@ -278,7 +278,7 @@ Uma branch pequena gera:
 
 ---
 
-# 10. Branches e desenvolvimento paralelo
+## 10. Branches e desenvolvimento paralelo
 
 É possível trabalhar em várias funcionalidades antes de integrá-las.
 
@@ -298,7 +298,7 @@ Posteriormente as PRs podem ser integradas uma por uma.
 
 Não é necessário fazer merge imediatamente após abrir uma PR.
 
-### Trabalhando em várias branches ao mesmo tempo: `git worktree`
+#### Trabalhando em várias branches ao mesmo tempo: `git worktree`
 
 `git switch`/`git checkout` trocam de branch dentro do mesmo diretório de trabalho. Isso é suficiente quando existe apenas uma tarefa em andamento, mas na prática é comum precisar:
 
@@ -341,7 +341,7 @@ Na prática, para quem trabalha com múltiplas branches simultaneamente — incl
 
 ---
 
-# 11. Branch local e remota
+## 11. Branch local e remota
 
 Uma branch inicialmente pode existir somente na máquina local.
 
@@ -371,7 +371,7 @@ normalmente é suficiente.
 
 ---
 
-# 12. Remote
+## 12. Remote
 
 Verificar:
 
@@ -399,7 +399,7 @@ git push -u origin main
 
 ---
 
-# 13. Clone
+## 13. Clone
 
 Para obter um repositório existente:
 
@@ -411,7 +411,7 @@ O clone traz o histórico e configura normalmente `origin`.
 
 ---
 
-# 14. Fetch
+## 14. Fetch
 
 `git fetch` consulta alterações do remoto sem integrá-las automaticamente à branch atual.
 
@@ -423,7 +423,7 @@ git fetch origin
 
 ---
 
-# 15. Pull
+## 15. Pull
 
 `git pull` normalmente combina busca e integração das alterações remotas.
 
@@ -443,7 +443,7 @@ Em equipes, é importante entender a estratégia configurada para pull: merge, r
 
 ---
 
-# 16. Push
+## 16. Push
 
 Publica commits locais:
 
@@ -467,7 +467,7 @@ A PR propõe integrar uma branch em outra e será estudada no Volume 02.
 
 ---
 
-# 17. Merge
+## 17. Merge
 
 Merge integra históricos.
 
@@ -494,7 +494,7 @@ Em um fluxo baseado em GitHub, normalmente o merge de uma feature ocorre atravé
 
 ---
 
-# 18. Fast-forward
+## 18. Fast-forward
 
 Quando não existem alterações concorrentes, o Git pode simplesmente avançar a referência.
 
@@ -518,7 +518,7 @@ Não é necessário um commit de merge adicional.
 
 ---
 
-# 19. Merge commit
+## 19. Merge commit
 
 Em outros casos, o Git cria um commit que une duas linhas.
 
@@ -532,7 +532,7 @@ Essa estratégia preserva explicitamente a topologia da branch.
 
 ---
 
-# 20. Squash merge
+## 20. Squash merge
 
 No GitHub, uma PR pode ser integrada condensando vários commits em um único commit.
 
@@ -557,7 +557,7 @@ Vantagem: histórico principal mais compacto.
 
 ---
 
-# 21. Rebase
+## 21. Rebase
 
 Rebase reposiciona commits sobre outra base.
 
@@ -583,7 +583,7 @@ Por isso os hashes mudam.
 
 ---
 
-# 22. Quando evitar rebase
+## 22. Quando evitar rebase
 
 Evite reescrever histórico compartilhado sem coordenação.
 
@@ -593,7 +593,7 @@ Regra prática:
 
 ---
 
-# 23. Conflitos
+## 23. Conflitos
 
 Um conflito acontece quando o Git não consegue decidir automaticamente como combinar mudanças.
 
@@ -634,7 +634,7 @@ ou continuar a operação específica em andamento.
 
 ---
 
-# 24. Como reduzir conflitos
+## 24. Como reduzir conflitos
 
 - branches pequenas;
 - PRs pequenas;
@@ -646,7 +646,7 @@ ou continuar a operação específica em andamento.
 
 ---
 
-# 25. HEAD
+## 25. HEAD
 
 `HEAD` representa normalmente a posição atual do desenvolvedor.
 
@@ -678,7 +678,7 @@ feature/login
 
 ---
 
-# 26. Git diff
+## 26. Git diff
 
 Mudanças não adicionadas:
 
@@ -702,7 +702,7 @@ Antes de criar um commit ou PR, revisar o diff é uma prática importante.
 
 ---
 
-# 27. Restaurar arquivo
+## 27. Restaurar arquivo
 
 Para descartar uma alteração não preparada:
 
@@ -720,7 +720,7 @@ Esses comandos devem ser usados conscientemente para não perder trabalho.
 
 ---
 
-# 28. Git stash
+## 28. Git stash
 
 Permite guardar temporariamente alterações sem criar commit.
 
@@ -746,7 +746,7 @@ Quando a troca de contexto é frequente (por exemplo, revisar outra branch enqua
 
 ---
 
-# 29. Tags
+## 29. Tags
 
 Tags identificam pontos importantes do histórico.
 
@@ -772,7 +772,7 @@ Tags são úteis para releases e deploys.
 
 ---
 
-# 30. Versionamento semântico
+## 30. Versionamento semântico
 
 Formato:
 
@@ -803,7 +803,7 @@ v2.0.0
 
 ---
 
-# 31. .gitignore
+## 31. .gitignore
 
 Arquivos que não devem ser versionados:
 
@@ -822,7 +822,7 @@ Se um secret entrou no histórico, deve ser considerado comprometido e rotaciona
 
 ---
 
-# 32. O que não deve ser commitado
+## 32. O que não deve ser commitado
 
 Normalmente:
 
@@ -839,7 +839,7 @@ Normalmente:
 
 ---
 
-# 33. Fluxo diário básico
+## 33. Fluxo diário básico
 
 ```bash
 git switch main
@@ -847,7 +847,7 @@ git pull
 
 git switch -c feature/minha-feature
 
-# desenvolver
+## desenvolver
 
 git status
 git diff
@@ -868,7 +868,7 @@ Abrir Pull Request
 
 ---
 
-# 34. Fluxo completo conceitual
+## 34. Fluxo completo conceitual
 
 ```text
 main
@@ -907,7 +907,7 @@ main
 
 ---
 
-# 35. Várias PRs antes do merge
+## 35. Várias PRs antes do merge
 
 É perfeitamente possível:
 
@@ -931,7 +931,7 @@ O Volume 02 detalhará esse cenário.
 
 ---
 
-# 36. Commits atômicos
+## 36. Commits atômicos
 
 Um commit atômico representa uma unidade lógica.
 
@@ -960,7 +960,7 @@ Isso melhora:
 
 ---
 
-# 37. Git bisect
+## 37. Git bisect
 
 Quando uma regressão apareceu em algum ponto do histórico, `git bisect` pode localizar o commit responsável através de busca binária.
 
@@ -994,7 +994,7 @@ Com testes automatizados, esse recurso pode ser ainda mais poderoso.
 
 ---
 
-# 38. Git revert
+## 38. Git revert
 
 Para desfazer uma mudança já compartilhada, frequentemente é preferível criar um novo commit inverso:
 
@@ -1014,7 +1014,7 @@ A---B---C---R
 
 ---
 
-# 39. Git reset
+## 39. Git reset
 
 `git reset` altera referências e pode modificar staging/working tree dependendo do modo.
 
@@ -1034,7 +1034,7 @@ Para histórico compartilhado, `git revert` costuma ser mais seguro.
 
 ---
 
-# 40. Branch principal
+## 40. Branch principal
 
 Neste guia utilizaremos:
 
@@ -1055,7 +1055,7 @@ No GitHub, ela poderá posteriormente ser protegida contra:
 
 ---
 
-# 41. Convenção de nomes de branches
+## 41. Convenção de nomes de branches
 
 Sugestão:
 
@@ -1082,7 +1082,7 @@ O objetivo é comunicar intenção.
 
 ---
 
-# 42. Convenção de commits
+## 42. Convenção de commits
 
 Este guia utilizará uma convenção inspirada em Conventional Commits:
 
@@ -1109,7 +1109,7 @@ docs: documenta self-hosted runner
 
 ---
 
-# 43. Git no contexto de CI/CD
+## 43. Git no contexto de CI/CD
 
 O Git não serve apenas para armazenar código.
 
@@ -1144,7 +1144,7 @@ Uma aprovação pode liberar produção.
 
 ---
 
-# 44. Git e desenvolvimento assistido por IA
+## 44. Git e desenvolvimento assistido por IA
 
 O uso de IA aumenta a importância de branches e commits pequenos.
 
@@ -1184,7 +1184,7 @@ Se a implementação da IA seguir uma direção incorreta, fica mais fácil:
 
 ---
 
-# 45. Branch por SPEC
+## 45. Branch por SPEC
 
 Uma estratégia útil:
 
@@ -1217,7 +1217,7 @@ Isso cria rastreabilidade histórica.
 
 ---
 
-# 46. Checklist antes do commit
+## 46. Checklist antes do commit
 
 - [ ] O código compila/executa?
 - [ ] O diff foi revisado?
@@ -1229,7 +1229,7 @@ Isso cria rastreabilidade histórica.
 
 ---
 
-# 47. Checklist antes do push
+## 47. Checklist antes do push
 
 - [ ] Branch correta?
 - [ ] Commits corretos?
@@ -1240,7 +1240,7 @@ Isso cria rastreabilidade histórica.
 
 ---
 
-# 48. Checklist antes da Pull Request
+## 48. Checklist antes da Pull Request
 
 - [ ] A branch possui um objetivo claro?
 - [ ] A mudança está completa o suficiente para revisão?
@@ -1252,7 +1252,7 @@ Isso cria rastreabilidade histórica.
 
 ---
 
-# 49. Comandos essenciais
+## 49. Comandos essenciais
 
 ```bash
 git status
@@ -1279,7 +1279,7 @@ Não é necessário memorizar todas as opções.
 
 ---
 
-# 50. Resumo mental
+## 50. Resumo mental
 
 ```text
 REPOSITÓRIO
@@ -1335,7 +1335,7 @@ Testes
 
 ---
 
-# 51. Laboratório proposto
+## 51. Laboratório proposto
 
 Criar um repositório de treinamento e executar:
 
@@ -1352,7 +1352,7 @@ Criar um repositório de treinamento e executar:
 
 ---
 
-# 52. Próximo volume
+## 52. Próximo volume
 
 **Volume 02 — GitHub e Pull Requests**
 

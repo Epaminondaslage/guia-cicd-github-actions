@@ -74,7 +74,7 @@ PROD
 
 ---
 
-# 2. O que é GitHub Actions
+## 2. O que é GitHub Actions
 
 GitHub Actions é a plataforma de automação integrada ao GitHub.
 
@@ -108,7 +108,7 @@ deploy PROD
 
 ---
 
-# 3. GitHub Actions não é o teste
+## 3. GitHub Actions não é o teste
 
 GitHub Actions é o orquestrador.
 
@@ -137,7 +137,7 @@ Portanto, o GitHub não inventa automaticamente os testes do seu sistema.
 
 ---
 
-# 4. Workflow
+## 4. Workflow
 
 Um workflow é um arquivo YAML localizado normalmente em:
 
@@ -159,7 +159,7 @@ Cada arquivo descreve uma automação.
 
 ---
 
-# 5. Exemplo mínimo
+## 5. Exemplo mínimo
 
 ```yaml
 name: CI
@@ -204,7 +204,7 @@ steps
 
 ---
 
-# 6. Anatomia do workflow
+## 6. Anatomia do workflow
 
 Elementos principais:
 
@@ -230,7 +230,7 @@ steps:
 
 ---
 
-# 7. name
+## 7. name
 
 Define o nome apresentado na interface.
 
@@ -251,7 +251,7 @@ Security Scan
 
 ---
 
-# 8. on
+## 8. on
 
 Define os eventos que disparam o workflow.
 
@@ -273,7 +273,7 @@ on:
 
 ---
 
-# 9. pull_request
+## 9. pull_request
 
 Muito importante para CI.
 
@@ -302,7 +302,7 @@ Pode ser executado quando a PR é:
 
 ---
 
-# 10. push
+## 10. push
 
 Exemplo:
 
@@ -329,7 +329,7 @@ workflow
 
 ---
 
-# 11. workflow_dispatch
+## 11. workflow_dispatch
 
 Permite execução manual.
 
@@ -356,7 +356,7 @@ Run workflow
 
 ---
 
-# 12. Inputs manuais
+## 12. Inputs manuais
 
 ```yaml
 on:
@@ -375,7 +375,7 @@ Isso permite selecionar parâmetros antes da execução.
 
 ---
 
-# 13. schedule
+## 13. schedule
 
 Permite execução programada.
 
@@ -398,7 +398,7 @@ Muito útil para testes longos.
 
 ---
 
-# 14. Vários eventos
+## 14. Vários eventos
 
 ```yaml
 on:
@@ -423,7 +423,7 @@ deploy-prod.yml
 
 ---
 
-# 15. jobs
+## 15. jobs
 
 Um workflow possui um ou mais jobs.
 
@@ -444,7 +444,7 @@ Por padrão, jobs independentes podem executar em paralelo, dependendo de dispon
 
 ---
 
-# 16. Job
+## 16. Job
 
 Exemplo:
 
@@ -461,7 +461,7 @@ Cada job é atribuído a um runner compatível.
 
 ---
 
-# 17. Runner
+## 17. Runner
 
 O runner é a máquina/agente que executa o job.
 
@@ -489,7 +489,7 @@ runs-on:
 
 ---
 
-# 18. Relação Actions e runner
+## 18. Relação Actions e runner
 
 ```text
 GitHub Actions
@@ -509,7 +509,7 @@ Runner executa.
 
 ---
 
-# 19. GitHub-hosted runner
+## 19. GitHub-hosted runner
 
 Modelo:
 
@@ -540,7 +540,7 @@ Desvantagens:
 
 ---
 
-# 20. Self-hosted runner
+## 20. Self-hosted runner
 
 Modelo:
 
@@ -578,7 +578,7 @@ O Volume 04 trata da instalação completa.
 
 ---
 
-# 21. steps
+## 21. steps
 
 Steps são as etapas do job.
 
@@ -599,7 +599,7 @@ Executam sequencialmente dentro do job, salvo condições específicas.
 
 ---
 
-# 22. uses
+## 22. uses
 
 `uses` executa uma Action reutilizável.
 
@@ -617,7 +617,7 @@ Outro:
 
 ---
 
-# 23. run
+## 23. run
 
 Executa comandos de shell.
 
@@ -637,7 +637,7 @@ Vários comandos:
 
 ---
 
-# 24. Checkout
+## 24. Checkout
 
 O runner não deve pressupor que o código da PR já está disponível.
 
@@ -652,7 +652,7 @@ Essa etapa obtém o conteúdo necessário do repositório.
 
 ---
 
-# 25. Setup Node
+## 25. Setup Node
 
 ```yaml
 - name: Configurar Node
@@ -665,7 +665,7 @@ Isso documenta a versão esperada pelo pipeline.
 
 ---
 
-# 26. npm ci
+## 26. npm ci
 
 Em CI, normalmente:
 
@@ -689,7 +689,7 @@ Objetivo:
 
 ---
 
-# 27. Exemplo CI Node.js
+## 27. Exemplo CI Node.js
 
 ```yaml
 name: CI Node
@@ -726,7 +726,7 @@ jobs:
 
 ---
 
-# 28. Exemplo com self-hosted
+## 28. Exemplo com self-hosted
 
 Mudança principal:
 
@@ -778,7 +778,7 @@ Nunca combine self-hosted runners com o evento `pull_request_target` sem cuidado
 
 ---
 
-# 29. Separar jobs
+## 29. Separar jobs
 
 Em vez de:
 
@@ -811,7 +811,7 @@ Vantagens:
 
 ---
 
-# 30. Paralelismo
+## 30. Paralelismo
 
 Exemplo:
 
@@ -835,7 +835,7 @@ Com apenas um runner self-hosted, os jobs podem ficar em fila.
 
 ---
 
-# 31. needs
+## 31. needs
 
 Cria dependência entre jobs.
 
@@ -865,7 +865,7 @@ Se `test` falhar, `build` normalmente não executa.
 
 ---
 
-# 32. Pipeline em DAG
+## 32. Pipeline em DAG
 
 Exemplo:
 
@@ -894,7 +894,7 @@ build:
 
 ---
 
-# 33. if
+## 33. if
 
 Permite execução condicional.
 
@@ -912,7 +912,7 @@ Muito útil em limpeza.
 
 ---
 
-# 34. always()
+## 34. always()
 
 Imagine:
 
@@ -934,7 +934,7 @@ Isso é especialmente importante em runners persistentes.
 
 ---
 
-# 35. success()
+## 35. success()
 
 Executa se etapas anteriores estiverem bem-sucedidas.
 
@@ -944,7 +944,7 @@ if: success()
 
 ---
 
-# 36. failure()
+## 36. failure()
 
 Executa quando existe falha.
 
@@ -960,7 +960,7 @@ Pode ser útil para:
 
 ---
 
-# 37. Environment variables
+## 37. Environment variables
 
 No nível do workflow:
 
@@ -990,7 +990,7 @@ Prefira o menor escopo necessário.
 
 ---
 
-# 38. Variables
+## 38. Variables
 
 Valores não sensíveis podem ser armazenados como variables do GitHub.
 
@@ -1006,7 +1006,7 @@ Não utilize variables comuns para senhas.
 
 ---
 
-# 39. Secrets
+## 39. Secrets
 
 Informações sensíveis devem ser tratadas como secrets.
 
@@ -1028,7 +1028,7 @@ env:
 
 ---
 
-# 40. Regra de secrets
+## 40. Regra de secrets
 
 Nunca:
 
@@ -1050,7 +1050,7 @@ Secrets devem ser rotacionados se forem expostos.
 
 ---
 
-# 41. permissions
+## 41. permissions
 
 Workflows podem declarar permissões do `GITHUB_TOKEN`.
 
@@ -1071,7 +1071,7 @@ Não conceda escrita se o job só precisa ler o repositório.
 
 ---
 
-# 42. GITHUB_TOKEN
+## 42. GITHUB_TOKEN
 
 O GitHub fornece um token temporário para determinados usos durante o workflow.
 
@@ -1081,7 +1081,7 @@ Evite tratar o token automático como uma credencial ilimitada.
 
 ---
 
-# 43. Cache
+## 43. Cache
 
 Instalar dependências repetidamente pode ser caro.
 
@@ -1098,7 +1098,7 @@ O cache pode reduzir o tempo de instalação.
 
 ---
 
-# 44. Cache não é artifact
+## 44. Cache não é artifact
 
 Cache:
 
@@ -1128,7 +1128,7 @@ screenshots E2E
 
 ---
 
-# 45. Artifacts
+## 45. Artifacts
 
 Podemos armazenar:
 
@@ -1144,7 +1144,7 @@ Isso permite investigar falhas e reutilizar outputs.
 
 ---
 
-# 46. Artifact de E2E
+## 46. Artifact de E2E
 
 Quando Playwright falha, podemos preservar relatório.
 
@@ -1161,7 +1161,7 @@ Exemplo conceitual:
 
 ---
 
-# 47. Coverage
+## 47. Coverage
 
 Exemplo:
 
@@ -1181,7 +1181,7 @@ Coverage não deve ser confundida com qualidade absoluta.
 
 ---
 
-# 48. Matrix
+## 48. Matrix
 
 Permite testar combinações.
 
@@ -1212,7 +1212,7 @@ Node 22
 
 ---
 
-# 49. Matrix e custo
+## 49. Matrix e custo
 
 Matrices multiplicam jobs.
 
@@ -1230,7 +1230,7 @@ Use somente quando a compatibilidade realmente precisa ser garantida.
 
 ---
 
-# 50. Services
+## 50. Services
 
 GitHub Actions pode disponibilizar containers auxiliares em cenários compatíveis.
 
@@ -1252,7 +1252,7 @@ services:
 
 Em self-hosted, requisitos do runner e Docker precisam ser considerados.
 
-⚠️ **Segurança em self-hosted runners**: em repositórios públicos, um self-hosted runner que executa workflows disparados por `pull_request` de forks é um risco sério — qualquer pessoa pode abrir um PR malicioso e rodar código arbitrário na sua máquina/rede. Recomendações:
+**Segurança em self-hosted runners**: em repositórios públicos, um self-hosted runner que executa workflows disparados por `pull_request` de forks é um risco sério — qualquer pessoa pode abrir um PR malicioso e rodar código arbitrário na sua máquina/rede. Recomendações:
 
 - prefira runners efêmeros (que sobem, executam um job e são destruídos), nunca um runner persistente reaproveitado entre execuções;
 - nunca combine self-hosted com `pull_request_target` sem cuidado extremo — esse evento roda com o contexto (e secrets) do branch base mesmo para PRs de forks;
@@ -1260,7 +1260,7 @@ Em self-hosted, requisitos do runner e Docker precisam ser considerados.
 
 ---
 
-# 51. Docker Compose
+## 51. Docker Compose
 
 Para sistemas mais complexos, podemos preferir:
 
@@ -1282,7 +1282,7 @@ docker compose -f docker-compose.test.yml down -v
 
 ---
 
-# 52. Banco isolado para testes
+## 52. Banco isolado para testes
 
 Nunca execute testes automatizados destrutivos contra banco de produção.
 
@@ -1309,7 +1309,7 @@ destruição
 
 ---
 
-# 53. MQTT em CI
+## 53. MQTT em CI
 
 Para aplicações de automação:
 
@@ -1328,7 +1328,7 @@ Isso permite testar integrações MQTT sem depender do broker de produção.
 
 ---
 
-# 54. Lint
+## 54. Lint
 
 Lint verifica regras estáticas de código.
 
@@ -1345,7 +1345,7 @@ Por isso normalmente é um dos primeiros gates.
 
 ---
 
-# 55. Unit tests
+## 55. Unit tests
 
 Testes unitários devem ser rápidos e isolados.
 
@@ -1364,7 +1364,7 @@ Eles formam a base da estratégia de testes.
 
 ---
 
-# 56. Integration tests
+## 56. Integration tests
 
 Validam interação entre componentes.
 
@@ -1380,7 +1380,7 @@ São mais caros que testes unitários.
 
 ---
 
-# 57. E2E
+## 57. E2E
 
 E2E valida o sistema de ponta a ponta.
 
@@ -1403,7 +1403,7 @@ database
 
 ---
 
-# 58. Por que E2E cresce
+## 58. Por que E2E cresce
 
 À medida que o sistema cresce:
 
@@ -1423,7 +1423,7 @@ Também precisamos melhorar a estratégia.
 
 ---
 
-# 59. Pirâmide de testes
+## 59. Pirâmide de testes
 
 ```text
           E2E
@@ -1444,7 +1444,7 @@ poucos testes caros e valiosos
 
 ---
 
-# 60. Smoke E2E na PR
+## 60. Smoke E2E na PR
 
 Na PR:
 
@@ -1459,7 +1459,7 @@ Não necessariamente todas as variações.
 
 ---
 
-# 61. Full E2E
+## 61. Full E2E
 
 Pode ser executado:
 
@@ -1474,7 +1474,7 @@ Isso reduz o tempo de feedback da PR.
 
 ---
 
-# 62. Testes afetados
+## 62. Testes afetados
 
 Em projetos maiores, uma evolução é identificar o que mudou.
 
@@ -1493,7 +1493,7 @@ Essa estratégia exige arquitetura e mapeamento adequados.
 
 ---
 
-# 63. Concurrency
+## 63. Concurrency
 
 Novos commits podem tornar execuções antigas inúteis.
 
@@ -1516,7 +1516,7 @@ Isso reduz desperdício.
 
 ---
 
-# 64. Concurrency em PR
+## 64. Concurrency em PR
 
 Uma forma mais refinada pode utilizar contexto da PR/branch para agrupar execuções.
 
@@ -1530,7 +1530,7 @@ somente a execução mais recente daquela linha de trabalho permanece ativa
 
 ---
 
-# 65. timeout-minutes
+## 65. timeout-minutes
 
 Jobs podem travar.
 
@@ -1549,7 +1549,7 @@ Isso evita consumo indefinido por:
 
 ---
 
-# 66. continue-on-error
+## 66. continue-on-error
 
 Pode permitir que uma etapa falhe sem marcar imediatamente todo o job como falho.
 
@@ -1565,7 +1565,7 @@ Adequado apenas para verificações explicitamente não bloqueantes.
 
 ---
 
-# 67. Fail fast
+## 67. Fail fast
 
 Em matrices, pode ser útil controlar se outras combinações devem continuar quando uma falha ocorre.
 
@@ -1579,7 +1579,7 @@ coletar todos os resultados
 
 ---
 
-# 68. Workflow para PR
+## 68. Workflow para PR
 
 Modelo:
 
@@ -1624,7 +1624,7 @@ jobs:
 
 ---
 
-# 69. Workflow E2E separado
+## 69. Workflow E2E separado
 
 ```yaml
 name: E2E Smoke
@@ -1664,11 +1664,11 @@ jobs:
 
 A marcação `@smoke` depende da organização adotada nos testes.
 
-⚠️ Assim como no workflow anterior, este job roda em self-hosted disparado por `pull_request`. Em repositório público, isso expõe o runner a PRs de forks não confiáveis — veja o alerta de segurança na seção 50 (runners efêmeros, cuidado redobrado com `pull_request_target`).
+Assim como no workflow anterior, este job roda em self-hosted disparado por `pull_request`. Em repositório público, isso expõe o runner a PRs de forks não confiáveis — veja o alerta de segurança na seção 50 (runners efêmeros, cuidado redobrado com `pull_request_target`).
 
 ---
 
-# 70. Workflow noturno
+## 70. Workflow noturno
 
 Exemplo:
 
@@ -1692,7 +1692,7 @@ Isso mantém a PR rápida e ainda executa regressão ampla regularmente.
 
 ---
 
-# 71. Workflow de deploy DEV
+## 71. Workflow de deploy DEV
 
 Conceito:
 
@@ -1721,7 +1721,7 @@ O deploy deve depender de uma política clara de validação.
 
 ---
 
-# 72. GitHub Environments
+## 72. GitHub Environments
 
 Podemos definir ambientes como:
 
@@ -1740,7 +1740,7 @@ Eles ajudam a organizar:
 
 ---
 
-# 73. Environment no job
+## 73. Environment no job
 
 ```yaml
 jobs:
@@ -1754,7 +1754,7 @@ Esse job passa a utilizar as regras associadas ao environment.
 
 ---
 
-# 74. Gate de produção
+## 74. Gate de produção
 
 Objetivo:
 
@@ -1776,7 +1776,7 @@ A política de aprovação deve ser configurada no ambiente/repositório conform
 
 ---
 
-# 75. Deploy não deve acontecer porque o teste "parece bom"
+## 75. Deploy não deve acontecer porque o teste "parece bom"
 
 A decisão precisa ser explícita.
 
@@ -1813,7 +1813,7 @@ decisão operacional
 
 ---
 
-# 76. Deploy via SSH
+## 76. Deploy via SSH
 
 Modelo conceitual:
 
@@ -1837,7 +1837,7 @@ Preferir chaves dedicadas com privilégio mínimo.
 
 ---
 
-# 77. Deploy com Docker
+## 77. Deploy com Docker
 
 Exemplo conceitual no servidor:
 
@@ -1858,7 +1858,7 @@ O modelo exato será aprofundado no Volume 09.
 
 ---
 
-# 78. Health check pós-deploy
+## 78. Health check pós-deploy
 
 Após deploy:
 
@@ -1883,7 +1883,7 @@ Em produção, o endpoint deve representar saúde real da aplicação.
 
 ---
 
-# 79. Rollback
+## 79. Rollback
 
 Todo deploy profissional precisa responder:
 
@@ -1907,7 +1907,7 @@ O pipeline futuro deverá preservar referência à versão implantada.
 
 ---
 
-# 80. Reusable workflows
+## 80. Reusable workflows
 
 Se vários repositórios usam a mesma lógica, podemos criar workflows reutilizáveis.
 
@@ -1922,7 +1922,7 @@ Centralização deve ser feita com governança para não criar dependência frá
 
 ---
 
-# 81. Composite Actions
+## 81. Composite Actions
 
 Também é possível agrupar steps reutilizáveis em uma Action composta.
 
@@ -1938,7 +1938,7 @@ A escolha entre composite action e reusable workflow depende do nível de reutil
 
 ---
 
-# 82. Expressions
+## 82. Expressions
 
 GitHub Actions utiliza expressões:
 
@@ -1960,7 +1960,7 @@ ${{ secrets.DB_PASSWORD }}
 
 ---
 
-# 83. Context github
+## 83. Context github
 
 Contém informações do evento.
 
@@ -1977,7 +1977,7 @@ Esses dados permitem decisões condicionais.
 
 ---
 
-# 84. SHA
+## 84. SHA
 
 Cada execução está relacionada a um commit.
 
@@ -1999,7 +1999,7 @@ SHA
 
 ---
 
-# 85. Versionar artifacts por SHA
+## 85. Versionar artifacts por SHA
 
 Exemplo conceitual:
 
@@ -2017,7 +2017,7 @@ Isso facilita identificar exatamente qual código foi implantado.
 
 ---
 
-# 86. Imutabilidade
+## 86. Imutabilidade
 
 Uma prática forte:
 
@@ -2040,7 +2040,7 @@ Será aprofundado em deploy.
 
 ---
 
-# 87. Segurança de Actions de terceiros
+## 87. Segurança de Actions de terceiros
 
 Exemplo:
 
@@ -2062,7 +2062,7 @@ Avalie:
 
 ---
 
-# 88. Pinning
+## 88. Pinning
 
 Tags como `@v1` ou `@v4` podem ser movidas pelo mantenedor da Action (de propósito ou por conta comprometida). Isso significa que `uses: owner/action@v1` pode passar a apontar para um código diferente do que você revisou, sem qualquer mudança no seu YAML — um vetor clássico de supply chain attack.
 
@@ -2085,7 +2085,7 @@ Resumo do trade-off:
 
 ---
 
-# 89. Forks e self-hosted runners
+## 89. Forks e self-hosted runners
 
 Não permita automaticamente que código não confiável de terceiros execute em runner persistente com acesso à sua rede.
 
@@ -2117,7 +2117,7 @@ Self-hosted runner exige política de confiança explícita, documentada e revis
 
 ---
 
-# 90. pull_request_target
+## 90. pull_request_target
 
 Eventos com contexto privilegiado exigem extremo cuidado.
 
@@ -2145,7 +2145,7 @@ Esse é um tema de segurança avançada — errar aqui é uma das formas mais co
 
 ---
 
-# 91. Logs
+## 91. Logs
 
 Todo step gera logs.
 
@@ -2165,7 +2165,7 @@ Logs são parte do diagnóstico operacional.
 
 ---
 
-# 92. Debug
+## 92. Debug
 
 Ao investigar uma falha:
 
@@ -2183,7 +2183,7 @@ Esse método reduz tentativas aleatórias.
 
 ---
 
-# 93. Exit code
+## 93. Exit code
 
 Em shell:
 
@@ -2198,7 +2198,7 @@ Um script que engole erros pode gerar falso positivo.
 
 ---
 
-# 94. Bash seguro
+## 94. Bash seguro
 
 Scripts administrativos podem usar:
 
@@ -2212,7 +2212,7 @@ O objetivo é evitar continuar após erros silenciosos.
 
 ---
 
-# 95. Scripts versus YAML gigante
+## 95. Scripts versus YAML gigante
 
 Evite colocar toda a lógica dentro do workflow.
 
@@ -2239,7 +2239,7 @@ Benefícios:
 
 ---
 
-# 96. Makefile ou scripts npm
+## 96. Makefile ou scripts npm
 
 Uma boa estratégia é fazer o CI chamar os mesmos comandos usados localmente.
 
@@ -2266,7 +2266,7 @@ Reduz divergências.
 
 ---
 
-# 97. "Funciona na minha máquina"
+## 97. "Funciona na minha máquina"
 
 Docker, lockfiles e scripts padronizados ajudam a reduzir esse problema.
 
@@ -2283,7 +2283,7 @@ utilizarem componentes e processos tão reproduzíveis quanto possível.
 
 ---
 
-# 98. Estratégia recomendada para o projeto
+## 98. Estratégia recomendada para o projeto
 
 Primeira versão:
 
@@ -2323,7 +2323,7 @@ full E2E
 
 ---
 
-# 99. Estrutura sugerida
+## 99. Estrutura sugerida
 
 ```text
 .github/
@@ -2342,7 +2342,7 @@ scripts/
 
 ---
 
-# 100. Workflow CI recomendado
+## 100. Workflow CI recomendado
 
 ```yaml
 name: CI
@@ -2396,7 +2396,7 @@ Adapte os scripts ao `package.json` real do projeto.
 
 ---
 
-# 101. Job de integração
+## 101. Job de integração
 
 Exemplo conceitual:
 
@@ -2426,7 +2426,7 @@ integration:
 
 ---
 
-# 102. Job E2E
+## 102. Job E2E
 
 ```yaml
 e2e:
@@ -2457,7 +2457,7 @@ Depois otimizaremos cache e imagens de runner.
 
 ---
 
-# 103. Dependências entre jobs
+## 103. Dependências entre jobs
 
 Podemos exigir:
 
@@ -2480,7 +2480,7 @@ Assim, E2E caro só começa se verificações anteriores passarem.
 
 ---
 
-# 104. Fail fast econômico
+## 104. Fail fast econômico
 
 Ordem conceitual:
 
@@ -2505,7 +2505,7 @@ O equilíbrio depende do custo e da capacidade do runner.
 
 ---
 
-# 105. Runner único
+## 105. Runner único
 
 Com um único runner:
 
@@ -2523,7 +2523,7 @@ Nesse cenário, um job com etapas sequenciais pode ser mais eficiente para algun
 
 ---
 
-# 106. Vários runners
+## 106. Vários runners
 
 Com:
 
@@ -2545,7 +2545,7 @@ A arquitetura cresce conforme necessidade.
 
 ---
 
-# 107. Métricas importantes
+## 107. Métricas importantes
 
 Acompanhe:
 
@@ -2564,7 +2564,7 @@ Sem medir, otimização vira palpite.
 
 ---
 
-# 108. Flaky tests
+## 108. Flaky tests
 
 Um teste que passa e falha sem mudança relevante é `flaky`.
 
@@ -2581,7 +2581,7 @@ Eles devem ser investigados.
 
 ---
 
-# 109. Rerun não é correção
+## 109. Rerun não é correção
 
 Se um teste falha e a prática é apenas:
 
@@ -2595,7 +2595,7 @@ O pipeline precisa ser confiável.
 
 ---
 
-# 110. E2E e dados
+## 110. E2E e dados
 
 E2E deve controlar os dados necessários.
 
@@ -2621,7 +2621,7 @@ cleanup
 
 ---
 
-# 111. Ambientes reproduzíveis
+## 111. Ambientes reproduzíveis
 
 Uma estratégia:
 
@@ -2640,7 +2640,7 @@ Isso melhora isolamento.
 
 ---
 
-# 112. Custos e minutos
+## 112. Custos e minutos
 
 Quando se usa runner hospedado, o consumo depende do plano, tipo de repositório, sistema operacional e regras vigentes do GitHub.
 
@@ -2650,7 +2650,7 @@ Por isso, consulte sempre a documentação e a página de billing atual antes de
 
 ---
 
-# 113. Migração gradual para self-hosted
+## 113. Migração gradual para self-hosted
 
 Etapa 1:
 
@@ -2686,7 +2686,7 @@ Não é necessário migrar todos os jobs de uma vez.
 
 ---
 
-# 114. Workflow misto
+## 114. Workflow misto
 
 É possível usar ambos:
 
@@ -2712,7 +2712,7 @@ A escolha pode considerar custo, segurança e capacidade.
 
 ---
 
-# 115. Segurança do deploy
+## 115. Segurança do deploy
 
 Runner que executa PR não confiável não deveria possuir automaticamente:
 
@@ -2734,7 +2734,7 @@ acesso mínimo ao PROD
 
 ---
 
-# 116. Secrets por environment
+## 116. Secrets por environment
 
 Uma arquitetura:
 
@@ -2752,7 +2752,7 @@ Assim, secrets de produção ficam associados ao contexto de produção.
 
 ---
 
-# 117. Aprovação humana
+## 117. Aprovação humana
 
 A aprovação deve ocorrer antes do acesso aos recursos de produção quando a configuração da plataforma permitir.
 
@@ -2773,7 +2773,7 @@ job recebe condições necessárias
 
 ---
 
-# 118. Auditoria
+## 118. Auditoria
 
 GitHub Actions registra:
 
@@ -2789,7 +2789,7 @@ Com Environments, PRs e releases, conseguimos construir rastreabilidade de deplo
 
 ---
 
-# 119. CI e CD separados
+## 119. CI e CD separados
 
 Sugestão:
 
@@ -2815,7 +2815,7 @@ Isso reduz acoplamento e facilita permissões diferentes.
 
 ---
 
-# 120. CI não deve alterar produção
+## 120. CI não deve alterar produção
 
 Regra:
 
@@ -2829,7 +2829,7 @@ Não deve fazer deploy de produção.
 
 ---
 
-# 121. Produção não deve recompilar sem necessidade
+## 121. Produção não deve recompilar sem necessidade
 
 Arquitetura alvo:
 
@@ -2854,7 +2854,7 @@ Isso garante que PROD receba o mesmo artifact validado em DEV.
 
 ---
 
-# 122. Artifacts versus imagens Docker
+## 122. Artifacts versus imagens Docker
 
 Para aplicações containerizadas:
 
@@ -2886,7 +2886,7 @@ Sem rebuild entre ambientes.
 
 ---
 
-# 123. Registry
+## 123. Registry
 
 Uma evolução será utilizar registry de containers.
 
@@ -2910,7 +2910,7 @@ Será detalhado em volumes posteriores.
 
 ---
 
-# 124. Dependabot e Actions
+## 124. Dependabot e Actions
 
 Dependências de Actions também devem ser mantidas atualizadas.
 
@@ -2935,7 +2935,7 @@ Prefira sempre fixar a versão da action por tag maior (`@v4`) ou, em cenários 
 
 ---
 
-# 125. Workflow lint para YAML
+## 125. Workflow lint para YAML
 
 O próprio pipeline também é código.
 
@@ -2945,7 +2945,7 @@ Podemos adicionar ferramentas de lint e validação para workflows e scripts.
 
 ---
 
-# 126. Documentação do pipeline
+## 126. Documentação do pipeline
 
 Cada repositório deve explicar:
 
@@ -2962,7 +2962,7 @@ O pipeline não deve ser uma caixa-preta.
 
 ---
 
-# 127. Badge de CI
+## 127. Badge de CI
 
 README pode mostrar status do workflow.
 
@@ -2972,7 +2972,7 @@ A URL específica depende do repositório e workflow.
 
 ---
 
-# 128. Nomear jobs claramente
+## 128. Nomear jobs claramente
 
 Ruim:
 
@@ -2998,7 +2998,7 @@ Checks legíveis melhoram a PR.
 
 ---
 
-# 129. Step summary
+## 129. Step summary
 
 Workflows podem produzir resumos úteis para a interface.
 
@@ -3015,7 +3015,7 @@ Isso melhora a experiência de revisão.
 
 ---
 
-# 130. Notificações
+## 130. Notificações
 
 Falhas importantes podem posteriormente gerar:
 
@@ -3030,7 +3030,7 @@ Alerta que sempre dispara e ninguém lê perde valor.
 
 ---
 
-# 131. GitHub Actions e IA
+## 131. GitHub Actions e IA
 
 No fluxo assistido:
 
@@ -3063,7 +3063,7 @@ PASS / FAIL
 
 ---
 
-# 132. IA não deve alterar o teste para esconder falha
+## 132. IA não deve alterar o teste para esconder falha
 
 Um risco:
 
@@ -3081,7 +3081,7 @@ Por isso, revisão deve verificar se os testes continuam representando os requis
 
 ---
 
-# 133. Critério de aceitação → teste
+## 133. Critério de aceitação → teste
 
 Fluxo desejado:
 
@@ -3113,7 +3113,7 @@ regra no serviço de autenticação
 
 ---
 
-# 134. Pipeline como contrato
+## 134. Pipeline como contrato
 
 O CI estabelece regras objetivas.
 
@@ -3133,7 +3133,7 @@ Isso reduz decisões improvisadas.
 
 ---
 
-# 135. Quality Gate
+## 135. Quality Gate
 
 Um Quality Gate é um conjunto de condições necessárias.
 
@@ -3151,7 +3151,7 @@ O gate deve ser proporcional ao risco.
 
 ---
 
-# 136. Evitar pipeline impossível
+## 136. Evitar pipeline impossível
 
 Se o pipeline demora 90 minutos em toda pequena PR, desenvolvedores tenderão a contorná-lo.
 
@@ -3164,7 +3164,7 @@ rigoroso o suficiente para gerar confiança
 
 ---
 
-# 137. Pipeline em camadas
+## 137. Pipeline em camadas
 
 Camada 1 — segundos/minutos:
 
@@ -3196,7 +3196,7 @@ security aprofundado
 
 ---
 
-# 138. Estratégia de execução
+## 138. Estratégia de execução
 
 ```text
 PR
@@ -3221,7 +3221,7 @@ Camadas adicionais
 
 ---
 
-# 139. Workflow completo conceitual
+## 139. Workflow completo conceitual
 
 ```text
 PR
@@ -3272,7 +3272,7 @@ Monitoramento
 
 ---
 
-# 140. Checklist do workflow
+## 140. Checklist do workflow
 
 - [ ] Nome claro.
 - [ ] Evento correto.
@@ -3292,7 +3292,7 @@ Monitoramento
 
 ---
 
-# 141. Checklist para self-hosted
+## 141. Checklist para self-hosted
 
 - [ ] Labels correspondem ao workflow.
 - [ ] Runner está online.
@@ -3321,7 +3321,7 @@ nunca guardar secrets de longa duração no host do runner
 
 ---
 
-# 142. Diagnóstico quando workflow não inicia
+## 142. Diagnóstico quando workflow não inicia
 
 Verifique:
 
@@ -3337,7 +3337,7 @@ permissões são suficientes?
 
 ---
 
-# 143. Diagnóstico quando job fica "Queued"
+## 143. Diagnóstico quando job fica "Queued"
 
 Em self-hosted:
 
@@ -3352,7 +3352,7 @@ são causas comuns.
 
 ---
 
-# 144. Diagnóstico quando funciona local e falha no CI
+## 144. Diagnóstico quando funciona local e falha no CI
 
 Compare:
 
@@ -3374,7 +3374,7 @@ O objetivo é eliminar diferenças implícitas.
 
 ---
 
-# 145. Diagnóstico E2E
+## 145. Diagnóstico E2E
 
 Colete:
 
@@ -3393,7 +3393,7 @@ Não dependa apenas de uma mensagem genérica de timeout.
 
 ---
 
-# 146. Timeout E2E
+## 146. Timeout E2E
 
 Se um teste demora demais:
 
@@ -3414,7 +3414,7 @@ Timeout alto pode apenas esconder um problema.
 
 ---
 
-# 147. Próximos passos práticos
+## 147. Próximos passos práticos
 
 Depois de instalar o runner do Volume 04:
 
@@ -3432,7 +3432,7 @@ Depois de instalar o runner do Volume 04:
 
 ---
 
-# 148. Arquitetura final dos quatro primeiros volumes
+## 148. Arquitetura final dos quatro primeiros volumes
 
 ```text
 VOLUME 01
@@ -3501,7 +3501,7 @@ PROD
 
 ---
 
-# 149. Próximo volume
+## 149. Próximo volume
 
 **Volume 04 — Self-Hosted Runners com Ubuntu e Docker**
 

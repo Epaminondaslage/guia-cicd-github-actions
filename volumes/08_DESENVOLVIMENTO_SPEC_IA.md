@@ -69,7 +69,7 @@ Duas revisões humanas nunca devem ser puladas: a da SPEC/plano (antes de codar)
 
 ---
 
-# 2. Por que especificar antes de codificar
+## 2. Por que especificar antes de codificar
 
 Sem especificação:
 
@@ -94,7 +94,7 @@ a implementação fica verificável.
 
 ---
 
-# 3. Brainstorm antes da entrevista formal
+## 3. Brainstorm antes da entrevista formal
 
 Antes de qualquer SPEC, vale uma etapa curta e deliberadamente aberta de brainstorm — não confundir com a entrevista de requisitos (seção seguinte).
 
@@ -120,7 +120,7 @@ Sinal de que vale a pena brainstormar: o pedido veio como solução pronta ("adi
 
 ---
 
-# 4. IA como entrevistadora
+## 4. IA como entrevistadora
 
 Antes de escrever código, o agente pode fazer perguntas como:
 
@@ -135,7 +135,7 @@ Antes de escrever código, o agente pode fazer perguntas como:
 
 ---
 
-# 5. Estrutura de uma SPEC
+## 5. Estrutura de uma SPEC
 
 ```markdown
 # SPEC-014 — Novo Dashboard
@@ -167,7 +167,7 @@ Antes de escrever código, o agente pode fazer perguntas como:
 
 ---
 
-# 6. Contexto
+## 6. Contexto
 
 Explique por que a mudança existe.
 
@@ -181,7 +181,7 @@ ao fluxo operacional.
 
 ---
 
-# 7. Problema versus solução
+## 7. Problema versus solução
 
 Problema:
 
@@ -201,7 +201,7 @@ A SPEC deve preservar o problema mesmo se a solução mudar.
 
 ---
 
-# 8. Objetivo
+## 8. Objetivo
 
 Bom:
 
@@ -218,7 +218,7 @@ deixar bonito
 
 ---
 
-# 9. Escopo
+## 9. Escopo
 
 Liste explicitamente o que muda.
 
@@ -233,7 +233,7 @@ Exemplo:
 
 ---
 
-# 10. Fora de escopo
+## 10. Fora de escopo
 
 Muito importante para agentes.
 
@@ -250,7 +250,7 @@ Isso reduz expansão indevida.
 
 ---
 
-# 11. Requisitos funcionais
+## 11. Requisitos funcionais
 
 Exemplo:
 
@@ -262,7 +262,7 @@ RF03 — filtro permanece durante navegação.
 
 ---
 
-# 12. Requisitos não funcionais
+## 12. Requisitos não funcionais
 
 Exemplos:
 
@@ -274,7 +274,7 @@ RNF03 — não introduzir nova dependência sem justificativa.
 
 ---
 
-# 13. Critérios de aceitação
+## 13. Critérios de aceitação
 
 Devem ser verificáveis.
 
@@ -288,7 +288,7 @@ Then críticos aparecem antes dos demais
 
 ---
 
-# 14. Casos de teste na SPEC
+## 14. Casos de teste na SPEC
 
 Não precisam ser implementação técnica completa.
 
@@ -309,7 +309,7 @@ unit / API / E2E / visual
 
 ---
 
-# 15. Revisão humana da SPEC
+## 15. Revisão humana da SPEC
 
 Antes do código:
 
@@ -329,7 +329,7 @@ A aprovação da SPEC reduz retrabalho de implementação.
 
 ---
 
-# 16. Plano de implementação
+## 16. Plano de implementação
 
 Depois da SPEC, gere plano técnico.
 
@@ -346,7 +346,7 @@ Exemplo:
 
 ---
 
-# 17. Plano não é SPEC
+## 17. Plano não é SPEC
 
 SPEC responde:
 
@@ -364,7 +364,7 @@ Se a solução técnica mudar, a SPEC pode continuar válida.
 
 ---
 
-# 18. Plano por etapas pequenas
+## 18. Plano por etapas pequenas
 
 Prefira:
 
@@ -386,7 +386,7 @@ Isso facilita commits e revisão.
 
 ---
 
-# 19. Branch dedicada
+## 19. Branch dedicada
 
 Exemplo:
 
@@ -398,7 +398,7 @@ A branch deve corresponder à unidade de mudança.
 
 ---
 
-# 20. Commit checkpoints
+## 20. Commit checkpoints
 
 Durante implementação assistida:
 
@@ -416,7 +416,7 @@ Isso cria pontos de restauração.
 
 ---
 
-# 21. Agente com escopo limitado
+## 21. Agente com escopo limitado
 
 Instrução recomendada:
 
@@ -428,7 +428,7 @@ sem justificar antes no plano.
 
 ---
 
-# 22. Mudanças inesperadas
+## 22. Mudanças inesperadas
 
 Após implementação:
 
@@ -441,7 +441,7 @@ Revise se arquivos fora do escopo foram alterados.
 
 ---
 
-# 23. IA e testes
+## 23. IA e testes
 
 Agente pode propor testes.
 
@@ -465,7 +465,7 @@ teste que confirma qualquer comportamento atual
 
 ---
 
-# 24. Teste antes da implementação
+## 24. Teste antes da implementação
 
 Para bugs:
 
@@ -486,7 +486,7 @@ Excelente padrão para agentes.
 
 ---
 
-# 25. Revisão do diff por IA
+## 25. Revisão do diff por IA
 
 Uma segunda passagem pode analisar:
 
@@ -501,7 +501,7 @@ Idealmente, o reviewer não é o mesmo contexto/agente que escreveu tudo.
 
 ---
 
-# 26. Revisão humana obrigatória antes do merge
+## 26. Revisão humana obrigatória antes do merge
 
 Código gerado por IA nunca deve ser mesclado sem revisão humana linha a linha. Isso vale mesmo quando:
 
@@ -521,7 +521,7 @@ Nenhum desses sinais substitui a leitura do diff por uma pessoa. Um agente pode 
 - copiar um padrão de outro trecho do projeto que não se aplica ao contexto atual;
 - introduzir efeito colateral fora do escopo declarado.
 
-## Checklist mínimo de revisão humana
+### Checklist mínimo de revisão humana
 
 - [ ] Todo o diff foi lido, não só o resumo gerado pelo agente.
 - [ ] Cada trecho alterado corresponde a um item do plano/SPEC — nada "a mais".
@@ -538,7 +538,7 @@ Regra prática: se a pessoa que aprova não consegue explicar o que o código fa
 
 ---
 
-# 27. PR como unidade de auditoria
+## 27. PR como unidade de auditoria
 
 Descrição:
 
@@ -561,7 +561,7 @@ PR #88
 
 ---
 
-# 28. Nova SPEC após implementação insatisfatória
+## 28. Nova SPEC após implementação insatisfatória
 
 Se frontend não ficou adequado:
 
@@ -585,7 +585,7 @@ Não tente reescrever a história da PR antiga.
 
 ---
 
-# 29. Referenciar PR original
+## 29. Referenciar PR original
 
 Na SPEC:
 
@@ -603,7 +603,7 @@ Implements SPEC-021.
 
 ---
 
-# 30. Reativar projeto
+## 30. Reativar projeto
 
 "Reativar" significa recuperar contexto.
 
@@ -623,7 +623,7 @@ Não presuma que o código ainda é idêntico ao da PR antiga.
 
 ---
 
-# 31. Source of truth
+## 31. Source of truth
 
 Defina fontes:
 
@@ -637,7 +637,7 @@ Tests = contrato automatizado parcial
 
 ---
 
-# 32. Documentação viva
+## 32. Documentação viva
 
 SPEC não precisa ser alterada eternamente.
 
@@ -653,7 +653,7 @@ Isso preserva evolução.
 
 ---
 
-# 33. Decision records
+## 33. Decision records
 
 Para decisões arquiteturais importantes, use ADR:
 
@@ -672,7 +672,7 @@ Consequências
 
 ---
 
-# 34. IA e ADR
+## 34. IA e ADR
 
 Agente pode sugerir alternativas, mas decisão deve ser explícita.
 
@@ -685,7 +685,7 @@ Não escolhemos Cypress porque...
 
 ---
 
-# 35. Prompt operacional
+## 35. Prompt operacional
 
 Um bom prompt de implementação contém:
 
@@ -701,7 +701,7 @@ definition of done
 
 ---
 
-# 36. Contexto mínimo necessário
+## 36. Contexto mínimo necessário
 
 Mais contexto não é sempre melhor. Um prompt inchado com arquivos irrelevantes, histórico antigo ou documentação genérica dilui a atenção do agente e aumenta a chance de ele "inventar" conexões que não existem.
 
@@ -729,7 +729,7 @@ Sinais de contexto insuficiente:
 - a implementação ignora um padrão existente porque não foi mostrado;
 - o agente reinventa uma função que já existe em outro arquivo.
 
-## O que incluir
+### O que incluir
 
 ```text
 SPEC e/ou plano da tarefa
@@ -741,7 +741,7 @@ comandos para rodar lint/testes localmente
 o que está fora de escopo
 ```
 
-## O que evitar incluir
+### O que evitar incluir
 
 ```text
 o repositório inteiro "por garantia"
@@ -752,7 +752,7 @@ arquivos de configuração irrelevantes ao módulo afetado
 
 ---
 
-# 37. Exemplos e critérios de aceite no prompt
+## 37. Exemplos e critérios de aceite no prompt
 
 Um exemplo concreto vale mais que uma descrição abstrata. Sempre que possível, o prompt de implementação deve conter:
 
@@ -794,7 +794,7 @@ O segundo exemplo obriga o agente a adivinhar "qual padrão" e "o que é urgente
 
 ---
 
-# 38. Definition of Done
+## 38. Definition of Done
 
 Exemplo:
 
@@ -811,7 +811,7 @@ Exemplo:
 
 ---
 
-# 39. Superpower-like workflow
+## 39. Superpower-like workflow
 
 Fluxo genérico de skills/agentes:
 
@@ -847,7 +847,7 @@ A ferramenta específica pode mudar; o processo permanece útil.
 
 ---
 
-# 40. Separar geração e validação
+## 40. Separar geração e validação
 
 Não confie apenas em:
 
@@ -867,7 +867,7 @@ como verificação objetiva.
 
 ---
 
-# 41. Falha no E2E
+## 41. Falha no E2E
 
 Fluxo:
 
@@ -887,7 +887,7 @@ Não altere o teste automaticamente sem diagnóstico.
 
 ---
 
-# 42. Requisito ambíguo
+## 42. Requisito ambíguo
 
 Se teste e implementação divergem porque a SPEC é ambígua:
 
@@ -899,7 +899,7 @@ e não escolher aleatoriamente um dos comportamentos.
 
 ---
 
-# 43. Mudança de requisito durante PR
+## 43. Mudança de requisito durante PR
 
 Se pequena e relacionada:
 
@@ -918,7 +918,7 @@ Evite scope creep.
 
 ---
 
-# 44. Scope creep
+## 44. Scope creep
 
 Sinal:
 
@@ -932,7 +932,7 @@ Crie Issues/PRs separadas.
 
 ---
 
-# 45. Refatoração oportunista
+## 45. Refatoração oportunista
 
 Pequenas melhorias diretamente necessárias podem ser aceitáveis.
 
@@ -940,7 +940,7 @@ Mas devem estar justificadas na PR.
 
 ---
 
-# 46. IA e arquitetura existente
+## 46. IA e arquitetura existente
 
 Antes de alterar:
 
@@ -952,7 +952,7 @@ Agente não deve introduzir nova arquitetura apenas por preferência.
 
 ---
 
-# 47. Regra de consistência
+## 47. Regra de consistência
 
 Se projeto usa:
 
@@ -964,7 +964,7 @@ uma feature pequena não deveria inventar arquitetura completamente diferente.
 
 ---
 
-# 48. Mudança arquitetural
+## 48. Mudança arquitetural
 
 Se necessária:
 
@@ -977,7 +977,7 @@ PR dedicada ou claramente delimitada
 
 ---
 
-# 49. Código completo versus patch
+## 49. Código completo versus patch
 
 Agentes podem produzir grandes alterações rapidamente.
 
@@ -990,7 +990,7 @@ Maior velocidade aumenta necessidade de:
 
 ---
 
-# 50. Context window
+## 50. Context window
 
 Projetos grandes excedem contexto de agentes.
 
@@ -1008,7 +1008,7 @@ docs/adr/
 
 ---
 
-# 51. AGENTS.md / instruções do projeto
+## 51. AGENTS.md / instruções do projeto
 
 Um arquivo de instruções pode registrar:
 
@@ -1023,7 +1023,7 @@ O nome depende da ferramenta.
 
 ---
 
-# 52. Comandos canônicos
+## 52. Comandos canônicos
 
 Documente:
 
@@ -1039,7 +1039,7 @@ Agentes devem usar os mesmos comandos do CI.
 
 ---
 
-# 53. Ambientes
+## 53. Ambientes
 
 Agente deve saber:
 
@@ -1054,7 +1054,7 @@ e nunca confundi-los.
 
 ---
 
-# 54. Produção requer autorização
+## 54. Produção requer autorização
 
 A capacidade técnica de fazer deploy não significa permissão automática.
 
@@ -1076,7 +1076,7 @@ pergunta explícita
 
 ---
 
-# 55. Secret safety
+## 55. Secret safety
 
 Nunca forneça secret em prompt se existe mecanismo de secret management.
 
@@ -1084,7 +1084,7 @@ Agente não precisa conhecer valor bruto para escrever integração.
 
 ---
 
-# 56. Logs e secrets
+## 56. Logs e secrets
 
 Automação deve evitar:
 
@@ -1096,7 +1096,7 @@ e comandos que imprimam ambiente completo.
 
 ---
 
-# 57. PR automation
+## 57. PR automation
 
 Agente pode:
 
@@ -1110,7 +1110,7 @@ Mas merge/deploy devem seguir política.
 
 ---
 
-# 58. Autonomia graduada
+## 58. Autonomia graduada
 
 Níveis:
 
@@ -1128,7 +1128,7 @@ Defina explicitamente.
 
 ---
 
-# 59. Human-in-the-loop
+## 59. Human-in-the-loop
 
 Humano deve permanecer principalmente em:
 
@@ -1142,7 +1142,7 @@ Automação assume tarefas repetíveis.
 
 ---
 
-# 60. Revisão visual
+## 60. Revisão visual
 
 Frontend merece etapa:
 
@@ -1160,7 +1160,7 @@ E2E funcional não substitui gosto/requisito visual.
 
 ---
 
-# 61. Screenshots na PR
+## 61. Screenshots na PR
 
 Agente pode anexar evidências de UI quando ferramenta permitir.
 
@@ -1168,7 +1168,7 @@ Ajuda revisão assíncrona.
 
 ---
 
-# 62. Visual regression
+## 62. Visual regression
 
 Baseline aprovado:
 
@@ -1182,7 +1182,7 @@ Mudança intencional requer atualização consciente do baseline.
 
 ---
 
-# 63. Plano de rollback
+## 63. Plano de rollback
 
 Antes de deploy, agente pode verificar:
 
@@ -1194,7 +1194,7 @@ migration é compatível?
 
 ---
 
-# 64. IA durante incidente
+## 64. IA durante incidente
 
 Durante incidente, limite autonomia.
 
@@ -1208,7 +1208,7 @@ Não iniciar refatoração ampla.
 
 ---
 
-# 65. Post-mortem assistido
+## 65. Post-mortem assistido
 
 IA pode ajudar a organizar:
 
@@ -1223,7 +1223,7 @@ A conclusão deve ser revisada por humano.
 
 ---
 
-# 66. Audit trail
+## 66. Audit trail
 
 Rastreabilidade ideal:
 
@@ -1249,7 +1249,7 @@ Version
 
 ---
 
-# 67. IDs consistentes
+## 67. IDs consistentes
 
 Exemplo:
 
@@ -1264,7 +1264,7 @@ Não é obrigatório, mas simplifica navegação.
 
 ---
 
-# 68. Plano versionado
+## 68. Plano versionado
 
 Guardar plano em:
 
@@ -1278,7 +1278,7 @@ Para tarefas pequenas, corpo da PR pode ser suficiente.
 
 ---
 
-# 69. Estado da implementação
+## 69. Estado da implementação
 
 Checklist no plano:
 
@@ -1293,7 +1293,7 @@ Ajuda continuidade entre sessões/agentes.
 
 ---
 
-# 70. Handoff entre agentes
+## 70. Handoff entre agentes
 
 O handoff deve conter:
 
@@ -1311,7 +1311,7 @@ Não depender de conversa anterior.
 
 ---
 
-# 71. Continuidade entre dias
+## 71. Continuidade entre dias
 
 Antes de retomar:
 
@@ -1331,7 +1331,7 @@ PR
 
 ---
 
-# 72. Evitar código não commitado por longos períodos
+## 72. Evitar código não commitado por longos períodos
 
 Commits pequenos são checkpoints.
 
@@ -1339,7 +1339,7 @@ Especialmente importante quando diferentes agentes trabalham em sequência.
 
 ---
 
-# 73. Worktrees
+## 73. Worktrees
 
 Git worktree pode permitir múltiplas branches em diretórios separados.
 
@@ -1356,7 +1356,7 @@ Requer disciplina para não editar o mesmo domínio simultaneamente.
 
 ---
 
-# 74. Paralelismo de agentes
+## 74. Paralelismo de agentes
 
 Seguro:
 
@@ -1373,7 +1373,7 @@ A e B alteram mesmo arquivo central
 
 ---
 
-# 75. Ownership temporário
+## 75. Ownership temporário
 
 Plano pode indicar:
 
@@ -1386,7 +1386,7 @@ Reduz conflitos.
 
 ---
 
-# 76. Integração de trabalhos paralelos
+## 76. Integração de trabalhos paralelos
 
 Cada agente:
 
@@ -1403,7 +1403,7 @@ Não juntar resultados manualmente sem histórico.
 
 ---
 
-# 77. Stacked PRs com IA
+## 77. Stacked PRs com IA
 
 Uma feature grande pode gerar:
 
@@ -1418,7 +1418,7 @@ Só use stack se dependências forem claras.
 
 ---
 
-# 78. PR independente é preferível
+## 78. PR independente é preferível
 
 Quando possível:
 
@@ -1430,7 +1430,7 @@ Isso reduz complexidade.
 
 ---
 
-# 79. Revisão automática de segurança
+## 79. Revisão automática de segurança
 
 Antes da PR pronta:
 
@@ -1443,7 +1443,7 @@ check Dockerfile
 
 ---
 
-# 80. Dependency additions
+## 80. Dependency additions
 
 Agente deve justificar nova dependência:
 
@@ -1458,7 +1458,7 @@ segurança?
 
 ---
 
-# 81. Evitar package sprawl
+## 81. Evitar package sprawl
 
 IA pode adicionar biblioteca para tarefas triviais.
 
@@ -1466,7 +1466,7 @@ Prefira stack existente quando suficiente.
 
 ---
 
-# 82. Database changes
+## 82. Database changes
 
 SPEC deve indicar:
 
@@ -1479,7 +1479,7 @@ rollback?
 
 ---
 
-# 83. API changes
+## 83. API changes
 
 Se contrato muda:
 
@@ -1493,7 +1493,7 @@ Contract tests ajudam.
 
 ---
 
-# 84. Feature flags
+## 84. Feature flags
 
 Mudanças grandes podem ser integradas desativadas.
 
@@ -1516,13 +1516,13 @@ Requer gestão de flags.
 
 ---
 
-# 85. Feature flag não é lixo permanente
+## 85. Feature flag não é lixo permanente
 
 Flags temporárias devem ter plano de remoção.
 
 ---
 
-# 86. Definition of Ready
+## 86. Definition of Ready
 
 Antes de implementação:
 
@@ -1535,7 +1535,7 @@ risco avaliado
 
 ---
 
-# 87. Definition of Done
+## 87. Definition of Done
 
 Depois:
 
@@ -1557,7 +1557,7 @@ PROD validado
 
 ---
 
-# 88. Checklist SPEC
+## 88. Checklist SPEC
 
 - [ ] Problema claro.
 - [ ] Objetivo claro.
@@ -1572,7 +1572,7 @@ PROD validado
 
 ---
 
-# 89. Checklist plano
+## 89. Checklist plano
 
 - [ ] Arquivos/módulos.
 - [ ] Ordem.
@@ -1585,7 +1585,7 @@ PROD validado
 
 ---
 
-# 90. Checklist implementação IA
+## 90. Checklist implementação IA
 
 - [ ] Branch correta.
 - [ ] Sem mudanças fora de escopo.
@@ -1599,7 +1599,7 @@ PROD validado
 
 ---
 
-# 91. Checklist PR
+## 91. Checklist PR
 
 - [ ] SPEC citada.
 - [ ] Plano resumido.
@@ -1612,7 +1612,7 @@ PROD validado
 
 ---
 
-# 92. Arquitetura documental sugerida
+## 92. Arquitetura documental sugerida
 
 ```text
 docs/
@@ -1628,7 +1628,7 @@ docs/
 
 ---
 
-# 93. Template de SPEC
+## 93. Template de SPEC
 
 ```markdown
 # SPEC-NNN — Título
@@ -1656,7 +1656,7 @@ docs/
 
 ---
 
-# 94. Template de plano
+## 94. Template de plano
 
 ```markdown
 # PLAN-NNN — Título
@@ -1684,7 +1684,7 @@ docs/
 
 ---
 
-# 95. Fluxo final
+## 95. Fluxo final
 
 ```text
 IDEIA
@@ -1743,7 +1743,7 @@ PROD
 
 ---
 
-# 96. Próximo volume
+## 96. Próximo volume
 
 **Volume 09 — Continuous Deployment e Deploy DEV → PROD**
 

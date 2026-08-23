@@ -46,7 +46,7 @@ O fluxo assume que não existe staging separado. DEV é o ambiente de validaçã
 
 ---
 
-# 2. Continuous Delivery versus Deployment
+## 2. Continuous Delivery versus Deployment
 
 Continuous Delivery:
 
@@ -93,7 +93,7 @@ Este guia usa `workflow_dispatch` para produção (Seção 21) porque é explíc
 
 ---
 
-# 3. Build versus Deploy
+## 3. Build versus Deploy
 
 Build:
 
@@ -111,7 +111,7 @@ Não misture os conceitos.
 
 ---
 
-# 4. Artifact imutável
+## 4. Artifact imutável
 
 Exemplo Docker:
 
@@ -127,7 +127,7 @@ DEV -> PROD
 
 ---
 
-# 5. Build oficial
+## 5. Build oficial
 
 Após merge:
 
@@ -148,7 +148,7 @@ A imagem oficial deve estar ligada ao commit integrado.
 
 ---
 
-# 6. GitHub Environment
+## 6. GitHub Environment
 
 Defina:
 
@@ -166,7 +166,7 @@ Cada environment pode possuir:
 
 ---
 
-# 7. Secrets por ambiente
+## 7. Secrets por ambiente
 
 ```text
 development
@@ -182,7 +182,7 @@ Não reutilize credencial administrativa global sem necessidade.
 
 ---
 
-# 8. Deploy DEV automático
+## 8. Deploy DEV automático
 
 Evento:
 
@@ -204,7 +204,7 @@ deploy DEV
 
 ---
 
-# 9. Workflow DEV conceitual
+## 9. Workflow DEV conceitual
 
 ```yaml
 name: Deploy DEV
@@ -236,7 +236,7 @@ jobs:
 
 ---
 
-# 10. Deploy via SSH
+## 10. Deploy via SSH
 
 Arquitetura:
 
@@ -257,7 +257,7 @@ Use:
 
 ---
 
-# 11. Evitar senha em comando
+## 11. Evitar senha em comando
 
 Não:
 
@@ -269,7 +269,7 @@ Prefira chaves e secret management.
 
 ---
 
-# 12. Usuário de deploy
+## 12. Usuário de deploy
 
 Exemplo:
 
@@ -285,7 +285,7 @@ Esse usuário deve ter apenas o necessário para:
 
 ---
 
-# 13. Docker deploy
+## 13. Docker deploy
 
 Servidor recebe referência:
 
@@ -302,7 +302,7 @@ docker compose up -d app
 
 ---
 
-# 14. Health check
+## 14. Health check
 
 Após atualização:
 
@@ -320,7 +320,7 @@ O deploy só deve ser considerado concluído após validação.
 
 ---
 
-# 15. Retry de health
+## 15. Retry de health
 
 ```bash
 for i in $(seq 1 30); do
@@ -334,7 +334,7 @@ Ajuste ao comportamento real.
 
 ---
 
-# 16. Smoke DEV
+## 16. Smoke DEV
 
 Depois do health:
 
@@ -348,7 +348,7 @@ Pode ser automatizado por Playwright.
 
 ---
 
-# 17. Validação visual
+## 17. Validação visual
 
 Como não existe staging:
 
@@ -363,7 +363,7 @@ Essa etapa é particularmente importante para mudanças visuais.
 
 ---
 
-# 18. Gate humano
+## 18. Gate humano
 
 Produção só inicia quando existe autorização explícita.
 
@@ -380,7 +380,7 @@ Approval
 
 ---
 
-# 19. Environment production
+## 19. Environment production
 
 Job:
 
@@ -401,7 +401,7 @@ Sem reviewers configurados, `environment: production` no YAML é só um rótulo 
 
 ---
 
-# 20. Workflow PROD
+## 20. Workflow PROD
 
 Pode ser separado:
 
@@ -413,7 +413,7 @@ Isso reduz risco de lógica confusa.
 
 ---
 
-# 21. workflow_dispatch para PROD
+## 21. workflow_dispatch para PROD
 
 Uma alternativa clara:
 
@@ -429,7 +429,7 @@ O operador seleciona a versão validada.
 
 ---
 
-# 22. Não buildar novamente
+## 22. Não buildar novamente
 
 PROD recebe:
 
@@ -447,7 +447,7 @@ no servidor.
 
 ---
 
-# 23. Registro de versão
+## 23. Registro de versão
 
 Mantenha:
 
@@ -460,7 +460,7 @@ para rollback.
 
 ---
 
-# 23a. Estratégia de rollback
+## 23a. Estratégia de rollback
 
 Rollback rápido depende de decisões tomadas *antes* do incidente, não durante ele:
 
@@ -485,7 +485,7 @@ Rollback bom é aquele que:
 
 ---
 
-# 24. Endpoint /version
+## 24. Endpoint /version
 
 Produção pode responder:
 
@@ -500,7 +500,7 @@ Facilita auditoria.
 
 ---
 
-# 25. Rollback
+## 25. Rollback
 
 Se deploy falhar:
 
@@ -517,7 +517,7 @@ O procedimento deve ser tão simples quanto o deploy.
 
 ---
 
-# 26. Rollback automático
+## 26. Rollback automático
 
 Pode ser aplicado quando health check falha imediatamente:
 
@@ -533,7 +533,7 @@ Depois notificar.
 
 ---
 
-# 27. Rollback humano
+## 27. Rollback humano
 
 Para falhas funcionais detectadas depois:
 
@@ -547,7 +547,7 @@ workflow_dispatch
 
 ---
 
-# 28. Banco de dados
+## 28. Banco de dados
 
 Rollback da aplicação pode falhar se migration B tornou o banco incompatível com A.
 
@@ -561,7 +561,7 @@ são essenciais.
 
 ---
 
-# 29. Expand/Contract
+## 29. Expand/Contract
 
 ```text
 Release 1:
@@ -578,7 +578,7 @@ Melhor que uma migration destrutiva instantânea.
 
 ---
 
-# 30. Backup antes de migration crítica
+## 30. Backup antes de migration crítica
 
 Fluxo:
 
@@ -610,7 +610,7 @@ dump prévio
 
 ---
 
-# 31. Deploy locking
+## 31. Deploy locking
 
 Dois deploys simultâneos devem ser impedidos.
 
@@ -624,19 +624,19 @@ concurrency:
 
 ---
 
-# 32. DEV concurrency
+## 32. DEV concurrency
 
 Pode cancelar deploy antigo se uma versão nova ainda não iniciou etapa irreversível, mas isso deve ser projetado conscientemente.
 
 ---
 
-# 33. Production concurrency
+## 33. Production concurrency
 
 Nunca sobrepor deploys.
 
 ---
 
-# 34. Approval context
+## 34. Approval context
 
 Quem aprova deve saber:
 
@@ -650,7 +650,7 @@ Quem aprova deve saber:
 
 ---
 
-# 35. Release notes
+## 35. Release notes
 
 Gere resumo:
 
@@ -666,7 +666,7 @@ Ajuda decisão.
 
 ---
 
-# 36. Changelog
+## 36. Changelog
 
 Pode ser gerado a partir de PRs/commits convencionais.
 
@@ -674,7 +674,7 @@ Não dependa exclusivamente de geração automática sem revisão.
 
 ---
 
-# 37. Tags Git
+## 37. Tags Git
 
 Release:
 
@@ -686,7 +686,7 @@ A tag conecta versão e commit.
 
 ---
 
-# 38. Deploy por tag
+## 38. Deploy por tag
 
 Uma estratégia:
 
@@ -701,7 +701,7 @@ Ainda pode existir gate.
 
 ---
 
-# 39. Sem staging
+## 39. Sem staging
 
 Riscos:
 
@@ -712,7 +712,7 @@ Riscos:
 
 ---
 
-# 40. DEV não é laboratório permanente quebrado
+## 40. DEV não é laboratório permanente quebrado
 
 Se DEV está sempre instável, ele deixa de ser ambiente de validação.
 
@@ -720,7 +720,7 @@ Tenha disciplina de qualidade também em DEV.
 
 ---
 
-# 41. Dados DEV
+## 41. Dados DEV
 
 Devem permitir validar fluxos sem expor dados sensíveis de produção.
 
@@ -732,7 +732,7 @@ Idealmente:
 
 ---
 
-# 42. Produção
+## 42. Produção
 
 Deploy deve ser:
 
@@ -743,7 +743,7 @@ Deploy deve ser:
 
 ---
 
-# 43. SSH host verification
+## 43. SSH host verification
 
 Não desabilite:
 
@@ -757,7 +757,7 @@ Gerencie `known_hosts`.
 
 ---
 
-# 44. Deploy keys
+## 44. Deploy keys
 
 Use credencial dedicada ao servidor/ambiente.
 
@@ -765,13 +765,13 @@ Rotacione conforme política.
 
 ---
 
-# 45. sudo
+## 45. sudo
 
 Usuário de deploy não deveria possuir `sudo ALL` se só precisa reiniciar um serviço específico.
 
 ---
 
-# 46. Docker group
+## 46. Docker group
 
 Acesso ao Docker implica privilégios elevados.
 
@@ -779,7 +779,7 @@ Trate usuário de deploy como privilegiado.
 
 ---
 
-# 47. Runner dedicado
+## 47. Runner dedicado
 
 Preferência:
 
@@ -793,19 +793,19 @@ acesso PROD
 
 ---
 
-# 48. Firewall
+## 48. Firewall
 
 Servidor PROD deve aceitar SSH apenas de origens necessárias quando possível.
 
 ---
 
-# 49. VPN/rede privada
+## 49. VPN/rede privada
 
 Uma arquitetura melhor pode manter deploy dentro de rede privada.
 
 ---
 
-# 50. Artifact registry
+## 50. Artifact registry
 
 O servidor PROD precisa apenas:
 
@@ -817,7 +817,7 @@ e não acesso completo ao repositório.
 
 ---
 
-# 51. Registry credentials
+## 51. Registry credentials
 
 Use token read-only no servidor se possível.
 
@@ -825,7 +825,7 @@ CI de publicação usa permissão de escrita separada.
 
 ---
 
-# 52. Principle of least privilege
+## 52. Principle of least privilege
 
 ```text
 CI push registry
@@ -840,7 +840,7 @@ PROD token com admin do registry
 
 ---
 
-# 53. Blue/Green
+## 53. Blue/Green
 
 Arquitetura:
 
@@ -866,7 +866,7 @@ proxy -> BLUE
 
 ---
 
-# 54. Quando usar blue/green
+## 54. Quando usar blue/green
 
 Quando downtime e rollback precisam ser muito baixos.
 
@@ -874,7 +874,7 @@ Custa mais recursos e complexidade: dobro de instâncias rodando durante a troca
 
 ---
 
-# 54a. Quando NÃO vale a pena
+## 54a. Quando NÃO vale a pena
 
 Para a maioria dos setups pequenos/médios — um único servidor de aplicação, uma equipe pequena, um domínio de negócio que tolera alguns segundos de indisponibilidade em janela combinada — blue/green e canary custam mais do que entregam:
 
@@ -892,7 +892,7 @@ Adote blue/green ou canary quando o custo de alguns segundos de indisponibilidad
 
 ---
 
-# 55. Rolling deployment
+## 55. Rolling deployment
 
 Com múltiplas instâncias:
 
@@ -906,7 +906,7 @@ Requer load balancer e health checks.
 
 ---
 
-# 56. Canary
+## 56. Canary
 
 Liberar nova versão para pequena parcela do tráfego, observar métricas, e só então liberar para o restante.
 
@@ -916,7 +916,7 @@ Não é requisito inicial: para um setup simples (Seção 54a), a "canary" mais 
 
 ---
 
-# 57. Feature flags
+## 57. Feature flags
 
 Permitem separar deploy de release:
 
@@ -936,7 +936,7 @@ Requer governança.
 
 ---
 
-# 58. Deploy versus release
+## 58. Deploy versus release
 
 Deploy:
 
@@ -954,7 +954,7 @@ Feature flags separam os dois.
 
 ---
 
-# 59. Post-deploy verification
+## 59. Post-deploy verification
 
 Verificar:
 
@@ -967,7 +967,7 @@ Verificar:
 
 ---
 
-# 60. Observação inicial
+## 60. Observação inicial
 
 Após PROD, acompanhe uma janela de maior atenção, sem depender de trabalho manual eterno.
 
@@ -975,7 +975,7 @@ Observabilidade automatizada deve assumir isso.
 
 ---
 
-# 61. Error budget
+## 61. Error budget
 
 Em sistemas maduros, deploys podem ser condicionados à saúde global do serviço.
 
@@ -983,7 +983,7 @@ Será aprofundado em observabilidade.
 
 ---
 
-# 62. Deployment markers
+## 62. Deployment markers
 
 Registre em monitoramento:
 
@@ -995,7 +995,7 @@ Assim aumento de erros pode ser correlacionado.
 
 ---
 
-# 63. Logs de deploy
+## 63. Logs de deploy
 
 Guarde:
 
@@ -1010,7 +1010,7 @@ rollback
 
 ---
 
-# 64. Notificação
+## 64. Notificação
 
 Após deploy:
 
@@ -1024,7 +1024,7 @@ podem gerar notificação útil.
 
 ---
 
-# 65. Não notificar cada step
+## 65. Não notificar cada step
 
 Evite ruído.
 
@@ -1032,7 +1032,7 @@ Notifique eventos acionáveis.
 
 ---
 
-# 66. Dry run
+## 66. Dry run
 
 Scripts podem suportar modo de validação:
 
@@ -1044,7 +1044,7 @@ para confirmar pré-requisitos sem alterar serviço.
 
 ---
 
-# 67. Preflight checks
+## 67. Preflight checks
 
 Antes de PROD:
 
@@ -1058,7 +1058,7 @@ migration compatível?
 
 ---
 
-# 68. Disk space
+## 68. Disk space
 
 Deploy pode falhar por falta de disco ao puxar imagem.
 
@@ -1066,7 +1066,7 @@ Verifique previamente.
 
 ---
 
-# 69. Docker pull failure
+## 69. Docker pull failure
 
 Se registry indisponível:
 
@@ -1078,13 +1078,13 @@ Primeiro obter artifact, depois atualizar.
 
 ---
 
-# 70. Atomicidade
+## 70. Atomicidade
 
 Minimize período intermediário inconsistente.
 
 ---
 
-# 71. Config validation
+## 71. Config validation
 
 Antes:
 
@@ -1096,13 +1096,13 @@ quando adequado.
 
 ---
 
-# 72. Secret validation
+## 72. Secret validation
 
 Confirme presença de secrets necessários sem imprimir valores.
 
 ---
 
-# 73. Migration lock
+## 73. Migration lock
 
 Evite duas instâncias aplicando migration simultaneamente.
 
@@ -1110,13 +1110,13 @@ Framework ou script deve possuir locking apropriado.
 
 ---
 
-# 74. Zero-downtime migrations
+## 74. Zero-downtime migrations
 
 Evite renomear/remover campos usados pela versão ainda ativa.
 
 ---
 
-# 75. Deployment checklist DEV
+## 75. Deployment checklist DEV
 
 - [ ] CI PASS.
 - [ ] Artifact existe.
@@ -1130,7 +1130,7 @@ Evite renomear/remover campos usados pela versão ainda ativa.
 
 ---
 
-# 76. Approval checklist
+## 76. Approval checklist
 
 - [ ] DEV funcional.
 - [ ] Frontend aprovado.
@@ -1142,7 +1142,7 @@ Evite renomear/remover campos usados pela versão ainda ativa.
 
 ---
 
-# 77. PROD checklist
+## 77. PROD checklist
 
 - [ ] Approval.
 - [ ] Artifact exato.
@@ -1157,7 +1157,7 @@ Evite renomear/remover campos usados pela versão ainda ativa.
 
 ---
 
-# 78. Rollback checklist
+## 78. Rollback checklist
 
 - [ ] Identificar versão anterior.
 - [ ] Confirmar compatibilidade de banco.
@@ -1169,7 +1169,7 @@ Evite renomear/remover campos usados pela versão ainda ativa.
 
 ---
 
-# 79. Exemplo de scripts
+## 79. Exemplo de scripts
 
 ```text
 scripts/deploy/
@@ -1183,7 +1183,7 @@ scripts/deploy/
 
 ---
 
-# 80. Exemplo PROD conceitual
+## 80. Exemplo PROD conceitual
 
 ```yaml
 name: Deploy PROD
@@ -1221,7 +1221,7 @@ jobs:
 
 ---
 
-# 81. Rollback automático conceitual
+## 81. Rollback automático conceitual
 
 Script:
 
@@ -1238,7 +1238,7 @@ O mecanismo real deve ser robusto contra falhas parciais.
 
 ---
 
-# 82. Deploy auditável
+## 82. Deploy auditável
 
 Meta:
 
@@ -1254,7 +1254,7 @@ Tudo deve ser respondível.
 
 ---
 
-# 83. Próximo volume
+## 83. Próximo volume
 
 **Volume 10 — Segurança do Pipeline**
 

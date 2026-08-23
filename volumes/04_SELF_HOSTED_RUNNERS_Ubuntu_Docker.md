@@ -55,7 +55,7 @@ Ubuntu Server
 
 ---
 
-# 2. O que é um Self-Hosted Runner
+## 2. O que é um Self-Hosted Runner
 
 Um GitHub Actions Runner é o agente responsável por executar os `jobs` definidos nos workflows.
 
@@ -90,7 +90,7 @@ Isso permite escolher qual máquina executará determinado job.
 
 ---
 
-# 3. Por que utilizar runner próprio
+## 3. Por que utilizar runner próprio
 
 Principais vantagens:
 
@@ -128,7 +128,7 @@ runner-deploy
 
 ---
 
-# 4. Limitações e responsabilidades
+## 4. Limitações e responsabilidades
 
 O runner próprio transfere parte da responsabilidade operacional do GitHub para você.
 
@@ -151,7 +151,7 @@ O runner deve ser tratado como parte da infraestrutura de produção do processo
 
 ---
 
-# 5. Regra de segurança fundamental
+## 5. Regra de segurança fundamental
 
 Self-hosted runners executam código enviado pelo workflow.
 
@@ -169,7 +169,7 @@ O código executado pode:
 
 Para repositórios sob controle do próprio desenvolvedor, o risco pode ser administrado.
 
-## 5.1 Repositórios públicos: risco crítico
+### 5.1 Repositórios públicos: risco crítico
 
 Em um repositório **público**, qualquer pessoa pode abrir um Pull Request a partir de um fork.
 
@@ -196,7 +196,7 @@ O GitHub documenta explicitamente esse risco e recomenda **não usar self-hosted
 - exista uma política de aprovação manual para execução de workflows de forks (`Require approval for all outside collaborators` / `for first-time contributors`, configurável em Settings → Actions → General);
 - o runner não tenha acesso a segredos, à rede interna ou a outros sistemas sensíveis.
 
-### Cuidado especial com `pull_request_target`
+#### Cuidado especial com `pull_request_target`
 
 O trigger `pull_request_target` executa o workflow com o contexto e os **secrets do repositório base** (não do fork), mesmo quando o PR vem de um fork não confiável. Isso já foi usado, na prática, para vazar segredos.
 
@@ -212,7 +212,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}   # ⚠️ código do fork
+          ref: ${{ github.event.pull_request.head.sha }}   # código do fork
 ```
 
 Isso permite que o autor do fork controle o código executado, enquanto o workflow ainda tem acesso aos secrets do repositório base — uma combinação perigosa em qualquer runner, e ainda mais grave em um self-hosted persistente.
@@ -225,7 +225,7 @@ Regras práticas:
 
 Recomendação geral para este guia: self-hosted runners devem ser usados preferencialmente em **repositórios privados ou internos**. Quando um repositório público precisar de runner próprio, utilizar runners **efêmeros** (ver seção 5.2) restritos por ambiente e sem segredos de produção.
 
-## 5.2 Runners efêmeros
+### 5.2 Runners efêmeros
 
 Um runner efêmero se registra, executa **um único job** e é removido/desregistrado em seguida — o oposto do runner persistente tradicional descrito neste capítulo.
 
@@ -251,7 +251,7 @@ Efêmero é o padrão recomendado para:
 
 ---
 
-# 6. Arquitetura recomendada para o laboratório
+## 6. Arquitetura recomendada para o laboratório
 
 Para começar, será utilizada uma única máquina:
 
@@ -299,13 +299,13 @@ runner-deploy
 
 ---
 
-# 7. Hardware recomendado
+## 7. Hardware recomendado
 
 O aplicativo do runner em si é leve.
 
 Quem define o consumo real é o pipeline.
 
-## 7.1 Laboratório mínimo
+### 7.1 Laboratório mínimo
 
 ```text
 CPU:   2 vCPU
@@ -323,7 +323,7 @@ Adequado para:
 - PHP;
 - builds simples.
 
-## 7.2 Ambiente recomendado
+### 7.2 Ambiente recomendado
 
 ```text
 CPU:   4 a 8 cores
@@ -339,7 +339,7 @@ Adequado para:
 - múltiplos containers;
 - testes E2E.
 
-## 7.3 E2E mais pesado
+### 7.3 E2E mais pesado
 
 ```text
 CPU:   8+ cores
@@ -351,7 +351,7 @@ Especialmente útil quando forem executados browsers em paralelo.
 
 ---
 
-# 8. Sistema operacional recomendado
+## 8. Sistema operacional recomendado
 
 Neste guia será utilizado:
 
@@ -369,7 +369,7 @@ O uso de uma versão LTS simplifica:
 
 ---
 
-# 9. Preparação inicial do Ubuntu
+## 9. Preparação inicial do Ubuntu
 
 Atualize o sistema:
 
@@ -402,7 +402,7 @@ curl --version
 
 ---
 
-# 10. Criar usuário dedicado ao runner
+## 10. Criar usuário dedicado ao runner
 
 Evite executar o runner como `root`.
 
@@ -428,7 +428,7 @@ sudo su - github-runner
 
 ---
 
-# 11. Estrutura de diretórios
+## 11. Estrutura de diretórios
 
 Sugestão:
 
@@ -455,26 +455,26 @@ mkdir -p ~/logs
 
 ---
 
-# 12. Instalar Docker Engine
+## 12. Instalar Docker Engine
 
 Para pipelines com containers e service containers, o Docker será uma peça importante.
 
 A instalação recomendada deve utilizar o repositório oficial do Docker.
 
-## 12.1 Dependências
+### 12.1 Dependências
 
 ```bash
 sudo apt update
 sudo apt install -y ca-certificates curl
 ```
 
-## 12.2 Diretório de chaves
+### 12.2 Diretório de chaves
 
 ```bash
 sudo install -m 0755 -d /etc/apt/keyrings
 ```
 
-## 12.3 Chave do Docker
+### 12.3 Chave do Docker
 
 ```bash
 sudo curl -fsSL \
@@ -484,7 +484,7 @@ sudo curl -fsSL \
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 ```
 
-## 12.4 Adicionar repositório
+### 12.4 Adicionar repositório
 
 ```bash
 sudo tee /etc/apt/sources.list.d/docker.sources > /dev/null <<EOF
@@ -503,7 +503,7 @@ Atualize:
 sudo apt update
 ```
 
-## 12.5 Instalar componentes
+### 12.5 Instalar componentes
 
 ```bash
 sudo apt install -y \
@@ -528,7 +528,7 @@ sudo docker run --rm hello-world
 
 ---
 
-# 13. Permitir uso do Docker pelo runner
+## 13. Permitir uso do Docker pelo runner
 
 Adicione:
 
@@ -551,7 +551,7 @@ E:
 docker run --rm hello-world
 ```
 
-## Atenção
+### Atenção
 
 Ser membro do grupo `docker` equivale, na prática, a possuir privilégios elevados no host.
 
@@ -563,11 +563,11 @@ Portanto:
 
 ---
 
-# 14. Instalar Node.js
+## 14. Instalar Node.js
 
 Existem duas estratégias.
 
-## Estratégia A — Actions configuram Node por job
+### Estratégia A — Actions configuram Node por job
 
 Preferencial para CI:
 
@@ -583,7 +583,7 @@ Vantagens:
 - fácil alternar versões;
 - reduz dependência da instalação global.
 
-## Estratégia B — Node global no runner
+### Estratégia B — Node global no runner
 
 Útil para ferramentas administrativas.
 
@@ -598,7 +598,7 @@ Para os pipelines do guia, a versão deverá sempre estar declarada no workflow.
 
 ---
 
-# 15. PHP e Composer
+## 15. PHP e Composer
 
 Para projetos PHP:
 
@@ -623,7 +623,7 @@ Em pipelines profissionais, versões devem ser explicitadas.
 
 ---
 
-# 16. Playwright
+## 16. Playwright
 
 Para testes E2E Node.js, este guia utilizará preferencialmente Playwright.
 
@@ -655,7 +655,7 @@ du -sh ~/.cache/*
 
 ---
 
-# 17. Registrar o runner no GitHub
+## 17. Registrar o runner no GitHub
 
 O GitHub gera comandos específicos e um token temporário.
 
@@ -695,7 +695,7 @@ Execute **os comandos fornecidos naquele momento pelo próprio GitHub**.
 
 ---
 
-# 18. Por que não fixar aqui a URL do pacote
+## 18. Por que não fixar aqui a URL do pacote
 
 O GitHub Actions Runner recebe novas versões regularmente.
 
@@ -712,7 +712,7 @@ Isso evita instalar uma versão antiga apenas porque um tutorial ficou desatuali
 
 ---
 
-# 19. Configurar o runner
+## 19. Configurar o runner
 
 Após descompactar o pacote:
 
@@ -749,7 +749,7 @@ _work
 
 ---
 
-# 20. Labels recomendadas
+## 20. Labels recomendadas
 
 Por padrão, o GitHub fornece labels como:
 
@@ -788,7 +788,7 @@ runs-on:
   - e2e
 ```
 
-## 20.1 Runner groups
+### 20.1 Runner groups
 
 Além das labels, o GitHub organiza runners em **runner groups** (Settings → Actions → Runner groups). Um grupo define quais repositórios/organizações podem usar aquele conjunto de runners, e é o mecanismo indicado para restringir acesso — por exemplo, um grupo `production-deploy` visível apenas para o repositório de deploy, separado de um grupo `ci-general` compartilhado.
 
@@ -806,7 +806,7 @@ Em conta Organization/Enterprise, sempre associar runners sensíveis (com acesso
 
 ---
 
-# 21. Testar manualmente
+## 21. Testar manualmente
 
 Antes de instalar como serviço:
 
@@ -839,7 +839,7 @@ Active
 
 ---
 
-# 22. Instalar como serviço
+## 22. Instalar como serviço
 
 No Linux, o runner pode ser executado pelo `systemd`.
 
@@ -861,7 +861,7 @@ Consultar:
 sudo ./svc.sh status
 ```
 
-## 22.1 O que o `svc.sh install` faz de fato
+### 22.1 O que o `svc.sh install` faz de fato
 
 O script oficial `svc.sh` gera e registra uma unit do `systemd` em nome do usuário atual (não é necessário escrever a unit manualmente). O arquivo criado fica em:
 
@@ -904,7 +904,7 @@ sudo systemctl restart actions.runner.*.service
 sudo systemctl enable actions.runner.*.service   # garante start automático no boot
 ```
 
-## 22.2 Logs via journalctl
+### 22.2 Logs via journalctl
 
 Além dos arquivos em `_diag/` (seção 42), o `systemd` também captura a saída do serviço no `journald`:
 
@@ -928,21 +928,21 @@ Isso é útil especialmente quando o runner falha antes mesmo de gravar em `_dia
 
 ---
 
-# 23. Comandos de operação
+## 23. Comandos de operação
 
-## Iniciar
+### Iniciar
 
 ```bash
 sudo ./svc.sh start
 ```
 
-## Parar
+### Parar
 
 ```bash
 sudo ./svc.sh stop
 ```
 
-## Status
+### Status
 
 ```bash
 sudo ./svc.sh status
@@ -950,7 +950,7 @@ sudo ./svc.sh status
 
 ---
 
-# 24. Confirmar no GitHub
+## 24. Confirmar no GitHub
 
 Acesse:
 
@@ -982,7 +982,7 @@ curl -I https://github.com
 
 ---
 
-# 25. Primeiro workflow
+## 25. Primeiro workflow
 
 Crie:
 
@@ -1037,7 +1037,7 @@ Actions
 
 ---
 
-# 26. Workflow Node.js
+## 26. Workflow Node.js
 
 Exemplo:
 
@@ -1080,7 +1080,7 @@ jobs:
 
 ---
 
-# 27. Workflow E2E com Playwright
+## 27. Workflow E2E com Playwright
 
 Exemplo:
 
@@ -1118,7 +1118,7 @@ Posteriormente este workflow será otimizado para evitar reinstalar browsers des
 
 ---
 
-# 28. Banco de dados temporário com Docker
+## 28. Banco de dados temporário com Docker
 
 Para testes de integração:
 
@@ -1139,7 +1139,7 @@ Uma alternativa mais controlada será utilizar Docker Compose com nomes de proje
 
 ---
 
-# 29. Docker Compose para teste
+## 29. Docker Compose para teste
 
 Arquivo:
 
@@ -1180,7 +1180,7 @@ O `if: always()` é importante para tentar limpar os containers mesmo quando os 
 
 ---
 
-# 30. Não deixar lixo no runner
+## 30. Não deixar lixo no runner
 
 Diferentemente de runners efêmeros do GitHub, o self-hosted persiste.
 
@@ -1203,7 +1203,7 @@ Por isso, o workflow precisa possuir etapas explícitas de limpeza.
 
 ---
 
-# 31. Limpeza Docker
+## 31. Limpeza Docker
 
 Inspeção:
 
@@ -1234,7 +1234,7 @@ sem entender exatamente o impacto.
 
 ---
 
-# 32. Diretório de trabalho
+## 32. Diretório de trabalho
 
 O GitHub Runner utiliza normalmente:
 
@@ -1263,7 +1263,7 @@ Portanto:
 
 ---
 
-# 33. Runner e secrets
+## 33. Runner e secrets
 
 Nunca grave secrets diretamente em:
 
@@ -1291,7 +1291,7 @@ Melhor ainda: passe o secret somente para o step que realmente necessita dele.
 
 ---
 
-# 34. Separar CI de deploy
+## 34. Separar CI de deploy
 
 Não é recomendado que todo job tenha acesso ao servidor de produção.
 
@@ -1315,7 +1315,7 @@ Isso reduz o impacto de uma possível falha de segurança.
 
 ---
 
-# 35. Modelo DEV → PROD
+## 35. Modelo DEV → PROD
 
 Fluxo:
 
@@ -1354,7 +1354,7 @@ e aprovação humana.
 
 ---
 
-# 36. Exemplo de workflow com gate
+## 36. Exemplo de workflow com gate
 
 Estrutura conceitual:
 
@@ -1379,7 +1379,7 @@ O Environment `production` poderá exigir aprovação antes do job iniciar.
 
 ---
 
-# 37. Estratégia para diminuir tempo de E2E
+## 37. Estratégia para diminuir tempo de E2E
 
 Não execute necessariamente toda a suíte E2E a cada pequeno commit.
 
@@ -1408,7 +1408,7 @@ Noturno
 
 ---
 
-# 38. Smoke E2E
+## 38. Smoke E2E
 
 Exemplo:
 
@@ -1428,7 +1428,7 @@ O objetivo não é validar cada detalhe da aplicação, mas responder:
 
 ---
 
-# 39. Paralelização
+## 39. Paralelização
 
 Uma máquina com múltiplos cores poderá executar testes paralelamente.
 
@@ -1448,11 +1448,11 @@ Servidor físico
 
 Cada runner terá diretório próprio.
 
-## 39.1 Autoscaling de runners
+### 39.1 Autoscaling de runners
 
 Manter runners fixos ligados 24/7 desperdiça recursos quando a demanda de CI é irregular (picos durante o horário comercial, ociosidade à noite). Duas abordagens comuns:
 
-### Opção A — actions-runner-controller (ARC) no Kubernetes
+#### Opção A — actions-runner-controller (ARC) no Kubernetes
 
 O projeto oficial mantido pelo GitHub (`actions/actions-runner-controller`) roda um operador Kubernetes que cria e destrói **pods de runner efêmeros** sob demanda, conforme jobs são enfileirados. Conceito:
 
@@ -1486,7 +1486,7 @@ Desvantagens/custos:
 
 Para laboratórios pequenos ou uma única VPS, o ARC costuma ser desproporcional ao ganho — vale considerar quando o volume de jobs realmente justificar um cluster dedicado.
 
-### Opção B — scale-up/down manual ou por script em VPS/LXC
+#### Opção B — scale-up/down manual ou por script em VPS/LXC
 
 Alternativa mais simples para ambientes menores: manter um número mínimo de runners sempre ativos e provisionar runners adicionais sob demanda por script, usando a API do provedor (Proxmox, provedor de VPS, etc.) ou simplesmente ligando containers/LXCs adicionais em horários de pico.
 
@@ -1516,7 +1516,7 @@ Em qualquer uma das duas opções, o princípio da seção 5.2 (runners efêmero
 
 ---
 
-# 40. Runner dedicado para E2E
+## 40. Runner dedicado para E2E
 
 Uma evolução interessante:
 
@@ -1546,7 +1546,7 @@ e2e:
 
 ---
 
-# 41. Monitoramento básico
+## 41. Monitoramento básico
 
 Verifique periodicamente:
 
@@ -1571,7 +1571,7 @@ sudo ./svc.sh status
 
 ---
 
-# 42. Logs
+## 42. Logs
 
 Logs do runner:
 
@@ -1589,7 +1589,7 @@ Em caso de falha, esta é uma das primeiras fontes para diagnóstico.
 
 ---
 
-# 43. Espaço em disco
+## 43. Espaço em disco
 
 E2E e Docker consomem disco rapidamente.
 
@@ -1613,7 +1613,7 @@ du -h --max-depth=1 ~/ | sort -h
 
 ---
 
-# 44. Atualização do runner
+## 44. Atualização do runner
 
 O aplicativo oficial possui mecanismo de atualização automática.
 
@@ -1631,7 +1631,7 @@ Rotina:
 
 ---
 
-# 45. Backup
+## 45. Backup
 
 Não é necessário fazer backup do diretório inteiro `_work`.
 
@@ -1659,7 +1659,7 @@ workspace de builds
 
 ---
 
-# 46. Estratégia de reconstrução
+## 46. Estratégia de reconstrução
 
 Uma boa infraestrutura deve permitir:
 
@@ -1689,7 +1689,7 @@ O objetivo futuro é automatizar grande parte desse procedimento.
 
 ---
 
-# 47. Endurecimento básico do servidor
+## 47. Endurecimento básico do servidor
 
 Recomendações:
 
@@ -1707,7 +1707,7 @@ Recomendações:
 
 ---
 
-# 48. Firewall
+## 48. Firewall
 
 O runner necessita comunicação de saída com o GitHub.
 
@@ -1727,7 +1727,7 @@ Isso é uma vantagem de segurança importante.
 
 ---
 
-# 49. Não misturar produção e runner
+## 49. Não misturar produção e runner
 
 Evite:
 
@@ -1756,7 +1756,7 @@ Mesmo que inicialmente sejam VMs no mesmo servidor físico.
 
 ---
 
-# 50. Máquina física, VM/LXC ou container
+## 50. Máquina física, VM/LXC ou container
 
 Regra geral, independentemente da opção escolhida:
 
@@ -1764,7 +1764,7 @@ Regra geral, independentemente da opção escolhida:
 
 O runner deve sempre estar em uma camada isolada — VM, container LXC ou container Docker dedicado — mesmo que essa camada esteja fisicamente no mesmo servidor. Isso limita o raio de impacto caso um workflow (malicioso ou apenas com bug) comprometa o ambiente de execução.
 
-## VM ou LXC
+### VM ou LXC
 
 É a opção recomendada inicialmente.
 
@@ -1787,11 +1787,11 @@ Host Proxmox
 +-- LXC-PROD     (aplicação de produção — nunca compartilha container com o runner)
 ```
 
-## Máquina física
+### Máquina física
 
 Boa para E2E pesado, quando a virtualização introduzir overhead relevante (ex.: paralelismo intenso de browsers). Mesmo assim, o runner deve rodar com usuário dedicado e, idealmente, dentro de um container Docker isolado nessa máquina — não diretamente exposto no SO base sem nenhuma camada de contenção.
 
-## Container Docker
+### Container Docker
 
 É possível — e cada vez mais comum — executar o próprio runner dentro de um container Docker (a imagem `myoung34/github-runner` e variantes são amplamente usadas na comunidade; o GitHub também publica um `Dockerfile` de referência no repositório `actions/runner`). Isso facilita provisionamento repetível e descarte (bom combinado com autoscaling, seção 39.1).
 
@@ -1813,7 +1813,7 @@ DooD (montar o socket do host) é a opção mais usada na prática, mas equivale
 
 ---
 
-# 51. Produtos e componentes preferenciais
+## 51. Produtos e componentes preferenciais
 
 A stack deste capítulo utiliza:
 
@@ -1838,11 +1838,11 @@ O GitHub, como serviço SaaS, não é open source, mas a infraestrutura local se
 
 ---
 
-# 52. Estratégia recomendada para começar
+## 52. Estratégia recomendada para começar
 
 Não migrar tudo de uma vez.
 
-## Etapa 1
+### Etapa 1
 
 Runner executa:
 
@@ -1852,7 +1852,7 @@ unit
 integration
 ```
 
-## Etapa 2
+### Etapa 2
 
 Adicionar:
 
@@ -1860,7 +1860,7 @@ Adicionar:
 smoke E2E
 ```
 
-## Etapa 3
+### Etapa 3
 
 Adicionar:
 
@@ -1868,7 +1868,7 @@ Adicionar:
 deploy DEV
 ```
 
-## Etapa 4
+### Etapa 4
 
 Adicionar:
 
@@ -1876,7 +1876,7 @@ Adicionar:
 gate de produção
 ```
 
-## Etapa 5
+### Etapa 5
 
 Criar runner dedicado:
 
@@ -1886,7 +1886,7 @@ runner-e2e
 
 ---
 
-# 53. Migração de workflow existente
+## 53. Migração de workflow existente
 
 Se hoje existe:
 
@@ -1920,7 +1920,7 @@ Mas isso não garante compatibilidade.
 
 ---
 
-# 54. Diferença crítica: runner efêmero x persistente
+## 54. Diferença crítica: runner efêmero x persistente
 
 GitHub-hosted:
 
@@ -1959,7 +1959,7 @@ Esse é um dos conceitos mais importantes deste capítulo.
 
 ---
 
-# 55. Implicações da persistência
+## 55. Implicações da persistência
 
 Cuidados:
 
@@ -1972,7 +1972,7 @@ Cuidados:
 
 ---
 
-# 56. Teste de saúde do runner
+## 56. Teste de saúde do runner
 
 Crie:
 
@@ -2019,7 +2019,7 @@ chmod +x ~/scripts/runner-health.sh
 
 ---
 
-# 57. Cron de saúde
+## 57. Cron de saúde
 
 Opcionalmente:
 
@@ -2037,9 +2037,9 @@ Posteriormente este controle poderá migrar para Prometheus.
 
 ---
 
-# 58. Troubleshooting
+## 58. Troubleshooting
 
-## Runner aparece Offline
+### Runner aparece Offline
 
 Verificar:
 
@@ -2053,7 +2053,7 @@ Depois:
 ls -lt _diag | head
 ```
 
-## Docker Permission denied
+### Docker Permission denied
 
 Verificar:
 
@@ -2075,14 +2075,14 @@ sudo usermod -aG docker github-runner
 
 Depois fazer nova sessão.
 
-## Disco cheio
+### Disco cheio
 
 ```bash
 df -h
 docker system df
 ```
 
-## Workflow fica aguardando
+### Workflow fica aguardando
 
 Possíveis causas:
 
@@ -2093,7 +2093,7 @@ Possíveis causas:
 
 ---
 
-# 59. Exemplo de diagnóstico de labels
+## 59. Exemplo de diagnóstico de labels
 
 Workflow:
 
@@ -2127,7 +2127,7 @@ e2e
 
 ---
 
-# 60. Checklist de instalação
+## 60. Checklist de instalação
 
 - [ ] Ubuntu instalado.
 - [ ] Sistema atualizado.
@@ -2150,7 +2150,7 @@ e2e
 
 ---
 
-# 61. Checklist de segurança
+## 61. Checklist de segurança
 
 - [ ] Runner não executa como root.
 - [ ] Acesso SSH usa chave.
@@ -2171,7 +2171,7 @@ e2e
 
 ---
 
-# 62. Arquitetura alvo para evolução
+## 62. Arquitetura alvo para evolução
 
 Primeira fase:
 
@@ -2216,7 +2216,7 @@ Segunda fase:
 
 ---
 
-# 63. Objetivo final
+## 63. Objetivo final
 
 Ao concluir este volume, a infraestrutura deverá permitir:
 
@@ -2253,7 +2253,7 @@ Sem depender dos minutos de execução dos runners hospedados pelo GitHub para o
 
 ---
 
-# 64. Próximo capítulo sugerido
+## 64. Próximo capítulo sugerido
 
 O próximo documento deverá ser:
 
@@ -2288,7 +2288,7 @@ com foco em reduzir o tempo de E2E à medida que o sistema cresce.
 
 ---
 
-# 65. Notas de atualização
+## 65. Notas de atualização
 
 Este documento evita fixar a versão do binário do GitHub Actions Runner. A instalação deve utilizar a versão apresentada no momento pela interface oficial do GitHub, ou consultada nas releases do repositório `actions/runner`.
 

@@ -31,7 +31,7 @@
 - [ ] Testes locais rápidos.
 - [ ] Nenhum artifact acidental.
 
-## Nova Pull Request
+## Nova pull request
 - [ ] Título claro.
 - [ ] SPEC citada.
 - [ ] Objetivo.

@@ -28,7 +28,7 @@ repetível
 
 ---
 
-# 2. Política de branches
+## 2. Política de branches
 
 Modelo inicial:
 
@@ -45,7 +45,7 @@ main
 
 ---
 
-# 3. Push direto
+## 3. Push direto
 
 Recomendação:
 
@@ -81,7 +81,7 @@ Em repositórios com CODEOWNERS, adicione também "Require review from Code Owne
 
 ---
 
-# 4. Branch curta
+## 4. Branch curta
 
 Branches devem viver pelo menor tempo razoável.
 
@@ -89,7 +89,7 @@ Branches longas acumulam divergência.
 
 ---
 
-# 5. Política de PR
+## 5. Política de PR
 
 Toda mudança relevante deve:
 
@@ -102,7 +102,7 @@ Toda mudança relevante deve:
 
 ---
 
-# 6. Tamanho de PR
+## 6. Tamanho de PR
 
 Não definir limite rígido universal.
 
@@ -116,13 +116,13 @@ capacidade de revisão
 
 ---
 
-# 7. Draft
+## 7. Draft
 
 Use Draft quando implementação ainda está em andamento.
 
 ---
 
-# 8. Review
+## 8. Review
 
 Review deve verificar:
 
@@ -135,7 +135,7 @@ Review deve verificar:
 
 ---
 
-# 9. Required checks
+## 9. Required checks
 
 Defina como obrigatórios apenas checks confiáveis.
 
@@ -150,17 +150,17 @@ smoke E2E
 
 Isso é diferente de **required reviews** (revisão humana obrigatória), configurada na mesma regra de proteção/ruleset. Os dois são independentes e complementares:
 
-```text
-required status checks -> CI verde
-required reviews        -> aprovação humana (N pessoas)
-CODEOWNERS review       -> aprovação de dono da área tocada
-```
+| Mecanismo | Efeito |
+|---|---|
+| Required status checks | CI verde |
+| Required reviews | Aprovação humana (N pessoas) |
+| CODEOWNERS review | Aprovação de dono da área tocada |
 
 Uma PR só pode ser mesclada quando **todos** os requisitos ativos forem satisfeitos. Evite marcar checks flaky como obrigatórios: isso trava merges legítimos e incentiva bypass da proteção.
 
 ---
 
-# 10. Definition of Ready
+## 10. Definition of Ready
 
 Antes de desenvolver:
 
@@ -171,7 +171,7 @@ Antes de desenvolver:
 
 ---
 
-# 11. Definition of Done
+## 11. Definition of Done
 
 Antes de concluir:
 
@@ -185,7 +185,7 @@ Antes de concluir:
 
 ---
 
-# 12. Política de merge
+## 12. Política de merge
 
 Escolha estratégia padrão.
 
@@ -201,7 +201,7 @@ Documente exceções.
 
 ---
 
-# 13. Commit convention
+## 13. Commit convention
 
 ```text
 feat:
@@ -215,7 +215,7 @@ chore:
 
 ---
 
-# 14. Releases
+## 14. Releases
 
 Use versão explícita.
 
@@ -227,41 +227,40 @@ v2.4.1
 
 Tags e GitHub Releases podem ser geradas manualmente ou automatizadas por workflow. Duas ferramentas comuns nesse cenário:
 
-```text
-semantic-release   -> calcula versão a partir de conventional commits, publica tag/release/changelog
-release-please     -> mantém uma PR de release aberta; ao mesclar, cria tag/release
-```
+| Ferramenta | Efeito |
+|---|---|
+| semantic-release | Calcula versão a partir de conventional commits, publica tag/release/changelog |
+| release-please | Mantém uma PR de release aberta; ao mesclar, cria tag/release |
 
 Ambas dependem de mensagens de commit padronizadas (ver seção 13) para decidir se o bump é MAJOR, MINOR ou PATCH.
 
 ---
 
-# 15. Semantic Versioning
+## 15. Semantic Versioning
 
 ```text
 MAJOR.MINOR.PATCH
 ```
 
-```text
-MAJOR -> mudança incompatível (breaking change)
-MINOR -> funcionalidade nova, compatível
-PATCH -> correção, compatível
-```
+| Nível | Significado |
+|---|---|
+| MAJOR | Mudança incompatível (breaking change) |
+| MINOR | Funcionalidade nova, compatível |
+| PATCH | Correção, compatível |
 
 Use quando compatível com o produto. Com conventional commits, o mapeamento típico é:
 
-```text
-fix:               -> PATCH
-feat:               -> MINOR
-BREAKING CHANGE: /
-feat!: / fix!:      -> MAJOR
-```
+| Prefixo do commit | Bump |
+|---|---|
+| `fix:` | PATCH |
+| `feat:` | MINOR |
+| `BREAKING CHANGE:` / `feat!:` / `fix!:` | MAJOR |
 
 Pré-releases (`v2.4.1-rc.1`) e metadados de build (`v2.4.1+build.5`) seguem a mesma especificação (semver.org) quando necessário.
 
 ---
 
-# 16. Changelog
+## 16. Changelog
 
 Registre mudanças relevantes ao usuário/operação.
 
@@ -282,7 +281,7 @@ Quando os commits seguem conventional commits, o changelog pode ser gerado autom
 
 ---
 
-# 17. Release notes
+## 17. Release notes
 
 Inclua:
 
@@ -294,7 +293,7 @@ Inclua:
 
 ---
 
-# 18. Política de deploy
+## 18. Política de deploy
 
 ```text
 main -> DEV
@@ -302,25 +301,25 @@ DEV validated -> approval
 approval -> PROD
 ```
 
-## 18.1 Auditoria de deploy
+### 18.1 Auditoria de deploy
 
 Todo deploy deve responder "quem, quando, o quê, para onde":
 
-```text
-quem disparou (usuário ou automação)
-quando (timestamp)
-o que foi implantado (commit/tag)
-para qual ambiente
-resultado (sucesso/falha)
-```
+| Pergunta | Resposta esperada |
+|---|---|
+| Quem | Disparou (usuário ou automação) |
+| Quando | Timestamp |
+| O que | Foi implantado (commit/tag) |
+| Para onde | Qual ambiente |
+| Resultado | Sucesso/falha |
 
 No GitHub isso é coberto por três mecanismos complementares, não excludentes:
 
-```text
-Environments com histórico de deployments
-Deployments API (GET /repos/{owner}/{repo}/deployments)
-Audit log da organização
-```
+| Mecanismo | Descrição |
+|---|---|
+| Environments | Histórico de deployments |
+| Deployments API | `GET /repos/{owner}/{repo}/deployments` |
+| Audit log | Da organização |
 
 Ao usar **Environments** (Settings > Environments) em cada job de deploy do workflow (`environment: producao`), o GitHub registra automaticamente um deployment vinculado ao run, ao actor e ao commit, visível na aba "Environments" do repositório e consultável pela API/GraphQL. Isso é a fonte de verdade de "o que está rodando em cada ambiente agora" e do histórico de quem promoveu cada versão.
 
@@ -328,7 +327,7 @@ Regras de proteção de Environment (reviewers obrigatórios, wait timer, branch
 
 O **audit log** (organização, planos Team/Enterprise) complementa registrando quem alterou configurações sensíveis — proteção de branch, secrets, membros, Environments — não o conteúdo do deploy em si.
 
-## 18.2 Autenticação do runner: prefira OIDC a secrets de longa duração
+### 18.2 Autenticação do runner: prefira OIDC a secrets de longa duração
 
 Quando o deploy precisa autenticar em um provedor externo (nuvem, registry, servidor), evite armazenar chave/senha de longa duração como secret do repositório. Prefira **OpenID Connect (OIDC)**: o GitHub Actions emite um token de curta duração assinado, que o provedor troca por credenciais temporárias.
 
@@ -345,7 +344,7 @@ Para infraestrutura própria sem suporte nativo a OIDC (por exemplo, um runner s
 
 ---
 
-# 19. Janela de deploy
+## 19. Janela de deploy
 
 Mesmo com automação, algumas mudanças podem exigir janela adequada.
 
@@ -358,7 +357,7 @@ mudança de rede
 
 ---
 
-# 20. Freeze
+## 20. Freeze
 
 Em períodos críticos, pode existir freeze temporário.
 
@@ -366,7 +365,7 @@ Exceções devem ser explícitas.
 
 ---
 
-# 21. Emergency change
+## 21. Emergency change
 
 Fluxo de emergência deve continuar rastreável.
 
@@ -378,7 +377,7 @@ editar PROD sem registro
 
 ---
 
-# 22. Hotfix
+## 22. Hotfix
 
 Exemplo:
 
@@ -400,13 +399,13 @@ deploy
 
 ---
 
-# 23. Não pular testes sem justificativa
+## 23. Não pular testes sem justificativa
 
 Emergência pode reduzir conjunto, mas decisão precisa ser registrada.
 
 ---
 
-# 24. Rollback first
+## 24. Rollback first
 
 Em incidente grave após deploy:
 
@@ -418,7 +417,7 @@ investigue depois
 
 ---
 
-# 25. Incidente
+## 25. Incidente
 
 Defina severidade:
 
@@ -432,7 +431,7 @@ conforme impacto.
 
 ---
 
-# 26. Incident commander
+## 26. Incident commander
 
 Em equipes maiores, uma pessoa coordena.
 
@@ -440,7 +439,7 @@ Evita múltiplas mudanças simultâneas.
 
 ---
 
-# 27. Timeline
+## 27. Timeline
 
 Registre:
 
@@ -453,7 +452,7 @@ Registre:
 
 ---
 
-# 28. Post-mortem
+## 28. Post-mortem
 
 Estrutura:
 
@@ -470,7 +469,7 @@ Ações
 
 ---
 
-# 29. Blameless
+## 29. Blameless
 
 O objetivo é corrigir sistema/processo, não procurar culpado.
 
@@ -478,7 +477,7 @@ Ainda existe responsabilidade técnica.
 
 ---
 
-# 30. Action items
+## 30. Action items
 
 Devem possuir:
 
@@ -489,7 +488,7 @@ Devem possuir:
 
 ---
 
-# 31. Runbooks
+## 31. Runbooks
 
 Operações recorrentes devem ter documentação.
 
@@ -505,13 +504,13 @@ certificate renewal
 
 ---
 
-# 32. Change management
+## 32. Change management
 
 Mudanças de infraestrutura também passam por PR quando possível.
 
 ---
 
-# 33. Ownership
+## 33. Ownership
 
 Defina responsáveis por:
 
@@ -527,13 +526,13 @@ Mesmo em equipe pequena, clareza ajuda.
 
 ---
 
-# 34. Bus factor
+## 34. Bus factor
 
 Documentação reduz dependência de uma única pessoa.
 
 ---
 
-# 35. Access review
+## 35. Access review
 
 Periodicamente reveja:
 
@@ -547,7 +546,7 @@ Onde for possível, prefira OIDC (seção 18.2) a tokens de longa duração: red
 
 ---
 
-# 36. Offboarding
+## 36. Offboarding
 
 Ao remover alguém:
 
@@ -560,7 +559,7 @@ secrets compartilhados
 
 ---
 
-# 37. Secret rotation policy
+## 37. Secret rotation policy
 
 Defina periodicidade conforme criticidade.
 
@@ -568,7 +567,7 @@ Rotacione imediatamente em exposição.
 
 ---
 
-# 38. Dependency management
+## 38. Dependency management
 
 Tenha rotina para PRs de atualização.
 
@@ -576,7 +575,7 @@ Não deixar centenas acumularem.
 
 ---
 
-# 39. Technical debt
+## 39. Technical debt
 
 Registre como Issues.
 
@@ -584,7 +583,7 @@ Não misture dívida técnica arbitrariamente em qualquer feature.
 
 ---
 
-# 40. Architecture governance
+## 40. Architecture governance
 
 Mudança relevante:
 
@@ -594,7 +593,7 @@ ADR
 
 ---
 
-# 41. ADR lifecycle
+## 41. ADR lifecycle
 
 Estados possíveis:
 
@@ -607,13 +606,13 @@ deprecated
 
 ---
 
-# 42. Documentation review
+## 42. Documentation review
 
 Docs importantes devem mudar junto com sistema.
 
 ---
 
-# 43. README
+## 43. README
 
 Deve responder:
 
@@ -626,7 +625,7 @@ onde está documentação?
 
 ---
 
-# 44. CONTRIBUTING
+## 44. CONTRIBUTING
 
 Documente:
 
@@ -638,13 +637,13 @@ Documente:
 
 ---
 
-# 45. SECURITY.md
+## 45. SECURITY.md
 
 Pode documentar como reportar vulnerabilidades.
 
 ---
 
-# 46. CODEOWNERS
+## 46. CODEOWNERS
 
 Use em áreas sensíveis se equipe crescer.
 
@@ -674,7 +673,7 @@ padrões mais específicos devem vir depois dos genéricos
 
 ---
 
-# 47. Templates
+## 47. Templates
 
 Padronize:
 
@@ -686,13 +685,13 @@ Padronize:
 
 ---
 
-# 48. AI governance
+## 48. AI governance
 
 Defina o que agentes podem fazer autonomamente.
 
 ---
 
-# 49. IA pode
+## 49. IA pode
 
 Exemplo:
 
@@ -703,7 +702,7 @@ Exemplo:
 
 ---
 
-# 50. IA não pode sem gate
+## 50. IA não pode sem gate
 
 Exemplo:
 
@@ -715,7 +714,7 @@ Exemplo:
 
 ---
 
-# 51. Generated code review
+## 51. Generated code review
 
 Código gerado por IA recebe mesmo padrão de revisão.
 
@@ -723,13 +722,13 @@ Não existe exceção porque "foi a IA".
 
 ---
 
-# 52. Prompt logging
+## 52. Prompt logging
 
 Não registre prompts contendo secrets.
 
 ---
 
-# 53. AI provenance
+## 53. AI provenance
 
 Quando útil, PR pode indicar que implementação foi assistida por IA.
 
@@ -737,7 +736,7 @@ Mais importante é manter SPEC, diff e testes.
 
 ---
 
-# 54. Policy as code
+## 54. Policy as code
 
 Algumas políticas podem ser automatizadas:
 
@@ -750,7 +749,7 @@ security scans
 
 ---
 
-# 55. Manual policy
+## 55. Manual policy
 
 Outras dependem de julgamento:
 
@@ -762,7 +761,7 @@ janela de deploy
 
 ---
 
-# 56. KPI de engenharia
+## 56. KPI de engenharia
 
 Possíveis:
 
@@ -775,7 +774,7 @@ São métricas DORA conhecidas.
 
 ---
 
-# 57. Não gamificar métricas
+## 57. Não gamificar métricas
 
 Métrica vira inútil quando vira meta manipulável.
 
@@ -783,7 +782,7 @@ Use para aprender.
 
 ---
 
-# 58. Change failure rate
+## 58. Change failure rate
 
 Percentual de deploys que causam:
 
@@ -793,7 +792,7 @@ Percentual de deploys que causam:
 
 ---
 
-# 59. Deployment frequency
+## 59. Deployment frequency
 
 Frequência por si só não é qualidade.
 
@@ -801,19 +800,19 @@ Contextualize.
 
 ---
 
-# 60. Lead time for changes
+## 60. Lead time for changes
 
 Tempo da mudança até produção.
 
 ---
 
-# 61. MTTR
+## 61. MTTR
 
 Tempo de recuperação.
 
 ---
 
-# 62. Quarterly review
+## 62. Quarterly review
 
 Periodicamente revise:
 
@@ -828,13 +827,13 @@ docs
 
 ---
 
-# 63. Capacity review
+## 63. Capacity review
 
 Verifique se hardware continua adequado.
 
 ---
 
-# 64. Cost review
+## 64. Cost review
 
 Compare:
 
@@ -846,7 +845,7 @@ maintenance
 
 ---
 
-# 65. Backup review
+## 65. Backup review
 
 Confirme:
 
@@ -856,7 +855,7 @@ Confirme:
 
 ---
 
-# 66. Disaster recovery
+## 66. Disaster recovery
 
 Documente perda de:
 
@@ -870,7 +869,7 @@ registry
 
 ---
 
-# 67. RTO
+## 67. RTO
 
 Recovery Time Objective:
 
@@ -880,7 +879,7 @@ tempo máximo desejado de recuperação
 
 ---
 
-# 68. RPO
+## 68. RPO
 
 Recovery Point Objective:
 
@@ -890,7 +889,7 @@ quantidade aceitável de perda de dados
 
 ---
 
-# 69. CI RTO
+## 69. CI RTO
 
 Se runner falhar, quanto tempo podemos ficar sem novos builds?
 
@@ -898,13 +897,13 @@ Isso orienta redundância.
 
 ---
 
-# 70. PROD RTO/RPO
+## 70. PROD RTO/RPO
 
 Muito mais importantes que CI.
 
 ---
 
-# 71. Governance checklist
+## 71. Governance checklist
 
 - [ ] Branch policy.
 - [ ] PR template.
@@ -921,7 +920,7 @@ Muito mais importantes que CI.
 
 ---
 
-# 72. Próximo volume
+## 72. Próximo volume
 
 **Volume 16 — Laboratório Completo: do Repositório à Produção**
 

@@ -47,7 +47,7 @@ main
 
 ---
 
-# 2. GitHub não é Git
+## 2. GitHub não é Git
 
 Git é o sistema de controle de versão.
 
@@ -69,7 +69,7 @@ GitHub é uma plataforma que utiliza Git e acrescenta recursos como:
 
 ---
 
-# 3. Repositório local e GitHub
+## 3. Repositório local e GitHub
 
 Exemplo:
 
@@ -89,7 +89,7 @@ O GitHub funciona como ponto central de colaboração, embora o Git continue sen
 
 ---
 
-# 4. O que é uma Pull Request
+## 4. O que é uma Pull Request
 
 Uma Pull Request é uma **proposta de integração de alterações de uma branch em outra**.
 
@@ -120,7 +120,7 @@ Ela é um objeto de colaboração que reúne:
 
 ---
 
-# 5. Anatomia de uma PR
+## 5. Anatomia de uma PR
 
 Uma PR normalmente possui:
 
@@ -153,7 +153,7 @@ feature/dashboard-v2
 
 ---
 
-# 6. Base e compare
+## 6. Base e compare
 
 Em uma PR:
 
@@ -175,7 +175,7 @@ Significa:
 
 ---
 
-# 7. Criando uma branch
+## 7. Criando uma branch
 
 ```bash
 git switch main
@@ -197,7 +197,7 @@ A branch estará disponível no GitHub.
 
 ---
 
-# 8. Abrindo a Pull Request
+## 8. Abrindo a Pull Request
 
 No GitHub:
 
@@ -222,7 +222,7 @@ Adicione título e descrição.
 
 ---
 
-# 9. Uma PR não precisa ser integrada imediatamente
+## 9. Uma PR não precisa ser integrada imediatamente
 
 É possível abrir:
 
@@ -255,13 +255,13 @@ As PRs podem permanecer abertas enquanto:
 
 ---
 
-# 10. Várias PRs simultâneas
+## 10. Várias PRs simultâneas
 
 Sim, é possível desenvolver várias PRs antes de fazer merge.
 
 Porém, existem dois cenários.
 
-## Cenário A — PRs independentes
+### Cenário A — PRs independentes
 
 ```text
 main
@@ -275,7 +275,7 @@ main
 
 As três podem ser integradas independentemente.
 
-## Cenário B — PRs dependentes
+### Cenário B — PRs dependentes
 
 ```text
 main
@@ -293,7 +293,7 @@ A ordem importa.
 
 ---
 
-# 11. PRs independentes
+## 11. PRs independentes
 
 São preferíveis quando possível.
 
@@ -316,7 +316,7 @@ separadamente.
 
 ---
 
-# 12. PRs dependentes
+## 12. PRs dependentes
 
 Imagine:
 
@@ -346,7 +346,7 @@ Depois que A for integrada, B pode ser atualizada para `main`.
 
 ---
 
-# 13. Stacked Pull Requests
+## 13. Stacked Pull Requests
 
 O modelo de PRs dependentes é frequentemente chamado de **stacked PRs**.
 
@@ -382,7 +382,7 @@ Desvantagem:
 
 ---
 
-# 14. Não fazer uma PR gigantesca
+## 14. Não fazer uma PR gigantesca
 
 Uma PR com milhares de linhas e múltiplas funcionalidades é difícil de revisar.
 
@@ -404,7 +404,7 @@ O objetivo não é produzir PRs artificialmente pequenas, mas manter unidades de
 
 ---
 
-# 15. Draft Pull Request
+## 15. Draft Pull Request
 
 Uma PR pode ser aberta como **Draft**.
 
@@ -444,7 +444,7 @@ Importante:
 
 ---
 
-# 16. Descrição da PR
+## 16. Descrição da PR
 
 Uma boa descrição deve responder:
 
@@ -460,26 +460,26 @@ Existe impacto no deploy?
 Modelo:
 
 ```markdown
-## Objetivo
+### Objetivo
 
 Implementar ...
 
-## Alterações
+### Alterações
 
 - ...
 - ...
 
-## Como testar
+### Como testar
 
 1. ...
 2. ...
 
-## Critérios de aceitação
+### Critérios de aceitação
 
 - [ ] ...
 - [ ] ...
 
-## Referências
+### Referências
 
 SPEC:
 Issue:
@@ -488,7 +488,7 @@ PR anterior:
 
 ---
 
-# 17. Referenciar a PR anterior
+## 17. Referenciar a PR anterior
 
 Quando uma nova implementação ajusta algo criado anteriormente, é útil referenciar a PR original.
 
@@ -519,7 +519,7 @@ Isso melhora a rastreabilidade.
 
 ---
 
-# 18. SPEC → Branch → PR
+## 18. SPEC → Branch → PR
 
 Fluxo recomendado neste guia:
 
@@ -554,7 +554,7 @@ merge
 
 ---
 
-# 19. Alteração posterior da SPEC
+## 19. Alteração posterior da SPEC
 
 Uma implementação já integrada não deve normalmente ser “reativada” alterando silenciosamente a PR antiga.
 
@@ -591,7 +591,7 @@ Novo comportamento desejado:
 
 ---
 
-# 20. Files changed
+## 20. Files changed
 
 A aba **Files changed** mostra o diff da PR.
 
@@ -614,7 +614,7 @@ O reviewer deve avaliar:
 
 ---
 
-# 21. Code Review
+## 21. Code Review
 
 Code Review não é apenas procurar erros de sintaxe.
 
@@ -635,7 +635,7 @@ Observabilidade
 
 ---
 
-# 22. Comentários de revisão
+## 22. Comentários de revisão
 
 Um reviewer pode comentar uma linha específica.
 
@@ -656,7 +656,7 @@ O autor pode:
 
 ---
 
-# 23. Aprovação
+## 23. Aprovação
 
 Dependendo das regras do repositório, uma PR pode exigir aprovação.
 
@@ -677,7 +677,7 @@ Merge permitido
 
 ---
 
-# 24. Checks
+## 24. Checks
 
 Os **Checks** são resultados de automações associadas à PR.
 
@@ -697,7 +697,7 @@ O Volume 03 detalhará isso.
 
 ---
 
-# 25. PR como ponto de controle
+## 25. PR como ponto de controle
 
 A PR funciona como uma fronteira entre:
 
@@ -721,7 +721,7 @@ integração
 
 ---
 
-# 26. Merge
+## 26. Merge
 
 Quando a PR está pronta, suas alterações podem ser integradas.
 
@@ -735,7 +735,7 @@ Rebase and merge
 
 Cada estratégia pode ser habilitada ou desabilitada individualmente nas configurações do repositório (**Settings → General → Pull Requests**). É recomendável permitir apenas a(s) estratégia(s) que o time realmente usa, para evitar inconsistência no histórico.
 
-## Auto-merge
+### Auto-merge
 
 O GitHub permite habilitar **auto-merge** em uma PR: o merge é agendado automaticamente assim que todos os requisitos forem satisfeitos (checks obrigatórios verdes, aprovações necessárias, conversas resolvidas), sem exigir que alguém clique em "Merge" no momento exato em que o último check passa.
 
@@ -764,7 +764,7 @@ Auto-merge **não ignora** branch protection: se a branch `main` exige aprovaç�
 
 ---
 
-# 27. Merge commit
+## 27. Merge commit
 
 Preserva explicitamente a estrutura da branch.
 
@@ -786,7 +786,7 @@ Desvantagem:
 
 ---
 
-# 28. Squash and merge
+## 28. Squash and merge
 
 Combina os commits da PR em um único commit.
 
@@ -809,7 +809,7 @@ feat: implementa nova tela de atendimento
 
 ---
 
-# 29. Rebase and merge
+## 29. Rebase and merge
 
 Reposiciona os commits da branch sobre a branch base sem criar merge commit.
 
@@ -823,7 +823,7 @@ Pode ser adequado quando os commits já estão bem organizados.
 
 ---
 
-# 30. Estratégia recomendada inicialmente
+## 30. Estratégia recomendada inicialmente
 
 Para projetos pequenos/médios com desenvolvimento assistido por IA:
 
@@ -844,7 +844,7 @@ Não é uma regra universal.
 
 ---
 
-# 31. Delete branch
+## 31. Delete branch
 
 Depois do merge, a branch de feature normalmente pode ser removida.
 
@@ -862,7 +862,7 @@ O histórico da PR continua existindo no GitHub.
 
 ---
 
-# 32. Conflitos em PR
+## 32. Conflitos em PR
 
 Exemplo:
 
@@ -877,7 +877,7 @@ A PR indicará que precisa ser atualizada.
 
 ---
 
-# 33. Atualizar branch
+## 33. Atualizar branch
 
 Uma opção:
 
@@ -897,7 +897,7 @@ A escolha deve seguir a política do projeto.
 
 ---
 
-# 34. Branch Protection
+## 34. Branch Protection
 
 A branch `main` pode ser protegida.
 
@@ -931,7 +931,7 @@ Possíveis regras (configuráveis em **Settings → Branches** ou, no modelo mai
 
 ---
 
-# 35. Main protegida
+## 35. Main protegida
 
 Modelo:
 
@@ -964,7 +964,7 @@ Isso torna o processo previsível.
 
 ---
 
-# 36. Required Status Checks
+## 36. Required Status Checks
 
 Podemos definir que determinados testes precisam passar.
 
@@ -993,7 +993,7 @@ Pontos importantes:
 
 ---
 
-# 37. Require Pull Request Reviews
+## 37. Require Pull Request Reviews
 
 Uma regra pode exigir:
 
@@ -1019,7 +1019,7 @@ Mesmo trabalhando sozinho, a PR continua útil para:
 
 ---
 
-# 38. Desenvolvedor individual
+## 38. Desenvolvedor individual
 
 Uma estrutura eficiente:
 
@@ -1043,7 +1043,7 @@ Ela também disciplina desenvolvimento individual.
 
 ---
 
-# 39. Issues
+## 39. Issues
 
 Issue representa normalmente:
 
@@ -1076,7 +1076,7 @@ Quando integrada, a Issue pode ser fechada automaticamente.
 
 ---
 
-# 40. Issues e SPECs
+## 40. Issues e SPECs
 
 Para mudanças simples:
 
@@ -1110,47 +1110,47 @@ PR
 
 ---
 
-# 41. Templates de Issue
+## 41. Templates de Issue
 
 Estrutura sugerida para bug:
 
 ```markdown
-## Problema
+### Problema
 
-## Comportamento atual
+### Comportamento atual
 
-## Comportamento esperado
+### Comportamento esperado
 
-## Passos para reproduzir
+### Passos para reproduzir
 
-## Ambiente
+### Ambiente
 
-## Evidências
+### Evidências
 
-## Impacto
+### Impacto
 ```
 
 ---
 
-# 42. Template de feature
+## 42. Template de feature
 
 ```markdown
-## Objetivo
+### Objetivo
 
-## Problema que será resolvido
+### Problema que será resolvido
 
-## Comportamento esperado
+### Comportamento esperado
 
-## Critérios de aceitação
+### Critérios de aceitação
 
-## Restrições
+### Restrições
 
-## Fora de escopo
+### Fora de escopo
 ```
 
 ---
 
-# 43. Template de Pull Request
+## 43. Template de Pull Request
 
 Arquivo:
 
@@ -1161,34 +1161,34 @@ Arquivo:
 Exemplo:
 
 ```markdown
-## Objetivo
+### Objetivo
 
-## Alterações realizadas
+### Alterações realizadas
 
-## SPEC / Issue relacionada
+### SPEC / Issue relacionada
 
-## Como testar
+### Como testar
 
-## Testes executados
+### Testes executados
 
 - [ ] Lint
 - [ ] Unit
 - [ ] Integration
 - [ ] E2E pertinente
 
-## Checklist
+### Checklist
 
 - [ ] Sem secrets
 - [ ] Documentação atualizada
 - [ ] Critérios de aceitação atendidos
 - [ ] Sem mudanças fora do escopo
 
-## Riscos / observações
+### Riscos / observações
 ```
 
 ---
 
-# 44. CODEOWNERS
+## 44. CODEOWNERS
 
 Arquivo (qualquer um destes caminhos é reconhecido; a raiz e `.github/` são as mais comuns):
 
@@ -1203,7 +1203,7 @@ Permite associar partes do repositório a responsáveis.
 Exemplo:
 
 ```text
-# regra mais específica vence — a última linha que casar com o arquivo é a que vale
+## regra mais específica vence — a última linha que casar com o arquivo é a que vale
 *           @owner-padrao
 /backend/   @equipe-backend
 /frontend/  @equipe-frontend
@@ -1221,7 +1221,7 @@ Em projetos individuais, pode não ser necessário inicialmente — mas passa a 
 
 ---
 
-# 45. Labels de Issues e PRs
+## 45. Labels de Issues e PRs
 
 Exemplos:
 
@@ -1242,7 +1242,7 @@ Labels facilitam busca e organização.
 
 ---
 
-# 46. Milestones
+## 46. Milestones
 
 Milestones agrupam Issues e PRs relacionadas a um objetivo.
 
@@ -1259,7 +1259,7 @@ Release 2.0
 
 ---
 
-# 47. Releases
+## 47. Releases
 
 Uma release representa uma versão distribuível do software.
 
@@ -1280,7 +1280,7 @@ No pipeline futuro, uma release poderá disparar automações.
 
 ---
 
-# 48. GitHub CLI
+## 48. GitHub CLI
 
 O GitHub possui CLI oficial:
 
@@ -1308,7 +1308,7 @@ Isso é especialmente útil em automações e agentes de IA.
 
 ---
 
-# 49. PR e GitHub Actions
+## 49. PR e GitHub Actions
 
 Ao abrir uma PR:
 
@@ -1337,7 +1337,7 @@ Os resultados voltam para a PR como checks.
 
 ---
 
-# 50. PR e E2E
+## 50. PR e E2E
 
 Não é obrigatório executar toda a suíte E2E em cada PR.
 
@@ -1370,7 +1370,7 @@ nightly
 
 ---
 
-# 51. PR e deploy DEV
+## 51. PR e deploy DEV
 
 Uma possibilidade:
 
@@ -1396,7 +1396,7 @@ Esse modelo será tratado em volumes avançados.
 
 ---
 
-# 52. DEV → aprovação → PROD
+## 52. DEV → aprovação → PROD
 
 Modelo adotado neste guia:
 
@@ -1424,7 +1424,7 @@ A autorização humana será implementada tecnicamente usando mecanismos apropri
 
 ---
 
-# 53. PR não é ambiente
+## 53. PR não é ambiente
 
 É importante separar conceitos.
 
@@ -1460,7 +1460,7 @@ tipo de teste
 
 ---
 
-# 54. PR não substitui branch
+## 54. PR não substitui branch
 
 A PR aponta para alterações existentes em branches.
 
@@ -1475,7 +1475,7 @@ Se novos commits forem enviados para a mesma branch, a PR normalmente é atualiz
 
 ---
 
-# 55. Continuar desenvolvendo depois de abrir a PR
+## 55. Continuar desenvolvendo depois de abrir a PR
 
 Fluxo:
 
@@ -1505,7 +1505,7 @@ Não é necessário criar uma nova PR para cada correção durante o desenvolvim
 
 ---
 
-# 56. Quando criar uma nova PR
+## 56. Quando criar uma nova PR
 
 Crie uma nova PR quando surgir uma **nova unidade lógica de mudança**.
 
@@ -1536,7 +1536,7 @@ e referencie #42.
 
 ---
 
-# 57. Quando não reaproveitar PR antiga
+## 57. Quando não reaproveitar PR antiga
 
 Não reutilize uma PR integrada como recipiente genérico de alterações futuras.
 
@@ -1546,7 +1546,7 @@ A rastreabilidade depende disso.
 
 ---
 
-# 58. PR pequena versus PR grande
+## 58. PR pequena versus PR grande
 
 Uma boa PR deve ser:
 
@@ -1561,7 +1561,7 @@ Avalie complexidade cognitiva.
 
 ---
 
-# 59. Critérios de aceitação
+## 59. Critérios de aceitação
 
 A PR deve demonstrar atendimento aos critérios definidos na SPEC.
 
@@ -1578,7 +1578,7 @@ Os testes automatizados devem cobrir o que for tecnicamente adequado.
 
 ---
 
-# 60. Evidências
+## 60. Evidências
 
 Para frontend, uma PR pode incluir:
 
@@ -1592,7 +1592,7 @@ Isso reduz ambiguidade na revisão.
 
 ---
 
-# 61. Frontend e revisão humana
+## 61. Frontend e revisão humana
 
 E2E pode confirmar:
 
@@ -1616,7 +1616,7 @@ Por isso frontend frequentemente exige revisão visual humana ou testes visuais 
 
 ---
 
-# 62. E2E passou, mas frontend ficou ruim
+## 62. E2E passou, mas frontend ficou ruim
 
 Isso não significa necessariamente que o E2E falhou.
 
@@ -1639,7 +1639,7 @@ nova PR
 
 ---
 
-# 63. Testes visuais
+## 63. Testes visuais
 
 Posteriormente podemos adicionar:
 
@@ -1666,7 +1666,7 @@ Isso complementa E2E funcional.
 
 ---
 
-# 64. PR e agentes de IA
+## 64. PR e agentes de IA
 
 Fluxo assistido:
 
@@ -1707,7 +1707,7 @@ Na prática, torna essa rastreabilidade ainda mais importante.
 
 ---
 
-# 65. Contexto para uma nova implementação
+## 65. Contexto para uma nova implementação
 
 Ao pedir a um agente para alterar uma funcionalidade existente, forneça:
 
@@ -1724,7 +1724,7 @@ Isso reduz o risco de reinterpretar incorretamente o sistema.
 
 ---
 
-# 66. Branch Protection e IA
+## 66. Branch Protection e IA
 
 Se um agente possui capacidade de fazer commits, a `main` protegida impede que uma implementação seja integrada diretamente sem passar pelos gates.
 
@@ -1751,7 +1751,7 @@ main
 
 ---
 
-# 67. Permissões mínimas
+## 67. Permissões mínimas
 
 Agentes, Actions e tokens devem receber apenas as permissões necessárias.
 
@@ -1767,7 +1767,7 @@ Segurança de tokens será aprofundada posteriormente.
 
 ---
 
-# 68. PRs de dependências
+## 68. PRs de dependências
 
 Ferramentas automáticas podem abrir PRs para atualizar dependências.
 
@@ -1790,7 +1790,7 @@ Não faça merge automático indiscriminado sem política definida.
 
 ---
 
-# 69. Concurrency
+## 69. Concurrency
 
 Imagine novos commits chegando rapidamente na mesma PR.
 
@@ -1808,7 +1808,7 @@ Isso pode cancelar pipelines antigos e economizar tempo de runner.
 
 ---
 
-# 70. PR e custos de CI
+## 70. PR e custos de CI
 
 Cada push pode disparar novos testes.
 
@@ -1827,7 +1827,7 @@ Isso reduz dependência dos minutos hospedados para os jobs migrados, mas transf
 
 ---
 
-# 71. Estratégia de PR para reduzir testes
+## 71. Estratégia de PR para reduzir testes
 
 Evite:
 
@@ -1862,7 +1862,7 @@ O equilíbrio depende do projeto.
 
 ---
 
-# 72. Draft + CI seletivo
+## 72. Draft + CI seletivo
 
 Uma evolução futura:
 
@@ -1891,7 +1891,7 @@ Isso pode economizar recursos.
 
 ---
 
-# 73. Merge Queue
+## 73. Merge Queue
 
 Em equipes ou repositórios com muitas PRs simultâneas, uma fila de merge (**merge queue**) ajuda a validar a combinação das mudanças antes da integração final.
 
@@ -1920,7 +1920,7 @@ Isso evita o problema clássico de "duas PRs passaram isoladamente, mas juntas q
 
 ---
 
-# 74. Regras recomendadas para este guia
+## 74. Regras recomendadas para este guia
 
 Inicialmente:
 
@@ -1940,7 +1940,7 @@ A exigência de reviewer humano (número de aprovações, CODEOWNERS) poderá va
 
 ---
 
-# 75. Estrutura sugerida do repositório
+## 75. Estrutura sugerida do repositório
 
 ```text
 .github/
@@ -1959,7 +1959,7 @@ tests/
 
 ---
 
-# 76. Diretório de SPECs
+## 76. Diretório de SPECs
 
 Exemplo:
 
@@ -1978,7 +1978,7 @@ SPEC-003
 
 ---
 
-# 77. Nome de branch relacionado à SPEC
+## 77. Nome de branch relacionado à SPEC
 
 Exemplo:
 
@@ -1992,7 +1992,7 @@ Não é obrigatório, mas pode ajudar.
 
 ---
 
-# 78. Título de PR
+## 78. Título de PR
 
 Prefira:
 
@@ -2018,7 +2018,7 @@ Isso não é exigido pelo GitHub — é uma convenção de repositório, geralme
 
 ---
 
-# 79. Checklist operacional da PR
+## 79. Checklist operacional da PR
 
 Antes de abrir:
 
@@ -2049,7 +2049,7 @@ Depois do merge:
 
 ---
 
-# 80. Exemplo completo
+## 80. Exemplo completo
 
 Necessidade:
 
@@ -2139,7 +2139,7 @@ main contém a nova interface
 
 ---
 
-# 81. Exemplo de refinamento posterior
+## 81. Exemplo de refinamento posterior
 
 Depois de uso real:
 
@@ -2186,7 +2186,7 @@ O histórico conta a evolução real do sistema.
 
 ---
 
-# 82. Relação com o próximo volume
+## 82. Relação com o próximo volume
 
 Até aqui:
 
@@ -2232,7 +2232,7 @@ Esse será o **Volume 03**.
 
 ---
 
-# 83. Resumo
+## 83. Resumo
 
 Pull Request é uma proposta rastreável de integração entre branches.
 
@@ -2284,7 +2284,7 @@ PROD
 
 ---
 
-# 84. Próximo volume
+## 84. Próximo volume
 
 **Volume 03 — GitHub Actions**
 

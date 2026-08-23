@@ -12,7 +12,7 @@ Este volume apresenta arquiteturas práticas reutilizáveis para diferentes tipo
 
 ---
 
-# 2. Referência A — Node.js simples
+## 2. Referência A — Node.js Simples
 
 ```text
 GitHub
@@ -47,7 +47,7 @@ package.json
 
 ---
 
-# 3. Node.js + MariaDB
+## 3. Node.js + MariaDB
 
 ```text
 PR
@@ -84,7 +84,7 @@ db PROD persistente
 
 ---
 
-# 4. Node.js + Redis
+## 4. Node.js + Redis
 
 Use Redis container em integração.
 
@@ -97,7 +97,7 @@ Teste:
 
 ---
 
-# 5. Node.js + MQTT
+## 5. Node.js + MQTT
 
 ```text
 Node app
@@ -115,7 +115,7 @@ Testes verificam publish/subscribe.
 
 ---
 
-# 6. PHP + MariaDB
+## 6. PHP + MariaDB
 
 ```text
 GitHub
@@ -137,7 +137,7 @@ DEV/PROD
 
 ---
 
-# 7. PHP legado sem Docker runtime
+## 7. PHP Legado sem Docker Runtime
 
 Mesmo que produção execute em Apache/PHP tradicional, CI pode usar containers para dependências.
 
@@ -145,7 +145,7 @@ Migração para Docker pode ser gradual.
 
 ---
 
-# 8. PHP + MQTT
+## 8. PHP + MQTT
 
 Arquitetura:
 
@@ -162,7 +162,7 @@ Não usar broker PROD.
 
 ---
 
-# 9. Frontend SPA + API
+## 9. Frontend SPA + API
 
 ```text
 Browser
@@ -188,7 +188,7 @@ E2E smoke
 
 ---
 
-# 10. Frontend separado do backend (polyrepo)
+## 10. Frontend Separado do Backend (Polyrepo)
 
 Repos separados:
 
@@ -217,7 +217,7 @@ Integração pode rodar em DEV ou em pipeline coordenado (workflow que dispara o
 
 ---
 
-## 10.1 Reusable workflows entre repositórios da mesma organização
+### 10.1 Reusable Workflows entre Repositórios da Mesma Organização
 
 Quando vários repositórios da mesma organização repetem a mesma sequência de jobs (lint, build, testes, publicação de imagem), a duplicação de YAML vira dívida técnica. O GitHub Actions resolve isso com **reusable workflows** (`workflow_call`).
 
@@ -268,7 +268,7 @@ Pontos importantes:
 
 ---
 
-# 11. Monorepo frontend/backend
+## 11. Monorepo Frontend/Backend
 
 ```text
 apps/
@@ -328,7 +328,7 @@ jobs:
 
 Note que `packages/common/**` aparece nos dois filtros: um pacote compartilhado precisa disparar CI de todo mundo que depende dele, senão uma quebra de contrato passa despercebida.
 
-### Workflow por pacote
+### Workflow por Pacote
 
 Cada `apps/*` mantém seu próprio arquivo de workflow reusável (`frontend-ci.yml`, `api-ci.yml`), chamado condicionalmente pelo orquestrador acima. Isso combina bem com a técnica de reusable workflows da seção 10.1: o mesmo `node-ci.yml` central pode ser chamado tanto pelo monorepo quanto por repositórios externos.
 
@@ -336,7 +336,7 @@ Alternativas de ferramenta para detectar mudanças em monorepo: Nx e Turborepo o
 
 ---
 
-## 11.1 Composite actions vs reusable workflows
+### 11.1 Composite Actions vs Reusable Workflows
 
 As duas mecânicas resolvem duplicação, mas em escopos diferentes — confundi-las é o erro mais comum ao organizar CI em GitHub Actions.
 
@@ -379,7 +379,7 @@ Nada impede combinar os dois: um reusable workflow, por dentro, pode usar compos
 
 ---
 
-# 12. Sistema com worker
+## 12. Sistema com Worker
 
 ```text
 API
@@ -395,7 +395,7 @@ Teste integração deve validar processamento assíncrono.
 
 ---
 
-# 13. Sistema com webhook
+## 13. Sistema com Webhook
 
 ```text
 External
@@ -419,7 +419,7 @@ Teste:
 
 ---
 
-# 14. Sistema IoT
+## 14. Sistema IoT
 
 ```text
 Devices
@@ -444,7 +444,7 @@ E2E dashboard
 
 ---
 
-# 15. Aplicação com ESP32
+## 15. Aplicação com ESP32
 
 Firmware e backend podem ter pipelines separados.
 
@@ -466,7 +466,7 @@ Integração hardware real pode ser laboratório específico.
 
 ---
 
-# 16. Hardware-in-the-loop
+## 16. Hardware-in-the-Loop
 
 Uma evolução:
 
@@ -482,7 +482,7 @@ Testes devem ser isolados e não rodar em toda PR inicialmente.
 
 ---
 
-# 17. Microsserviços
+## 17. Microsserviços
 
 ```text
 gateway
@@ -503,7 +503,7 @@ E2E integrado separado.
 
 ---
 
-## 17.1 Matrix strategy
+### 17.1 Matrix Strategy
 
 Quando o mesmo workflow precisa rodar contra combinações de versão de runtime, sistema operacional ou serviço, `strategy.matrix` evita duplicar jobs manualmente:
 
@@ -544,7 +544,7 @@ Pontos que valem a pena fixar:
 
 ---
 
-# 18. Contract testing em microsserviços
+## 18. Contract Testing em Microsserviços
 
 Reduz dependência de E2E gigantesco.
 
@@ -552,7 +552,7 @@ Valide contratos entre serviços.
 
 ---
 
-# 19. Banco por serviço
+## 19. Banco por Serviço
 
 Em arquitetura de microsserviços, compartilhamento de banco aumenta acoplamento.
 
@@ -560,7 +560,7 @@ Decisão depende do sistema.
 
 ---
 
-# 20. Reverse proxy
+## 20. Reverse Proxy
 
 ```text
 Nginx/Traefik
@@ -573,13 +573,13 @@ Configuração versionada.
 
 ---
 
-# 21. Traefik
+## 21. Traefik
 
 Proxy reverso com descoberta dinâmica de serviços: lê labels do Docker (ou da API do Coolify, do Kubernetes, etc.) e atualiza suas rotas sem reload manual nem restart. Isso o torna a opção natural quando produtos são implantados e removidos com frequência via CI/CD, cada um como um container/stack diferente na mesma infraestrutura.
 
 Nginx continua excelente opção quando a topologia é estável (poucos serviços, mudam raramente) e não vale o custo operacional extra de manter descoberta dinâmica.
 
-## 21.1 Isolamento por produto/stack com Traefik
+### 21.1 Isolamento por Produto/Stack com Traefik
 
 Em uma infraestrutura com múltiplos produtos na mesma borda, cada stack deve expor apenas as labels do seu próprio roteamento — nunca reutilizar rede, banco ou fila de outro produto só porque estão na mesma máquina. Exemplo de labels típicas por serviço:
 
@@ -597,7 +597,7 @@ services:
 
 Cada produto com sua própria rede Docker (`produto-a-net`, `produto-b-net`) garante que um container de um produto não alcança o banco/fila de outro por engano, mesmo compartilhando o mesmo host físico ou LXC.
 
-## 21.2 Estratégias de deploy com Coolify/Traefik
+### 21.2 Estratégias de Deploy com Coolify/Traefik
 
 Coolify orquestra o ciclo `build → deploy → healthcheck → troca de tráfego`, delegando o roteamento a um Traefik na borda. As três estratégias clássicas mapeiam assim:
 
@@ -673,7 +673,7 @@ Recomendação prática: rolling é suficiente para a maioria dos serviços inte
 
 ---
 
-# 22. Registry
+## 22. Registry
 
 Todos os modelos containerizados convergem para:
 
@@ -683,7 +683,7 @@ CI -> Registry -> environments
 
 ---
 
-# 23. DEV compartilhado
+## 23. DEV Compartilhado
 
 Se apenas um DEV:
 
@@ -698,7 +698,7 @@ PRs são validadas principalmente no CI antes do merge.
 
 ---
 
-# 24. Preview environment
+## 24. Preview Environment
 
 Para maior paralelismo:
 
@@ -711,7 +711,7 @@ Mais caro e complexo.
 
 ---
 
-# 25. Sem staging
+## 25. Sem Staging
 
 Arquitetura de referência:
 
@@ -730,7 +730,7 @@ PROD
 
 ---
 
-## 25.1 Ambientes isolados por produto/stack com GitHub Environments
+### 25.1 Ambientes Isolados por Produto/Stack com GitHub Environments
 
 Quando a organização mantém vários produtos (cada um com seu próprio DEV/PROD, banco e fila) na mesma conta do GitHub, o recurso **Environments** (Settings → Environments no repositório) modela isso de forma nativa, em vez de depender só de secrets no nível do repositório:
 
@@ -769,7 +769,7 @@ Isso substitui a prática antiga de prefixar secrets manualmente (`PRODUTO_A_PRO
 
 ---
 
-# 26. Banco DEV
+## 26. Banco DEV
 
 Não deve conter única cópia de informação importante.
 
@@ -777,13 +777,13 @@ Não deve conter única cópia de informação importante.
 
 ---
 
-# 27. Banco PROD
+## 27. Banco PROD
 
 Backup, restore, monitoring, access control.
 
 ---
 
-# 28. Deploy Node.js com Compose
+## 28. Deploy Node.js com Compose
 
 ```text
 registry/app:sha
@@ -800,7 +800,7 @@ health
 
 ---
 
-# 29. Deploy PHP com Compose
+## 29. Deploy PHP com Compose
 
 Possível stack:
 
@@ -814,7 +814,7 @@ Banco separado/persistente.
 
 ---
 
-# 30. CI para PHP sem container final
+## 30. CI para PHP sem Container Final
 
 ```text
 composer artifact
@@ -831,7 +831,7 @@ Ainda deve possuir:
 
 ---
 
-# 31. Releases directory
+## 31. Releases Directory
 
 Modelo tradicional:
 
@@ -847,7 +847,7 @@ Rollback troca symlink.
 
 ---
 
-# 32. Atomic deploy tradicional
+## 32. Atomic Deploy Tradicional
 
 ```text
 upload release
@@ -860,7 +860,7 @@ Evita editar diretório ativo arquivo por arquivo.
 
 ---
 
-# 33. Arquitetura Docker preferencial
+## 33. Arquitetura Docker Preferencial
 
 Para novos projetos:
 
@@ -872,7 +872,7 @@ simplifica artifact.
 
 ---
 
-# 34. Observabilidade comum
+## 34. Observabilidade Comum
 
 Todas as arquiteturas devem oferecer:
 
@@ -885,7 +885,7 @@ metrics
 
 ---
 
-# 35. Segurança comum
+## 35. Segurança Comum
 
 Todas:
 
@@ -897,7 +897,7 @@ Todas:
 
 ---
 
-# 36. Template de projeto Node
+## 36. Template de Projeto Node
 
 ```text
 .
@@ -913,7 +913,7 @@ Todas:
 
 ---
 
-# 37. Template PHP
+## 37. Template PHP
 
 ```text
 .
@@ -929,7 +929,7 @@ Todas:
 
 ---
 
-# 38. Template IoT backend
+## 38. Template IoT Backend
 
 ```text
 .
@@ -944,19 +944,19 @@ Todas:
 
 ---
 
-# 39. Separar adapter MQTT
+## 39. Separar Adapter MQTT
 
 Encapsular broker facilita testes.
 
 ---
 
-# 40. Separar repository
+## 40. Separar Repository
 
 Encapsular banco facilita unit/integration testing.
 
 ---
 
-# 41. Ports and adapters
+## 41. Ports and Adapters
 
 Arquitetura hexagonal pode ser útil em sistemas com muitas integrações.
 
@@ -964,7 +964,7 @@ Não é obrigatória.
 
 ---
 
-# 42. Referência mínima recomendada
+## 42. Referência Mínima Recomendada
 
 Para um sistema web moderno:
 
@@ -981,7 +981,7 @@ Playwright
 
 ---
 
-# 43. Referência automação
+## 43. Referência Automação
 
 ```text
 Node API
@@ -994,7 +994,7 @@ Docker
 
 ---
 
-# 44. Testes dessa referência
+## 44. Testes Dessa Referência
 
 ```text
 unit business
@@ -1007,7 +1007,7 @@ E2E browser
 
 ---
 
-# 45. WebSocket
+## 45. WebSocket
 
 Teste:
 
@@ -1019,7 +1019,7 @@ Teste:
 
 ---
 
-# 46. Real-time E2E
+## 46. Real-Time E2E
 
 Evite sleeps fixos.
 
@@ -1027,7 +1027,7 @@ Espere evento/estado.
 
 ---
 
-# 47. Arquitetura de runners
+## 47. Arquitetura de Runners
 
 Inicial:
 
@@ -1046,7 +1046,7 @@ runner-deploy
 
 ---
 
-# 48. Escolha por risco
+## 48. Escolha por Risco
 
 Projeto simples não precisa de arquitetura de multinacional.
 
@@ -1061,7 +1061,7 @@ rollback
 
 ---
 
-# 49. Checklist de nova arquitetura
+## 49. Checklist de Nova Arquitetura
 
 - [ ] Qual artifact?
 - [ ] Qual banco?
@@ -1075,7 +1075,7 @@ rollback
 
 ---
 
-# 50. Próximo volume
+## 50. Próximo Volume
 
 **Volume 14 — Otimização e Escalabilidade do CI/CD**
 

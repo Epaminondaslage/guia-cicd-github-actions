@@ -36,7 +36,7 @@ PROD server
 
 ---
 
-# 2. Físico ou virtual
+## 2. Físico ou virtual
 
 Um runner pode operar em:
 
@@ -56,7 +56,7 @@ Para começar, VM é uma escolha forte por:
 - facilidade de reconstrução;
 - limites de recursos.
 
-## 2.1 Trade-offs de isolamento (VM vs container vs LXC)
+### 2.1 Trade-offs de isolamento (VM vs container vs LXC)
 
 O nível de isolamento necessário depende do que o runner vai executar:
 
@@ -78,7 +78,7 @@ Resumindo o trade-off: LXC/container ganham em densidade e velocidade de provisi
 
 ---
 
-# 3. Não misturar funções críticas
+## 3. Não misturar funções críticas
 
 Evite:
 
@@ -91,28 +91,17 @@ Prefira separação lógica ou física.
 
 ---
 
-# 4. Dimensionamento
+## 4. Dimensionamento
 
 Referências de partida por tipo de carga (ajuste com métricas reais do seu pipeline):
 
-```text
-Lint/testes unitários simples (Node/PHP pequenos):
-  2 vCPU / 4 GB RAM / 20-40 GB SSD
-
-Build + testes unitários médios (monorepo, várias linguagens):
-  4 vCPU / 8 GB RAM / 60-100 GB SSD/NVMe
-
-CI + E2E (Playwright/Cypress, browsers headless):
-  4-8 vCPU / 8-16 GB RAM / 100-200 GB NVMe
-  (cada browser headless facilmente consome 500MB-1GB+ de RAM por worker)
-
-Build de imagens Docker pesadas / matrizes paralelas:
-  8+ vCPU / 16-32 GB RAM / 200+ GB NVMe
-  (múltiplas camadas simultâneas competem por I/O e CPU)
-
-Deploy runner (só orquestra SSH/API, não builda):
-  1-2 vCPU / 2 GB RAM / 20 GB SSD
-```
+| Tipo de carga | Recursos | Observação |
+|---|---|---|
+| Lint/testes unitários simples (Node/PHP pequenos) | 2 vCPU / 4 GB RAM / 20-40 GB SSD | — |
+| Build + testes unitários médios (monorepo, várias linguagens) | 4 vCPU / 8 GB RAM / 60-100 GB SSD/NVMe | — |
+| CI + E2E (Playwright/Cypress, browsers headless) | 4-8 vCPU / 8-16 GB RAM / 100-200 GB NVMe | cada browser headless facilmente consome 500MB-1GB+ de RAM por worker |
+| Build de imagens Docker pesadas / matrizes paralelas | 8+ vCPU / 16-32 GB RAM / 200+ GB NVMe | múltiplas camadas simultâneas competem por I/O e CPU |
+| Deploy runner (só orquestra SSH/API, não builda) | 1-2 vCPU / 2 GB RAM / 20 GB SSD | — |
 
 Notas de dimensionamento:
 
@@ -124,7 +113,7 @@ Meça antes de ampliar.
 
 ---
 
-# 5. Storage
+## 5. Storage
 
 Builds e Docker consomem disco.
 
@@ -141,7 +130,7 @@ Sem limpeza periódica, o disco de um runner de build tende a crescer continuame
 
 ---
 
-# 6. SSD/NVMe
+## 6. SSD/NVMe
 
 E2E e builds se beneficiam de I/O rápido.
 
@@ -151,7 +140,7 @@ NVMe é preferível a SATA SSD quando a carga envolve muitas operações pequena
 
 ---
 
-# 7. Filesystem
+## 7. Filesystem
 
 Monitore:
 
@@ -164,7 +153,7 @@ Inodes também podem acabar.
 
 ---
 
-# 8. Ubuntu Server LTS
+## 8. Ubuntu Server LTS
 
 Preferência por versão LTS suportada.
 
@@ -177,7 +166,7 @@ Benefícios:
 
 ---
 
-# 9. Instalação mínima
+## 9. Instalação mínima
 
 Instale apenas o necessário.
 
@@ -190,7 +179,7 @@ menor manutenção
 
 ---
 
-# 10. Hostname
+## 10. Hostname
 
 Exemplo:
 
@@ -204,7 +193,7 @@ Nomes devem expressar função.
 
 ---
 
-# 11. Usuários
+## 11. Usuários
 
 ```text
 admin
@@ -216,13 +205,13 @@ Separe funções.
 
 ---
 
-# 12. Root
+## 12. Root
 
 Não use login root rotineiramente.
 
 ---
 
-# 13. SSH
+## 13. SSH
 
 Preferência:
 
@@ -234,13 +223,13 @@ Desabilitar password login pode ser apropriado após garantir acesso por chave.
 
 ---
 
-# 14. sshd_config
+## 14. sshd_config
 
 Mudanças devem ser feitas com cuidado e sessão de fallback para evitar lockout.
 
 ---
 
-# 15. Firewall
+## 15. Firewall
 
 Ubuntu pode usar UFW ou nftables conforme política.
 
@@ -248,20 +237,20 @@ Runner normalmente precisa principalmente de tráfego de saída HTTPS para GitHu
 
 Regras mínimas de saída (outbound) para um runner funcional:
 
-```text
-443/tcp -> github.com, api.github.com, *.actions.githubusercontent.com
-443/tcp -> ghcr.io, registry-1.docker.io, *.docker.io (se usar Docker Hub)
-443/tcp -> repositórios de pacotes usados (npm registry, packagist, pypi, apt mirrors)
-53/udp,tcp -> resolvers DNS internos/externos
-123/udp -> NTP
-22/tcp -> apenas se o pipeline usar Git sobre SSH ou deploy via SSH
-```
+| Porta/protocolo | Destino |
+|---|---|
+| 443/tcp | github.com, api.github.com, *.actions.githubusercontent.com |
+| 443/tcp | ghcr.io, registry-1.docker.io, *.docker.io (se usar Docker Hub) |
+| 443/tcp | repositórios de pacotes usados (npm registry, packagist, pypi, apt mirrors) |
+| 53/udp,tcp | resolvers DNS internos/externos |
+| 123/udp | NTP |
+| 22/tcp | apenas se o pipeline usar Git sobre SSH ou deploy via SSH |
 
 Não é necessário liberar entrada (inbound) de internet — o runner sempre inicia a conexão (ver seção 16). Se a organização usa uma lista de permissões restritiva, consulte a lista oficial de ranges/domínios do GitHub Actions e mantenha atualizada, pois pode mudar.
 
 ---
 
-# 16. Runner não precisa de porta pública
+## 16. Runner não precisa de porta pública
 
 O runner inicia conexão com o GitHub (long poll / WebSocket sobre HTTPS), não o contrário — não existe "webhook chegando" no runner em si.
 
@@ -271,13 +260,13 @@ Isso vale mesmo para Actions Runner Controller (ARC) no Kubernetes: o listener d
 
 ---
 
-# 17. DNS
+## 17. DNS
 
 Hosts internos devem possuir nomes previsíveis.
 
 Evite espalhar IPs hardcoded por scripts.
 
-## 17.1 Redundância de resolver
+### 17.1 Redundância de resolver
 
 Configure ao menos dois resolvers DNS, com ordem de fallback clara:
 
@@ -295,7 +284,7 @@ Cuidados práticos:
 
 ---
 
-# 18. NTP
+## 18. NTP
 
 Hora correta é essencial para:
 
@@ -309,7 +298,7 @@ Use sincronização de tempo.
 
 ---
 
-# 19. Timezone
+## 19. Timezone
 
 Servidor pode permanecer em UTC.
 
@@ -317,7 +306,7 @@ Aplicação trata timezone da regra de negócio.
 
 ---
 
-# 20. Updates
+## 20. Updates
 
 Rotina:
 
@@ -330,7 +319,7 @@ Planeje reboot quando kernel/bibliotecas exigirem.
 
 ---
 
-# 21. Patches automáticos
+## 21. Patches automáticos
 
 Atualizações automáticas de segurança podem ser úteis.
 
@@ -338,13 +327,13 @@ Avalie janela de manutenção.
 
 ---
 
-# 22. Docker
+## 22. Docker
 
 Instale pelo repositório oficial e mantenha versão suportada.
 
 ---
 
-# 23. Docker data root
+## 23. Docker data root
 
 Por padrão:
 
@@ -356,19 +345,19 @@ Planeje espaço.
 
 ---
 
-# 24. Disco separado
+## 24. Disco separado
 
 Em runners pesados, volume/disco dedicado para Docker pode simplificar capacidade e manutenção.
 
 ---
 
-# 25. Docker log rotation
+## 25. Docker log rotation
 
 Configure para evitar crescimento ilimitado.
 
 ---
 
-# 26. Runner directory
+## 26. Runner directory
 
 Exemplo:
 
@@ -378,7 +367,7 @@ Exemplo:
 
 ---
 
-# 27. Workspace
+## 27. Workspace
 
 ```text
 _work/
@@ -390,7 +379,7 @@ Não armazene fonte única de dados ali.
 
 ---
 
-# 28. Cache
+## 28. Cache
 
 Cache pode ser perdido.
 
@@ -398,7 +387,7 @@ Pipeline deve continuar correto após cache vazio.
 
 ---
 
-# 29. Backup do runner
+## 29. Backup do runner
 
 Backup importante:
 
@@ -411,7 +400,7 @@ Não é necessário preservar builds temporários.
 
 ---
 
-# 30. Reconstrução
+## 30. Reconstrução
 
 Meta:
 
@@ -433,7 +422,7 @@ online
 
 ---
 
-# 31. Infrastructure as Code
+## 31. Infrastructure as Code
 
 Evolução recomendada:
 
@@ -447,7 +436,7 @@ dependendo do ambiente.
 
 ---
 
-# 32. Ansible
+## 32. Ansible
 
 Open source e útil para:
 
@@ -459,7 +448,7 @@ Open source e útil para:
 
 ---
 
-# 33. OpenTofu
+## 33. OpenTofu
 
 Alternativa open source para provisioning declarativo em provedores compatíveis.
 
@@ -467,7 +456,7 @@ Pode ser útil em cloud/virtualização.
 
 ---
 
-# 34. Proxmox
+## 34. Proxmox
 
 Em infraestrutura local, Proxmox VE pode hospedar VMs/containers, dependendo das necessidades.
 
@@ -475,7 +464,7 @@ Runner de Docker costuma ser simples em VM.
 
 ---
 
-# 35. Snapshots
+## 35. Snapshots
 
 Snapshot não substitui backup.
 
@@ -483,7 +472,7 @@ Snapshot não substitui backup.
 
 ---
 
-# 36. UPS
+## 36. UPS
 
 Infraestrutura local deve considerar energia.
 
@@ -495,13 +484,13 @@ Uma UPS reduz:
 
 ---
 
-# 37. Shutdown controlado
+## 37. Shutdown controlado
 
 Em queda prolongada, servidores devem poder desligar corretamente.
 
 ---
 
-# 38. Rede
+## 38. Rede
 
 Self-hosted runner deve ter conectividade estável.
 
@@ -509,7 +498,7 @@ E2E pode sofrer com perda de pacotes/latência.
 
 ---
 
-# 39. VLAN
+## 39. VLAN
 
 Uma arquitetura madura pode separar:
 
@@ -522,7 +511,7 @@ management VLAN
 
 ---
 
-# 40. Firewall entre VLANs
+## 40. Firewall entre VLANs
 
 Liberar apenas:
 
@@ -533,37 +522,37 @@ Deploy -> PROD necessário
 
 ---
 
-# 41. Proxy
+## 41. Proxy
 
 Se rede usa proxy, runner precisa configuração consistente para Git, npm, Composer e Docker.
 
 ---
 
-# 42. DNS interno
+## 42. DNS interno
 
 Use DNS para serviços.
 
 ---
 
-# 43. TLS interno
+## 43. TLS interno
 
 Certificados internos podem exigir CA confiável instalada no runner.
 
 ---
 
-# 44. Secrets do host
+## 44. Secrets do host
 
 Nunca salvar em imagem/template sem criptografia/controle.
 
 ---
 
-# 45. SSH agent
+## 45. SSH agent
 
 Evite deixar chaves administrativas persistentes carregadas desnecessariamente.
 
 ---
 
-# 46. Monitoring do host
+## 46. Monitoring do host
 
 Instale:
 
@@ -575,7 +564,7 @@ ou solução equivalente.
 
 ---
 
-# 47. Métricas mínimas
+## 47. Métricas mínimas
 
 - CPU;
 - load;
@@ -587,7 +576,7 @@ ou solução equivalente.
 
 ---
 
-# 48. Swap
+## 48. Swap
 
 Swap pode evitar OOM abrupto, mas não corrige falta crônica de RAM.
 
@@ -595,13 +584,13 @@ E2E lento por swap excessivo precisa de capacidade.
 
 ---
 
-# 49. OOM logs
+## 49. OOM logs
 
 Verifique kernel/journal em falhas inexplicáveis.
 
 ---
 
-# 50. journalctl
+## 50. journalctl
 
 Exemplo:
 
@@ -613,7 +602,7 @@ Use para runner/Docker/systemd.
 
 ---
 
-# 51. systemd
+## 51. systemd
 
 Gerencia:
 
@@ -625,7 +614,7 @@ Serviços devem iniciar após reboot.
 
 ---
 
-# 52. Reboot test
+## 52. Reboot test
 
 Teste reboot controlado antes de depender do runner em produção operacional.
 
@@ -639,7 +628,7 @@ monitoring sobe
 
 ---
 
-# 53. Health do runner
+## 53. Health do runner
 
 Verifique periodicamente:
 
@@ -653,7 +642,7 @@ network
 
 ---
 
-# 54. Multiple runners no mesmo host
+## 54. Multiple runners no mesmo host
 
 É possível, mas compartilham:
 
@@ -664,7 +653,7 @@ network
 
 Uma falha pode afetar todos.
 
-## 54.1 Runners persistentes vs efêmeros
+### 54.1 Runners persistentes vs efêmeros
 
 Boa prática atual (2025/2026): preferir **runners efêmeros** (`--ephemeral` no registro do runner) em vez de runners persistentes de longa duração.
 
@@ -681,7 +670,7 @@ Motivos para preferir efêmero:
 
 O custo é operacional: cada job paga o tempo de provisionamento (subir VM/container, registrar, baixar runner). Isso é mitigado com templates/imagens pré-aquecidas ou com Actions Runner Controller (ver 54.2).
 
-## 54.2 Actions Runner Controller (ARC) e runner scale sets
+### 54.2 Actions Runner Controller (ARC) e runner scale sets
 
 Para quem já opera Kubernetes, o **Actions Runner Controller (ARC)** é a alternativa oficial da GitHub a manter VMs/LXC de runner manualmente. Ele gerencia **runner scale sets**: grupos de runners efêmeros provisionados sob demanda como pods, escalando de zero conforme a fila de jobs.
 
@@ -707,7 +696,7 @@ Para infraestrutura pequena/local (ex.: um host Proxmox único), VMs ou LXC gere
 
 ---
 
-# 55. Runner por VM
+## 55. Runner por VM
 
 Mais isolamento:
 
@@ -721,13 +710,13 @@ Isso continua válido com runners efêmeros: cada tipo de carga pode ter seu pr�
 
 ---
 
-# 56. Deploy runner
+## 56. Deploy runner
 
 Deve ter rede/permissões distintas do CI.
 
 ---
 
-# 57. PROD connectivity
+## 57. PROD connectivity
 
 Se deploy via SSH:
 
@@ -739,7 +728,7 @@ Não liberar CI inteiro.
 
 ---
 
-# 58. Bastion
+## 58. Bastion
 
 Em ambientes maiores:
 
@@ -751,7 +740,7 @@ pode centralizar acesso.
 
 ---
 
-# 59. VPN
+## 59. VPN
 
 WireGuard é opção open source para túneis privados.
 
@@ -759,7 +748,7 @@ Pode conectar ambientes remotos.
 
 ---
 
-# 60. WireGuard
+## 60. WireGuard
 
 Benefícios:
 
@@ -771,7 +760,7 @@ Ainda exige boa gestão de chaves e rotas.
 
 ---
 
-# 61. Backup
+## 61. Backup
 
 Itens:
 
@@ -785,7 +774,7 @@ dados críticos
 
 ---
 
-# 62. 3-2-1
+## 62. 3-2-1
 
 Princípio clássico:
 
@@ -799,7 +788,7 @@ A implementação depende do risco.
 
 ---
 
-# 63. Restore
+## 63. Restore
 
 Teste restore.
 
@@ -807,13 +796,13 @@ Backup não testado é hipótese.
 
 ---
 
-# 64. Registry local
+## 64. Registry local
 
 Se hospedar registry próprio, trate como serviço crítico.
 
 ---
 
-# 65. Availability
+## 65. Availability
 
 Pergunta:
 
@@ -825,13 +814,13 @@ Talvez deploy atrase, mas produção deve continuar funcionando.
 
 ---
 
-# 66. CI não deve ser dependência runtime
+## 66. CI não deve ser dependência runtime
 
 Aplicação PROD não deve parar porque runner está offline.
 
 ---
 
-# 67. GitHub outage
+## 67. GitHub outage
 
 Tenha capacidade de operar/rollback emergencial controlado se GitHub estiver indisponível.
 
@@ -839,7 +828,7 @@ Documente procedimento break-glass.
 
 ---
 
-# 68. Break-glass
+## 68. Break-glass
 
 Acesso emergencial:
 
@@ -849,7 +838,7 @@ Acesso emergencial:
 
 ---
 
-# 69. Capacity planning
+## 69. Capacity planning
 
 Observe crescimento:
 
@@ -862,25 +851,25 @@ queue time
 
 ---
 
-# 70. Scale up
+## 70. Scale up
 
 Mais CPU/RAM na VM.
 
 ---
 
-# 71. Scale out
+## 71. Scale out
 
 Adicionar runners.
 
 ---
 
-# 72. Quando escalar
+## 72. Quando escalar
 
 Se queue time domina pipeline, scale out pode ser mais eficiente.
 
 ---
 
-# 73. Runner labels, grupos e capacity
+## 73. Runner labels, grupos e capacity
 
 Labels distribuem workloads para o hardware certo:
 
@@ -896,7 +885,7 @@ O workflow escolhe o runner certo combinando labels no `runs-on`:
 runs-on: [self-hosted, linux, e2e]
 ```
 
-## 73.1 Runner groups
+### 73.1 Runner groups
 
 Em organizações com múltiplos repositórios/produtos, **runner groups** (recurso de nível organização/enterprise) controlam quais repositórios podem usar quais runners — isso é o mecanismo correto para garantir que um runner de um produto nunca seja acionável por workflows de outro produto, análogo ao isolamento de fila/banco/container que já se pratica entre produtos na aplicação.
 
@@ -909,7 +898,7 @@ Combine labels (o tipo de carga: ci/e2e/deploy) com grupos (quem pode acessar) e
 
 ---
 
-# 74. Documentação do host
+## 74. Documentação do host
 
 Crie:
 
@@ -930,13 +919,13 @@ Com:
 
 ---
 
-# 75. Inventário
+## 75. Inventário
 
 Mantenha inventário versionado sem secrets.
 
 ---
 
-# 76. Checklist de instalação
+## 76. Checklist de instalação
 
 - [ ] Ubuntu LTS.
 - [ ] hostname.
@@ -954,7 +943,7 @@ Mantenha inventário versionado sem secrets.
 
 ---
 
-# 77. Checklist de segurança
+## 77. Checklist de segurança
 
 - [ ] root remoto restrito.
 - [ ] passwords desabilitadas quando aplicável.
@@ -971,7 +960,7 @@ Mantenha inventário versionado sem secrets.
 
 ---
 
-# 78. Arquitetura recomendada final
+## 78. Arquitetura recomendada final
 
 ```text
                  GitHub
@@ -993,7 +982,7 @@ Mantenha inventário versionado sem secrets.
 
 ---
 
-# 79. Próximo volume
+## 79. Próximo volume
 
 **Volume 13 — Arquiteturas de Referência**
 

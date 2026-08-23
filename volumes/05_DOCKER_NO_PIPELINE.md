@@ -48,7 +48,7 @@ A ideia central é simples:
 
 ---
 
-# 2. Onde Docker entra no pipeline
+## 2. Onde Docker entra no pipeline
 
 Docker pode ser utilizado em diferentes pontos:
 
@@ -81,7 +81,7 @@ Mesma imagem promovida
 
 ---
 
-# 3. Docker não é máquina virtual
+## 3. Docker não é máquina virtual
 
 Uma VM normalmente inclui:
 
@@ -111,7 +111,7 @@ Containers tendem a ser mais leves que VMs completas.
 
 ---
 
-# 4. Imagem e container
+## 4. Imagem e container
 
 Uma **imagem** é um pacote imutável utilizado para criar containers.
 
@@ -141,7 +141,7 @@ Podemos criar vários containers a partir da mesma imagem.
 
 ---
 
-# 5. Dockerfile
+## 5. Dockerfile
 
 Exemplo simples para Node.js:
 
@@ -163,7 +163,7 @@ Esse arquivo descreve como construir a imagem.
 
 ---
 
-# 6. Build
+## 6. Build
 
 ```bash
 docker build -t minha-app:dev .
@@ -183,7 +183,7 @@ docker run --rm -p 3000:3000 minha-app:dev
 
 ---
 
-# 7. Tags de imagem
+## 7. Tags de imagem
 
 Evite depender apenas de:
 
@@ -203,7 +203,7 @@ No CI, o SHA do commit é uma excelente referência.
 
 ---
 
-# 8. Imagem identificada pelo commit
+## 8. Imagem identificada pelo commit
 
 Exemplo:
 
@@ -229,7 +229,7 @@ Assim é possível responder:
 
 ---
 
-# 9. Imutabilidade
+## 9. Imutabilidade
 
 Uma imagem publicada não deve ser silenciosamente substituída por conteúdo diferente usando a mesma identificação imutável.
 
@@ -258,7 +258,7 @@ Mesmo que ambos tenham vindo teoricamente do mesmo código, reconstruções pode
 
 ---
 
-# 10. Build once, deploy many
+## 10. Build once, deploy many
 
 Princípio:
 
@@ -283,7 +283,7 @@ docker image
 
 ---
 
-# 11. .dockerignore
+## 11. .dockerignore
 
 Crie:
 
@@ -325,7 +325,7 @@ Objetivos:
 
 ---
 
-# 12. Nunca copiar secrets para a imagem
+## 12. Nunca copiar secrets para a imagem
 
 Evite:
 
@@ -339,7 +339,7 @@ Secrets devem ser injetados em runtime por mecanismos apropriados.
 
 ---
 
-# 13. Variáveis em runtime
+## 13. Variáveis em runtime
 
 Exemplo:
 
@@ -365,7 +365,7 @@ Secrets reais exigem tratamento mais cuidadoso.
 
 ---
 
-# 14. Docker Compose
+## 14. Docker Compose
 
 Docker Compose descreve aplicações com múltiplos serviços.
 
@@ -400,7 +400,7 @@ docker compose down
 
 ---
 
-# 15. Compose no desenvolvimento
+## 15. Compose no desenvolvimento
 
 Exemplo:
 
@@ -417,7 +417,7 @@ Isso reduz instalações manuais no host.
 
 ---
 
-# 16. Compose em testes
+## 16. Compose em testes
 
 Arquivo separado:
 
@@ -445,7 +445,7 @@ services:
 
 ---
 
-# 17. Banco de teste descartável
+## 17. Banco de teste descartável
 
 Fluxo:
 
@@ -472,7 +472,7 @@ Isso evita usar banco DEV ou PROD para testes automatizados.
 
 ---
 
-# 18. MQTT de teste
+## 18. MQTT de teste
 
 Para projetos com MQTT:
 
@@ -493,7 +493,7 @@ O broker de produção não deve ser necessário para validar a lógica básica.
 
 ---
 
-# 19. Healthcheck
+## 19. Healthcheck
 
 Exemplo MariaDB:
 
@@ -509,7 +509,7 @@ O pipeline não deve presumir que um serviço está pronto apenas porque o proce
 
 ---
 
-# 20. Started não significa Ready
+## 20. Started não significa Ready
 
 ```text
 container started
@@ -530,7 +530,7 @@ Evite `sleep 30` como solução padrão.
 
 ---
 
-# 21. Redes Docker
+## 21. Redes Docker
 
 Compose cria normalmente uma rede para os serviços.
 
@@ -554,7 +554,7 @@ Não precisa conhecer o IP interno do container.
 
 ---
 
-# 22. Não fixar IP de container
+## 22. Não fixar IP de container
 
 Evite:
 
@@ -574,7 +574,7 @@ IPs de containers podem mudar.
 
 ---
 
-# 23. Volumes
+## 23. Volumes
 
 Volumes preservam dados além da vida do container.
 
@@ -596,7 +596,7 @@ services:
 
 ---
 
-# 24. Volumes em CI
+## 24. Volumes em CI
 
 Para banco de testes descartável, muitas vezes queremos remover tudo ao final:
 
@@ -610,7 +610,7 @@ Use somente quando esses volumes realmente forem descartáveis.
 
 ---
 
-# 25. Bind mounts
+## 25. Bind mounts
 
 Exemplo:
 
@@ -625,7 +625,7 @@ Em produção, normalmente preferimos que o código esteja dentro da imagem.
 
 ---
 
-# 26. Imagem de produção
+## 26. Imagem de produção
 
 A imagem de produção deve conter somente o necessário para executar a aplicação.
 
@@ -651,12 +651,12 @@ gcr.io/distroless/nodejs24 -> sem shell, sem package manager, superfície mínim
 
 ---
 
-# 27. Multi-stage build
+## 27. Multi-stage build
 
 Exemplo:
 
 ```dockerfile
-# syntax=docker/dockerfile:1
+## syntax=docker/dockerfile:1
 
 FROM node:24-alpine AS build
 
@@ -702,7 +702,7 @@ Benefícios do cache mount:
 
 ---
 
-# 28. Usuário não-root
+## 28. Usuário não-root
 
 Evite executar aplicação como root dentro do container quando não houver necessidade.
 
@@ -729,7 +729,7 @@ Pontos importantes:
 
 ---
 
-# 29. PID 1 e sinais
+## 29. PID 1 e sinais
 
 A aplicação deve responder corretamente a sinais de término.
 
@@ -750,7 +750,7 @@ Isso é importante para:
 
 ---
 
-# 30. Graceful shutdown
+## 30. Graceful shutdown
 
 Uma aplicação Node.js deve tratar sinais quando necessário:
 
@@ -771,7 +771,7 @@ Evite matar processos abruptamente sem necessidade.
 
 ---
 
-# 31. Restart policy
+## 31. Restart policy
 
 Exemplo:
 
@@ -787,7 +787,7 @@ Se o processo reinicia 100 vezes, existe um problema.
 
 ---
 
-# 32. Logs
+## 32. Logs
 
 Containers devem preferencialmente escrever logs em:
 
@@ -816,7 +816,7 @@ docker compose logs -f
 
 ---
 
-# 33. Não guardar logs indefinidamente
+## 33. Não guardar logs indefinidamente
 
 Docker pode consumir disco com logs.
 
@@ -833,7 +833,7 @@ A política exata deve ser definida de acordo com o host.
 
 ---
 
-# 34. Espaço em disco
+## 34. Espaço em disco
 
 Verifique:
 
@@ -857,7 +857,7 @@ Em self-hosted runners, builds frequentes acumulam:
 
 ---
 
-# 35. Limpeza controlada
+## 35. Limpeza controlada
 
 Inspeção:
 
@@ -879,7 +879,7 @@ Não execute limpeza agressiva em host compartilhado sem avaliar impacto.
 
 ---
 
-# 36. Build cache
+## 36. Build cache
 
 Docker reutiliza camadas quando possível.
 
@@ -897,7 +897,7 @@ Se apenas `src` mudou, a camada de dependências pode ser reaproveitada.
 
 ---
 
-# 37. Dockerfile ruim para cache
+## 37. Dockerfile ruim para cache
 
 ```dockerfile
 COPY . .
@@ -910,7 +910,7 @@ Isso pode tornar builds desnecessariamente lentos.
 
 ---
 
-# 38. BuildKit
+## 38. BuildKit
 
 Desde o Docker Engine 23 (e no Docker Desktop há mais tempo), o BuildKit é o builder **padrão** — não é necessário exportar `DOCKER_BUILDKIT=1` manualmente. Em versões antigas isso ainda pode ser relevante, mas não é o cenário normal em 2025+.
 
@@ -939,7 +939,7 @@ No pipeline inicial, começaremos simples e evoluiremos conforme necessidade.
 
 ---
 
-# 39. Build no GitHub Actions
+## 39. Build no GitHub Actions
 
 Exemplo:
 
@@ -955,7 +955,7 @@ O runner precisa possuir Docker operacional.
 
 ---
 
-# 40. Testar a imagem
+## 40. Testar a imagem
 
 Depois do build:
 
@@ -977,7 +977,7 @@ Depois:
 
 ---
 
-# 41. Cleanup da imagem em teste
+## 41. Cleanup da imagem em teste
 
 ```yaml
 - name: Cleanup
@@ -990,7 +990,7 @@ Em runner persistente, cleanup é obrigatório como disciplina operacional.
 
 ---
 
-# 42. Nomes únicos
+## 42. Nomes únicos
 
 Duas execuções simultâneas não devem disputar:
 
@@ -1010,7 +1010,7 @@ app-${RUN_ID}
 
 ---
 
-# 43. GitHub run ID
+## 43. GitHub run ID
 
 O contexto do workflow fornece identificadores úteis.
 
@@ -1026,7 +1026,7 @@ O objetivo é evitar colisões.
 
 ---
 
-# 44. Compose project name
+## 44. Compose project name
 
 Compose permite separar stacks usando nome de projeto.
 
@@ -1052,7 +1052,7 @@ Isso melhora isolamento entre jobs.
 
 ---
 
-# 45. Portas e concorrência
+## 45. Portas e concorrência
 
 Se dois jobs publicarem:
 
@@ -1072,7 +1072,7 @@ Alternativas:
 
 ---
 
-# 46. Testes dentro da rede Compose
+## 46. Testes dentro da rede Compose
 
 Uma arquitetura melhor pode executar o próprio teste em container.
 
@@ -1089,7 +1089,7 @@ Assim, não precisamos publicar todos os serviços no host.
 
 ---
 
-# 47. Test runner containerizado
+## 47. Test runner containerizado
 
 Exemplo conceitual:
 
@@ -1113,7 +1113,7 @@ docker compose run --rm tests
 
 ---
 
-# 48. Vantagem do teste containerizado
+## 48. Vantagem do teste containerizado
 
 Reduz dependência de ferramentas instaladas diretamente no runner.
 
@@ -1133,7 +1133,7 @@ O runner continua precisando de Docker.
 
 ---
 
-# 49. Desvantagem
+## 49. Desvantagem
 
 Containerizar tudo também adiciona:
 
@@ -1148,7 +1148,7 @@ Use onde melhora reprodutibilidade e isolamento.
 
 ---
 
-# 50. Imagem de testes
+## 50. Imagem de testes
 
 Podemos ter um stage:
 
@@ -1172,7 +1172,7 @@ mais enxuto.
 
 ---
 
-# 51. Exemplo multi-stage completo
+## 51. Exemplo multi-stage completo
 
 ```dockerfile
 FROM node:24-alpine AS deps
@@ -1215,7 +1215,7 @@ O desenho real deve considerar framework, dependências nativas e processo de bu
 
 ---
 
-# 52. Build target
+## 52. Build target
 
 Podemos construir um stage específico:
 
@@ -1233,7 +1233,7 @@ Isso permite reutilizar o Dockerfile para finalidades diferentes.
 
 ---
 
-# 53. Docker e PHP
+## 53. Docker e PHP
 
 Exemplo simples:
 
@@ -1259,7 +1259,7 @@ Esses detalhes devem ser modelados explicitamente.
 
 ---
 
-# 54. Composer em multi-stage
+## 54. Composer em multi-stage
 
 Exemplo:
 
@@ -1279,7 +1279,7 @@ Depois copiar `vendor` para a imagem runtime.
 
 ---
 
-# 55. Aplicação Node + PHP
+## 55. Aplicação Node + PHP
 
 Se um sistema possui componentes distintos:
 
@@ -1296,7 +1296,7 @@ Prefira separar processos e responsabilidades quando fizer sentido.
 
 ---
 
-# 56. Um processo principal por container
+## 56. Um processo principal por container
 
 Regra prática:
 
@@ -1313,7 +1313,7 @@ Há exceções, mas a separação melhora operação.
 
 ---
 
-# 57. Banco em produção
+## 57. Banco em produção
 
 Banco de dados em Docker é possível, mas exige política própria para:
 
@@ -1330,7 +1330,7 @@ Não trate banco como container descartável em produção.
 
 ---
 
-# 58. Banco no CI
+## 58. Banco no CI
 
 No CI, o objetivo é diferente.
 
@@ -1347,7 +1347,7 @@ Por isso containers são particularmente úteis.
 
 ---
 
-# 59. Migrations
+## 59. Migrations
 
 Pipeline de teste:
 
@@ -1368,7 +1368,7 @@ Isso valida se o banco pode ser construído a partir do código versionado.
 
 ---
 
-# 60. Migrations em deploy
+## 60. Migrations em deploy
 
 Em produção, migrations exigem estratégia.
 
@@ -1384,7 +1384,7 @@ Não execute migration destrutiva automaticamente sem política.
 
 ---
 
-# 61. Docker Registry
+## 61. Docker Registry
 
 Um registry armazena imagens.
 
@@ -1408,7 +1408,7 @@ Exemplos de registries incluem serviços públicos, privados e registries integr
 
 ---
 
-# 62. Registry privado
+## 62. Registry privado
 
 Para aplicações internas:
 
@@ -1422,7 +1422,7 @@ Credenciais devem ser tratadas como secrets.
 
 ---
 
-# 63. GitHub Container Registry
+## 63. GitHub Container Registry
 
 Uma opção integrada ao ecossistema GitHub é o GitHub Container Registry.
 
@@ -1432,7 +1432,7 @@ O pipeline pode autenticar, construir e publicar imagens.
 
 ---
 
-# 64. Login no registry
+## 64. Login no registry
 
 Conceitualmente:
 
@@ -1452,7 +1452,7 @@ em scripts versionados.
 
 ---
 
-# 65. Tagging strategy
+## 65. Tagging strategy
 
 Sugestão:
 
@@ -1473,7 +1473,7 @@ A referência imutável deve continuar disponível.
 
 ---
 
-# 66. latest
+## 66. latest
 
 `latest` não significa necessariamente:
 
@@ -1487,7 +1487,7 @@ Não dependa dela para auditoria.
 
 ---
 
-# 67. Tag por branch
+## 67. Tag por branch
 
 Para DEV:
 
@@ -1507,7 +1507,7 @@ DEV alias -> sha-a91c302
 
 ---
 
-# 68. Tag por release
+## 68. Tag por release
 
 Produção:
 
@@ -1525,7 +1525,7 @@ Isso conecta versão comercial e commit.
 
 ---
 
-# 69. Pipeline de build
+## 69. Pipeline de build
 
 ```text
 PR
@@ -1551,7 +1551,7 @@ deploy DEV
 
 ---
 
-# 70. Pipeline de promoção
+## 70. Pipeline de promoção
 
 Depois de DEV:
 
@@ -1572,7 +1572,7 @@ Sem novo build.
 
 ---
 
-# 71. Rollback com imagem
+## 71. Rollback com imagem
 
 Se:
 
@@ -1596,7 +1596,7 @@ Rollback de aplicação não resolve automaticamente rollback de banco.
 
 ---
 
-# 72. Compose DEV
+## 72. Compose DEV
 
 Exemplo:
 
@@ -1620,7 +1620,7 @@ O pipeline pode atualizar a versão de forma controlada.
 
 ---
 
-# 73. Não enviar .env de produção ao Git
+## 73. Não enviar .env de produção ao Git
 
 No repositório:
 
@@ -1640,7 +1640,7 @@ Para ambientes mais maduros, considere mecanismos específicos de secret managem
 
 ---
 
-# 74. Configuração versus código
+## 74. Configuração versus código
 
 Imagem:
 
@@ -1668,7 +1668,7 @@ Isso facilita promoção do mesmo artifact.
 
 ---
 
-# 75. Health endpoint
+## 75. Health endpoint
 
 Aplicação web deveria expor algo como:
 
@@ -1688,7 +1688,7 @@ Uma versão mais útil pode validar dependências críticas com cuidado para nã
 
 ---
 
-# 76. Readiness e liveness
+## 76. Readiness e liveness
 
 Conceitualmente:
 
@@ -1708,7 +1708,7 @@ Mesmo fora de Kubernetes, essa separação é útil.
 
 ---
 
-# 77. Healthcheck Docker
+## 77. Healthcheck Docker
 
 Exemplo:
 
@@ -1726,7 +1726,7 @@ Não instale ferramentas extras apenas por conveniência sem avaliar tamanho e s
 
 ---
 
-# 78. Dependências no healthcheck
+## 78. Dependências no healthcheck
 
 Evite healthcheck excessivamente complexo.
 
@@ -1736,7 +1736,7 @@ Defina semântica clara.
 
 ---
 
-# 79. Docker Compose profiles
+## 79. Docker Compose profiles
 
 Profiles podem separar serviços opcionais.
 
@@ -1751,7 +1751,7 @@ Isso permite ativar componentes somente quando necessários.
 
 ---
 
-# 80. Override files
+## 80. Override files
 
 Podemos ter:
 
@@ -1768,7 +1768,7 @@ Prefira clareza à abstração excessiva.
 
 ---
 
-# 81. Docker no self-hosted runner
+## 81. Docker no self-hosted runner
 
 Arquitetura:
 
@@ -1789,7 +1789,7 @@ Como visto no Volume 04, isso equivale a privilégio elevado no host.
 
 ---
 
-# 82. Segurança do socket Docker
+## 82. Segurança do socket Docker
 
 Acesso a:
 
@@ -1803,7 +1803,7 @@ Não exponha esse socket a containers não confiáveis.
 
 ---
 
-# 83. Docker-in-Docker
+## 83. Docker-in-Docker
 
 Docker-in-Docker (`dind`) é uma estratégia possível, mas adiciona complexidade.
 
@@ -1813,7 +1813,7 @@ Mais tarde podemos estudar isolamento maior.
 
 ---
 
-# 84. Runner efêmero
+## 84. Runner efêmero
 
 Uma evolução de segurança é criar runners descartáveis.
 
@@ -1836,7 +1836,7 @@ Exige automação adicional.
 
 ---
 
-# 85. Docker e runner efêmero
+## 85. Docker e runner efêmero
 
 Uma arquitetura avançada pode provisionar runners em:
 
@@ -1849,7 +1849,7 @@ Não será necessária na primeira implantação.
 
 ---
 
-# 86. Supply chain
+## 86. Supply chain
 
 Imagem Docker também faz parte da cadeia de suprimentos.
 
@@ -1867,7 +1867,7 @@ Segurança precisa cobrir todo o pipeline.
 
 ---
 
-# 87. Imagens oficiais e confiáveis
+## 87. Imagens oficiais e confiáveis
 
 Prefira imagens:
 
@@ -1881,7 +1881,7 @@ Evite imagens aleatórias apenas porque parecem convenientes.
 
 ---
 
-# 88. Fixar versões
+## 88. Fixar versões
 
 Em vez de:
 
@@ -1899,7 +1899,7 @@ Para reprodutibilidade ainda maior, imagens podem ser fixadas por digest.
 
 ---
 
-# 89. Digest
+## 89. Digest
 
 Uma imagem pode ser referenciada por digest.
 
@@ -1915,7 +1915,7 @@ Isso identifica conteúdo específico.
 
 ---
 
-# 90. Atualizações de imagem base
+## 90. Atualizações de imagem base
 
 Fixar versões não significa nunca atualizar.
 
@@ -1941,7 +1941,7 @@ Assim a atualização continua controlada.
 
 ---
 
-# 91. Vulnerability scanning
+## 91. Vulnerability scanning
 
 Imagens podem ser analisadas por scanners de vulnerabilidade.
 
@@ -1997,7 +1997,7 @@ Detalhes adicionais de política de segurança (severidade aceitável, exceçõe
 
 ---
 
-# 92. SBOM
+## 92. SBOM
 
 SBOM significa Software Bill of Materials.
 
@@ -2012,7 +2012,7 @@ Ajuda em:
 
 ---
 
-# 93. Assinatura de imagens
+## 93. Assinatura de imagens
 
 Ambientes mais maduros podem assinar artifacts/imagens e verificar assinatura antes do deploy.
 
@@ -2033,7 +2033,7 @@ deploy verifica
 
 ---
 
-# 94. Dockerfile como código
+## 94. Dockerfile como código
 
 Dockerfile deve passar por:
 
@@ -2052,7 +2052,7 @@ pode ser tão relevante quanto alteração no código da aplicação.
 
 ---
 
-# 95. Docker Compose como código
+## 95. Docker Compose como código
 
 O mesmo vale para:
 
@@ -2073,7 +2073,7 @@ podem afetar segurança e disponibilidade.
 
 ---
 
-# 96. Privileged
+## 96. Privileged
 
 Evite:
 
@@ -2087,7 +2087,7 @@ Esse modo remove importantes barreiras de isolamento.
 
 ---
 
-# 97. Capabilities
+## 97. Capabilities
 
 Linux capabilities permitem granularidade maior do que simplesmente executar privilegiado.
 
@@ -2099,7 +2099,7 @@ conceder apenas o necessário
 
 ---
 
-# 98. Read-only filesystem
+## 98. Read-only filesystem
 
 Algumas aplicações podem rodar com filesystem somente leitura, usando volumes/tmpfs apenas onde precisam escrever.
 
@@ -2109,7 +2109,7 @@ Isso reduz superfície de ataque.
 
 ---
 
-# 99. Limites de recursos
+## 99. Limites de recursos
 
 Em Compose podemos considerar limites de recursos conforme modo de execução e suporte disponível.
 
@@ -2124,7 +2124,7 @@ No self-hosted runner, isso é particularmente importante.
 
 ---
 
-# 100. OOM
+## 100. OOM
 
 Se o host ficar sem memória:
 
@@ -2148,7 +2148,7 @@ Não atribua automaticamente falhas de browser ao código da aplicação.
 
 ---
 
-# 101. docker stats
+## 101. docker stats
 
 ```bash
 docker stats
@@ -2165,7 +2165,7 @@ Mostra:
 
 ---
 
-# 102. Compose ps
+## 102. Compose ps
 
 ```bash
 docker compose ps
@@ -2179,7 +2179,7 @@ Ajuda a verificar:
 
 ---
 
-# 103. Compose logs
+## 103. Compose logs
 
 ```bash
 docker compose logs --tail=200
@@ -2189,7 +2189,7 @@ Em falha de CI, preserve logs antes do cleanup.
 
 ---
 
-# 104. Coletar logs antes de destruir
+## 104. Coletar logs antes de destruir
 
 Ordem:
 
@@ -2220,7 +2220,7 @@ down -v
 
 ---
 
-# 105. Script de diagnóstico
+## 105. Script de diagnóstico
 
 Exemplo:
 
@@ -2240,7 +2240,7 @@ if: failure()
 
 ---
 
-# 106. Testes Playwright com Docker
+## 106. Testes Playwright com Docker
 
 Duas estratégias:
 
@@ -2263,7 +2263,7 @@ A escolha depende de:
 
 ---
 
-# 107. Browser no runner
+## 107. Browser no runner
 
 Vantagem:
 
@@ -2276,7 +2276,7 @@ Desvantagem:
 
 ---
 
-# 108. Browser containerizado
+## 108. Browser containerizado
 
 Vantagem:
 
@@ -2289,7 +2289,7 @@ Desvantagem:
 
 ---
 
-# 109. Estratégia inicial
+## 109. Estratégia inicial
 
 Para o pipeline atual:
 
@@ -2307,7 +2307,7 @@ Depois podemos medir e decidir se vale containerizar o E2E.
 
 ---
 
-# 110. Workflow de integração com Compose
+## 110. Workflow de integração com Compose
 
 ```yaml
 name: Integration
@@ -2364,7 +2364,7 @@ jobs:
 
 ---
 
-# 111. Build da imagem após testes
+## 111. Build da imagem após testes
 
 Podemos estruturar:
 
@@ -2391,7 +2391,7 @@ Assim não construímos imagem final se testes básicos já falharam.
 
 ---
 
-# 112. Testar a própria imagem final
+## 112. Testar a própria imagem final
 
 Uma estratégia mais forte:
 
@@ -2412,7 +2412,7 @@ Isso verifica o artifact real.
 
 ---
 
-# 113. Não testar somente o source tree
+## 113. Não testar somente o source tree
 
 Se CI testa:
 
@@ -2432,7 +2432,7 @@ Idealmente, pelo menos uma etapa deve validar a imagem final.
 
 ---
 
-# 114. Pipeline recomendado
+## 114. Pipeline recomendado
 
 ```text
 PR
@@ -2461,7 +2461,7 @@ Dependendo da política, a imagem da PR pode ser descartada e a imagem de `main`
 
 ---
 
-# 115. Build na PR versus main
+## 115. Build na PR versus main
 
 Na PR:
 
@@ -2481,7 +2481,7 @@ Isso mantém artifact oficial ligado ao commit integrado em `main`.
 
 ---
 
-# 116. Workflow de publicação
+## 116. Workflow de publicação
 
 Conceitualmente:
 
@@ -2505,7 +2505,7 @@ deploy DEV
 
 ---
 
-# 117. Não publicar imagem quebrada
+## 117. Não publicar imagem quebrada
 
 Antes do push oficial:
 
@@ -2519,7 +2519,7 @@ Também é possível testar a imagem construída antes de publicá-la.
 
 ---
 
-# 118. Metadata da imagem
+## 118. Metadata da imagem
 
 OCI/Docker labels podem registrar:
 
@@ -2532,7 +2532,7 @@ Isso melhora rastreabilidade.
 
 ---
 
-# 119. Exemplo de labels
+## 119. Exemplo de labels
 
 ```dockerfile
 LABEL org.opencontainers.image.source="REPOSITORIO"
@@ -2543,7 +2543,7 @@ Valores dinâmicos podem ser passados no build.
 
 ---
 
-# 120. Build args
+## 120. Build args
 
 Exemplo:
 
@@ -2565,7 +2565,7 @@ Não use build args para secrets.
 
 ---
 
-# 121. Build secrets
+## 121. Build secrets
 
 BuildKit oferece mecanismos específicos para secrets durante build.
 
@@ -2575,7 +2575,7 @@ Mesmo assim, avalie se a dependência privada pode ser obtida de forma mais segu
 
 ---
 
-# 122. Secret em ARG é risco
+## 122. Secret em ARG é risco
 
 Evite:
 
@@ -2590,7 +2590,7 @@ Use mecanismos apropriados de build secret.
 
 ---
 
-# 123. Docker e monorepo
+## 123. Docker e monorepo
 
 Em monorepo:
 
@@ -2615,7 +2615,7 @@ O pipeline pode construir apenas componentes afetados.
 
 ---
 
-# 124. Build seletivo
+## 124. Build seletivo
 
 Se somente:
 
@@ -2629,7 +2629,7 @@ Essa otimização deve vir depois de termos pipeline correto e métricas.
 
 ---
 
-# 125. Dependências compartilhadas
+## 125. Dependências compartilhadas
 
 Monorepos complicam detecção de impacto:
 
@@ -2643,7 +2643,7 @@ Não faça seleção de build apenas por caminho sem entender dependências.
 
 ---
 
-# 126. Docker Compose para DEV
+## 126. Docker Compose para DEV
 
 Um DEV simples pode usar:
 
@@ -2665,7 +2665,7 @@ Não é obrigatório que DEV e PROD sejam idênticos, mas o artifact da aplicaç
 
 ---
 
-# 127. Reverse proxy
+## 127. Reverse proxy
 
 Nginx ou outro proxy pode ficar à frente:
 
@@ -2689,7 +2689,7 @@ Responsabilidades possíveis:
 
 ---
 
-# 128. TLS
+## 128. TLS
 
 Não coloque certificados privados dentro da imagem da aplicação.
 
@@ -2697,7 +2697,7 @@ Certificados devem ser gerenciados pelo ambiente/proxy/secret store.
 
 ---
 
-# 129. Deploy Compose
+## 129. Deploy Compose
 
 Exemplo conceitual:
 
@@ -2716,7 +2716,7 @@ curl --fail http://localhost/health
 
 ---
 
-# 130. Pull antes do up
+## 130. Pull antes do up
 
 Se a imagem está no registry:
 
@@ -2734,7 +2734,7 @@ docker compose up -d
 
 ---
 
-# 131. Não usar docker compose down em todo deploy
+## 131. Não usar docker compose down em todo deploy
 
 Em produção, executar:
 
@@ -2750,7 +2750,7 @@ A estratégia depende da arquitetura.
 
 ---
 
-# 132. Zero downtime
+## 132. Zero downtime
 
 Docker Compose simples não garante automaticamente zero downtime.
 
@@ -2764,7 +2764,7 @@ Para sistemas que exigem alta disponibilidade, serão necessárias estratégias 
 
 ---
 
-# 133. Blue/Green
+## 133. Blue/Green
 
 Conceito:
 
@@ -2792,7 +2792,7 @@ Rollback pode retornar tráfego para BLUE.
 
 ---
 
-# 134. Canary
+## 134. Canary
 
 Conceito:
 
@@ -2810,7 +2810,7 @@ aumentar gradualmente
 
 ---
 
-# 135. Para o projeto inicial
+## 135. Para o projeto inicial
 
 Não precisamos começar com Kubernetes, blue/green ou canary.
 
@@ -2828,7 +2828,7 @@ Isso já representa avanço significativo.
 
 ---
 
-# 136. Rollback Compose
+## 136. Rollback Compose
 
 Se o servidor usa:
 
@@ -2854,7 +2854,7 @@ O processo deve ser automatizado e auditável posteriormente.
 
 ---
 
-# 137. Banco e rollback
+## 137. Banco e rollback
 
 Problema:
 
@@ -2872,7 +2872,7 @@ Por isso deploy de banco precisa de planejamento.
 
 ---
 
-# 138. Expand/Contract
+## 138. Expand/Contract
 
 Estratégia de migrations compatíveis:
 
@@ -2891,7 +2891,7 @@ Isso facilita deploy e rollback.
 
 ---
 
-# 139. Backup antes de migration crítica
+## 139. Backup antes de migration crítica
 
 Para mudanças de alto risco:
 
@@ -2906,7 +2906,7 @@ Mas backup que nunca foi restaurado em teste não é garantia suficiente.
 
 ---
 
-# 140. Docker não substitui backup
+## 140. Docker não substitui backup
 
 Volume Docker não é backup.
 
@@ -2920,7 +2920,7 @@ Backup exige cópia independente e procedimento de restore.
 
 ---
 
-# 141. Observabilidade
+## 141. Observabilidade
 
 Após deploy:
 
@@ -2939,7 +2939,7 @@ Deploy bem-sucedido no CLI não significa aplicação saudável.
 
 ---
 
-# 142. Container status
+## 142. Container status
 
 ```bash
 docker ps
@@ -2959,7 +2959,7 @@ healthcheck + teste funcional
 
 ---
 
-# 143. Smoke pós-deploy
+## 143. Smoke pós-deploy
 
 Exemplo:
 
@@ -2975,7 +2975,7 @@ Não execute ações destrutivas em produção.
 
 ---
 
-# 144. E2E pós-deploy
+## 144. E2E pós-deploy
 
 Se houver E2E em produção, utilize cenários explicitamente seguros.
 
@@ -2983,7 +2983,7 @@ Muitas suítes E2E devem continuar rodando em ambiente controlado, não diretame
 
 ---
 
-# 145. Configuração DEV e PROD
+## 145. Configuração DEV e PROD
 
 Exemplo:
 
@@ -3001,7 +3001,7 @@ A imagem permanece a mesma.
 
 ---
 
-# 146. Docker e GitHub Environments
+## 146. Docker e GitHub Environments
 
 Secrets:
 
@@ -3016,7 +3016,7 @@ O artifact não precisa conhecer os secrets no momento do build.
 
 ---
 
-# 147. Princípio
+## 147. Princípio
 
 ```text
 BUILD
@@ -3032,7 +3032,7 @@ Isso reduz exposição.
 
 ---
 
-# 148. CI runner versus deploy runner
+## 148. CI runner versus deploy runner
 
 Arquitetura recomendada:
 
@@ -3053,7 +3053,7 @@ A separação será aprofundada no volume de segurança/deploy.
 
 ---
 
-# 149. Docker daemon compartilhado
+## 149. Docker daemon compartilhado
 
 Se runner CI e aplicações permanentes usam o mesmo daemon:
 
@@ -3067,7 +3067,7 @@ Por isso, runner deve preferencialmente possuir host/VM dedicado.
 
 ---
 
-# 150. Regra operacional
+## 150. Regra operacional
 
 Nunca execute comando Docker destrutivo apenas porque apareceu em um tutorial.
 
@@ -3084,7 +3084,7 @@ Entenda o host.
 
 ---
 
-# 151. Docker Compose config
+## 151. Docker Compose config
 
 Antes de aplicar:
 
@@ -3100,7 +3100,7 @@ Não publique essa saída indiscriminadamente.
 
 ---
 
-# 152. Validação antes do deploy
+## 152. Validação antes do deploy
 
 Pipeline pode verificar:
 
@@ -3114,7 +3114,7 @@ Isso detecta problemas de sintaxe/configuração antes da alteração operaciona
 
 ---
 
-# 153. Versionar Compose
+## 153. Versionar Compose
 
 Arquivos de Compose devem estar no Git:
 
@@ -3129,7 +3129,7 @@ Assim mudanças de infraestrutura passam por PR.
 
 ---
 
-# 154. Infraestrutura revisável
+## 154. Infraestrutura revisável
 
 Mudança:
 
@@ -3149,7 +3149,7 @@ Isso melhora auditoria.
 
 ---
 
-# 155. Diretórios sugeridos
+## 155. Diretórios sugeridos
 
 ```text
 .
@@ -3171,7 +3171,7 @@ Não é obrigatório; adapte ao projeto.
 
 ---
 
-# 156. Exemplo de scripts
+## 156. Exemplo de scripts
 
 ```text
 scripts/ci/build-image.sh
@@ -3188,7 +3188,7 @@ O YAML fica responsável pela orquestração.
 
 ---
 
-# 157. Script de build
+## 157. Script de build
 
 ```bash
 #!/usr/bin/env bash
@@ -3212,7 +3212,7 @@ Uso:
 
 ---
 
-# 158. Script de health check
+## 158. Script de health check
 
 ```bash
 #!/usr/bin/env bash
@@ -3238,7 +3238,7 @@ O número de tentativas deve refletir o comportamento real da aplicação.
 
 ---
 
-# 159. Script de deploy conceitual
+## 159. Script de deploy conceitual
 
 ```bash
 #!/usr/bin/env bash
@@ -3260,7 +3260,7 @@ Em produção real, acrescente logs, rollback e locking.
 
 ---
 
-# 160. Lock de deploy
+## 160. Lock de deploy
 
 Dois deploys simultâneos podem gerar condição de corrida.
 
@@ -3278,7 +3278,7 @@ GitHub Actions `concurrency` pode ajudar.
 
 ---
 
-# 161. Concurrency de DEV
+## 161. Concurrency de DEV
 
 Conceitualmente:
 
@@ -3294,7 +3294,7 @@ A política exata depende do fluxo desejado.
 
 ---
 
-# 162. Concurrency de PROD
+## 162. Concurrency de PROD
 
 Produção deve ser ainda mais restrita.
 
@@ -3306,7 +3306,7 @@ e com gate humano.
 
 ---
 
-# 163. Artifact provenance
+## 163. Artifact provenance
 
 Uma evolução de segurança é registrar evidências de como o artifact foi construído.
 
@@ -3325,7 +3325,7 @@ Isso fortalece auditoria.
 
 ---
 
-# 164. Retenção de imagens
+## 164. Retenção de imagens
 
 Não remova imediatamente todas as imagens antigas do registry.
 
@@ -3343,7 +3343,7 @@ versões em produção
 
 ---
 
-# 165. Garbage collection
+## 165. Garbage collection
 
 Registry e hosts acumulam dados.
 
@@ -3358,7 +3358,7 @@ Automação sem inventário pode apagar o rollback necessário.
 
 ---
 
-# 166. Backup de registry
+## 166. Backup de registry
 
 Se o registry for autogerenciado, ele também precisa de:
 
@@ -3371,7 +3371,7 @@ Serviço gerenciado transfere parte dessa responsabilidade ao provedor.
 
 ---
 
-# 167. Docker e arquitetura AMD64/ARM64
+## 167. Docker e arquitetura AMD64/ARM64
 
 Se servidores possuem arquiteturas diferentes:
 
@@ -3388,7 +3388,7 @@ Não adicione multiarch se todos os hosts usam a mesma arquitetura.
 
 ---
 
-# 168. Multi-platform
+## 168. Multi-platform
 
 Exemplo conceitual:
 
@@ -3402,7 +3402,7 @@ Build multiarch pode aumentar tempo de CI.
 
 ---
 
-# 169. Compatibilidade nativa
+## 169. Compatibilidade nativa
 
 Dependências com binários nativos podem se comportar diferente entre arquiteturas.
 
@@ -3410,7 +3410,7 @@ Testar no target real é importante.
 
 ---
 
-# 170. Timezone
+## 170. Timezone
 
 Containers frequentemente utilizam UTC por padrão.
 
@@ -3420,7 +3420,7 @@ Não resolva bugs de data apenas alterando timezone do container sem entender a 
 
 ---
 
-# 171. Locale
+## 171. Locale
 
 Locale também pode diferir do host.
 
@@ -3428,7 +3428,7 @@ Testes devem evitar depender implicitamente de configurações locais.
 
 ---
 
-# 172. UID/GID
+## 172. UID/GID
 
 Bind mounts podem gerar problemas de permissão entre host e container.
 
@@ -3445,7 +3445,7 @@ Não use `chmod 777` como solução automática.
 
 ---
 
-# 173. Permissões de volume
+## 173. Permissões de volume
 
 Defina proprietário e permissões adequadas.
 
@@ -3459,7 +3459,7 @@ quando apropriado.
 
 ---
 
-# 174. Rootless Docker
+## 174. Rootless Docker
 
 Docker possui modos e arquiteturas que reduzem necessidade de daemon root tradicional.
 
@@ -3469,7 +3469,7 @@ Não é requisito para o primeiro runner.
 
 ---
 
-# 175. Podman
+## 175. Podman
 
 Podman é uma alternativa open source para containers e possui modelo daemonless/rootless interessante.
 
@@ -3479,7 +3479,7 @@ Podman poderá ser avaliado posteriormente.
 
 ---
 
-# 176. Produtos open source do stack
+## 176. Produtos open source do stack
 
 Base recomendada:
 
@@ -3499,7 +3499,7 @@ Base recomendada:
 
 ---
 
-# 177. Quando não usar Docker
+## 177. Quando não usar Docker
 
 Docker pode ser desnecessário quando:
 
@@ -3512,7 +3512,7 @@ O objetivo é resolver problemas, não adicionar tecnologia.
 
 ---
 
-# 178. Quando Docker é especialmente útil
+## 178. Quando Docker é especialmente útil
 
 - múltiplos serviços;
 - dependências complexas;
@@ -3526,7 +3526,7 @@ O objetivo é resolver problemas, não adicionar tecnologia.
 
 ---
 
-# 179. Anti-pattern: servidor artesanal
+## 179. Anti-pattern: servidor artesanal
 
 Problema:
 
@@ -3549,7 +3549,7 @@ Docker reduz esse tipo de drift.
 
 ---
 
-# 180. Configuration drift
+## 180. Configuration drift
 
 Drift ocorre quando ambientes mudam ao longo do tempo sem rastreabilidade.
 
@@ -3570,7 +3570,7 @@ reduzimos parte desse problema.
 
 ---
 
-# 181. Docker não elimina drift completamente
+## 181. Docker não elimina drift completamente
 
 Ainda existem:
 
@@ -3587,7 +3587,7 @@ Por isso infraestrutura precisa de documentação e, futuramente, automação.
 
 ---
 
-# 182. Pipeline alvo deste guia
+## 182. Pipeline alvo deste guia
 
 ```text
 Developer
@@ -3635,7 +3635,7 @@ PROD
 
 ---
 
-# 183. Primeira implementação recomendada
+## 183. Primeira implementação recomendada
 
 Etapa 1:
 
@@ -3681,7 +3681,7 @@ promoção da mesma imagem para PROD
 
 ---
 
-# 184. Checklist Dockerfile
+## 184. Checklist Dockerfile
 
 - [ ] Imagem base confiável.
 - [ ] Versão controlada.
@@ -3698,7 +3698,7 @@ promoção da mesma imagem para PROD
 
 ---
 
-# 185. Checklist Compose de teste
+## 185. Checklist Compose de teste
 
 - [ ] Serviços isolados.
 - [ ] Banco descartável.
@@ -3713,7 +3713,7 @@ promoção da mesma imagem para PROD
 
 ---
 
-# 186. Checklist CI
+## 186. Checklist CI
 
 - [ ] Docker disponível no runner.
 - [ ] Runner possui espaço em disco.
@@ -3727,7 +3727,7 @@ promoção da mesma imagem para PROD
 
 ---
 
-# 187. Checklist deploy
+## 187. Checklist deploy
 
 - [ ] Imagem está no registry.
 - [ ] Versão é conhecida.
@@ -3742,7 +3742,7 @@ promoção da mesma imagem para PROD
 
 ---
 
-# 188. Troubleshooting: build lento
+## 188. Troubleshooting: build lento
 
 Verifique:
 
@@ -3760,7 +3760,7 @@ Use métricas antes de alterar arquitetura.
 
 ---
 
-# 189. Troubleshooting: container reiniciando
+## 189. Troubleshooting: container reiniciando
 
 ```bash
 docker ps
@@ -3779,7 +3779,7 @@ Verifique:
 
 ---
 
-# 190. Troubleshooting: banco não conecta
+## 190. Troubleshooting: banco não conecta
 
 Verifique:
 
@@ -3796,7 +3796,7 @@ Dentro do Compose, normalmente use nome do serviço, não `localhost`.
 
 ---
 
-# 191. Localhost dentro do container
+## 191. Localhost dentro do container
 
 Dentro do container:
 
@@ -3820,7 +3820,7 @@ DB_HOST=localhost
 
 ---
 
-# 192. Troubleshooting: porta ocupada
+## 192. Troubleshooting: porta ocupada
 
 ```bash
 ss -lntp
@@ -3831,7 +3831,7 @@ Em CI, prefira evitar portas fixas compartilhadas.
 
 ---
 
-# 193. Troubleshooting: permission denied
+## 193. Troubleshooting: permission denied
 
 Verifique:
 
@@ -3845,7 +3845,7 @@ Não aplique `777` sem diagnóstico.
 
 ---
 
-# 194. Troubleshooting: disco cheio
+## 194. Troubleshooting: disco cheio
 
 ```bash
 df -h
@@ -3857,7 +3857,7 @@ A última consulta pode exigir privilégios e deve ser usada apenas para diagnó
 
 ---
 
-# 195. Troubleshooting: imagem funciona local e não no servidor
+## 195. Troubleshooting: imagem funciona local e não no servidor
 
 Compare:
 
@@ -3876,7 +3876,7 @@ A imagem reduz diferenças, mas não elimina diferenças do ambiente.
 
 ---
 
-# 196. Laboratório 1
+## 196. Laboratório 1
 
 Criar uma aplicação simples Node.js:
 
@@ -3906,7 +3906,7 @@ curl http://localhost:3000/health
 
 ---
 
-# 197. Laboratório 2
+## 197. Laboratório 2
 
 Adicionar:
 
@@ -3924,7 +3924,7 @@ DB_HOST=db
 
 ---
 
-# 198. Laboratório 3
+## 198. Laboratório 3
 
 Adicionar Mosquitto:
 
@@ -3936,7 +3936,7 @@ e testar publicação/assinatura em ambiente isolado.
 
 ---
 
-# 199. Laboratório 4
+## 199. Laboratório 4
 
 Criar:
 
@@ -3948,7 +3948,7 @@ Executar no GitHub Actions self-hosted runner.
 
 ---
 
-# 200. Laboratório 5
+## 200. Laboratório 5
 
 Buildar imagem com:
 
@@ -3960,7 +3960,7 @@ Subir a imagem e executar smoke test.
 
 ---
 
-# 201. Laboratório 6
+## 201. Laboratório 6
 
 Configurar um registry e publicar:
 
@@ -3972,7 +3972,7 @@ Somente após os testes.
 
 ---
 
-# 202. Laboratório 7
+## 202. Laboratório 7
 
 Implantar a imagem em DEV.
 
@@ -3986,7 +3986,7 @@ logs
 
 ---
 
-# 203. Laboratório 8
+## 203. Laboratório 8
 
 Simular rollback:
 
@@ -4002,7 +4002,7 @@ Documentar o tempo e os comandos necessários.
 
 ---
 
-# 204. Relação com Volume 06
+## 204. Relação com Volume 06
 
 Docker fornece infraestrutura para uma estratégia de testes melhor.
 
@@ -4027,7 +4027,7 @@ quando cada teste executa
 
 ---
 
-# 205. Relação com Volume 09
+## 205. Relação com Volume 09
 
 O deploy futuro utilizará conceitos deste capítulo:
 
@@ -4042,7 +4042,7 @@ O deploy futuro utilizará conceitos deste capítulo:
 
 ---
 
-# 206. Resumo mental
+## 206. Resumo mental
 
 ```text
 Dockerfile
@@ -4094,7 +4094,7 @@ DEV -> PROD
 
 ---
 
-# 207. Arquitetura acumulada dos volumes 01–05
+## 207. Arquitetura acumulada dos volumes 01–05
 
 ```text
 Git
@@ -4130,7 +4130,7 @@ PROD
 
 ---
 
-# 208. Próximo volume
+## 208. Próximo volume
 
 **Volume 06 — Estratégia Profissional de Testes**
 

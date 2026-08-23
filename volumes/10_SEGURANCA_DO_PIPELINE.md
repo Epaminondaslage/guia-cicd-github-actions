@@ -1,4 +1,4 @@
-# Volume 10 — Segurança do Pipeline CI/CD
+# Volume 10 — segurança do pipeline CI/CD
 
 **Projeto:** Guia Profissional de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 10_SEGURANCA_DO_PIPELINE.md  
@@ -7,7 +7,7 @@
 
 ---
 
-## 1. Objetivo
+## 1. objetivo
 
 Este volume trata o pipeline de CI/CD como infraestrutura crítica.
 
@@ -39,7 +39,7 @@ Um comprometimento em qualquer elo pode afetar os seguintes.
 
 ---
 
-# 2. Princípio central
+## 2. princípio central
 
 ```text
 Least Privilege
@@ -64,7 +64,7 @@ read registry
 
 ---
 
-# 3. Threat Model
+## 3. threat model
 
 Perguntas:
 
@@ -79,7 +79,7 @@ Perguntas:
 
 ---
 
-# 4. Superfícies de ataque
+## 4. superfícies de ataque
 
 ```text
 GitHub account
@@ -97,19 +97,21 @@ artifact
 
 ---
 
-# 5. Conta GitHub
+## 5. conta GitHub
 
 Proteções fundamentais:
 
-- MFA (obrigatório para quem administra o repositório ou a organização);
-- senha única (gerenciador de senhas, nunca reaproveitada);
-- recovery codes seguros (fora do repositório, fora do disco compartilhado);
-- sessões revisadas periodicamente (Settings → Sessions);
-- tokens antigos removidos (Personal Access Tokens e SSH keys não usados há meses).
+| Proteção | Detalhe |
+|---|---|
+| MFA | obrigatório para quem administra o repositório ou a organização |
+| Senha única | gerenciador de senhas, nunca reaproveitada |
+| Recovery codes seguros | fora do repositório, fora do disco compartilhado |
+| Sessões revisadas periodicamente | Settings → Sessions |
+| Tokens antigos removidos | Personal Access Tokens e SSH keys não usados há meses |
 
 ---
 
-# 6. Tokens
+## 6. tokens
 
 Nunca criar token com escopo maior apenas por conveniência.
 
@@ -128,7 +130,7 @@ Defina expiração. Um token sem data de expiração é uma dívida técnica de 
 
 ---
 
-# 7. GITHUB_TOKEN
+## 7. GITHUB_TOKEN
 
 O `GITHUB_TOKEN` é gerado automaticamente pelo GitHub para cada execução de workflow e expira ao final do job. Ele **não** deve ser confundido com um PAT.
 
@@ -160,7 +162,7 @@ Sem o bloco `permissions:`, o comportamento herda o padrão da organização/rep
 
 ---
 
-# 8. Secrets
+## 8. secrets
 
 Armazene credenciais em **GitHub Secrets** (repositório, ambiente ou organização) — nunca em texto plano no código.
 
@@ -180,7 +182,7 @@ Isso vale mesmo para repositórios privados: privado não é sinônimo de seguro
 
 ---
 
-# 9. Rotação
+## 9. rotação
 
 Se um secret for exposto — versionado por engano, colado em log, colado em um prompt de IA — o procedimento correto é:
 
@@ -195,7 +197,7 @@ Ponto crítico: **remover do histórico não neutraliza o vazamento**. `git filt
 
 ---
 
-# 10. Environment secrets
+## 10. Environment secrets
 
 Use **GitHub Environments** (`Settings → Environments`) para segregar:
 
@@ -207,16 +209,18 @@ production
 
 Cada Environment pode ter:
 
-- secrets próprios, isolados dos demais;
-- *required reviewers* (aprovação humana antes do job rodar);
-- *deployment branches* (só `main`/`release/*` pode disparar deploy no ambiente);
-- *wait timer*.
+| Recurso | Descrição |
+|---|---|
+| Secrets próprios | isolados dos demais |
+| *Required reviewers* | aprovação humana antes do job rodar |
+| *Deployment branches* | só `main`/`release/*` pode disparar deploy no ambiente |
+| *Wait timer* | — |
 
 Secret de produção não deve ser disponibilizado ao CI de PR nem a jobs que rodam a partir de forks — um workflow disparado por `pull_request` de um fork não tem acesso aos secrets do Environment por padrão, e essa proteção não deve ser contornada sem necessidade real.
 
 ---
 
-# 11. SSH
+## 11. SSH
 
 Use chaves dedicadas por finalidade (deploy, backup, monitoramento).
 
@@ -232,7 +236,7 @@ A chave de deploy deve ter escopo mínimo (deploy key do repositório específic
 
 ---
 
-# 12. Usuário de deploy
+## 12. usuário de deploy
 
 Exemplo:
 
@@ -246,7 +250,7 @@ Um usuário de deploy dedicado (não-root) que executa `git pull` e reinicia o s
 
 ---
 
-# 13. sudoers
+## 13. sudoers
 
 Se precisa de um comando específico, permita somente esse comando quando tecnicamente viável.
 
@@ -258,7 +262,7 @@ NOPASSWD: ALL
 
 ---
 
-# 14. Host key verification
+## 14. host key verification
 
 Proteja contra MITM.
 
@@ -266,7 +270,7 @@ Mantenha `known_hosts` versionado ou provisionado, e nunca use `StrictHostKeyChe
 
 ---
 
-# 15. Self-hosted runner
+## 15. self-hosted runner
 
 É uma superfície privilegiada porque executa código.
 
@@ -274,7 +278,7 @@ Nunca trate runner como computador comum.
 
 ---
 
-# 16. Runner persistente
+## 16. runner persistente
 
 Resíduos podem permanecer:
 
@@ -290,7 +294,7 @@ Implemente cleanup e isolamento.
 
 ---
 
-# 17. PR não confiável
+## 17. PR não confiável
 
 Não execute automaticamente código externo em runner interno com acesso privilegiado.
 
@@ -307,7 +311,7 @@ estão disponíveis.
 
 ---
 
-# 18. Runner dedicado
+## 18. runner dedicado
 
 Arquitetura recomendada:
 
@@ -323,7 +327,7 @@ runner-deploy
 
 ---
 
-# 19. Runner efêmero
+## 19. runner efêmero
 
 Meta futura:
 
@@ -341,7 +345,7 @@ Melhora isolamento.
 
 ---
 
-# 20. Docker group
+## 20. Docker group
 
 Usuário no grupo Docker tem poder equivalente a privilégios elevados.
 
@@ -349,7 +353,7 @@ Trate como conta privilegiada.
 
 ---
 
-# 21. Docker socket
+## 21. Docker socket
 
 Nunca montar:
 
@@ -361,7 +365,7 @@ em containers não confiáveis sem compreender impacto.
 
 ---
 
-# 22. Actions de terceiros
+## 22. Actions de terceiros
 
 Uma linha:
 
@@ -375,7 +379,7 @@ Avalie reputação, manutenção e permissões antes de adicionar uma Action ao 
 
 ---
 
-# 23. Pinning
+## 23. pinning
 
 Em ambientes de segurança elevada, fixe Action por SHA de commit, não por tag:
 
@@ -387,7 +391,7 @@ Tags (`@v4`, `@v4.1.1`) podem ser movidas pelo mantenedor da Action — inclusiv
 
 ---
 
-# 24. Atualização de dependências (Dependabot / Renovate)
+## 24. atualização de dependências (Dependabot / Renovate)
 
 Automatize a atualização de dependências e de Actions de terceiros com **Dependabot** (nativo do GitHub) ou **Renovate** (mais configurável, roda como app ou self-hosted).
 
@@ -414,7 +418,7 @@ Pontos de atenção:
 
 ---
 
-# 25. Supply Chain
+## 25. supply chain
 
 Ataque pode ocorrer em:
 
@@ -429,7 +433,7 @@ build server
 
 ---
 
-# 26. Lockfiles
+## 26. lockfiles
 
 Versione lockfiles.
 
@@ -437,7 +441,7 @@ Eles aumentam previsibilidade.
 
 ---
 
-# 27. npm
+## 27. npm
 
 Use:
 
@@ -449,13 +453,13 @@ no CI. `npm ci` instala exatamente o que está no lockfile e falha se `package.j
 
 ---
 
-# 28. Composer
+## 28. Composer
 
 Use `composer.lock` e instalação reproduzível (`composer install --no-dev` em produção, sem `composer update` no pipeline de deploy).
 
 ---
 
-# 29. Dependency scanning (SCA)
+## 29. dependency scanning (SCA)
 
 Adote uma ferramenta de *Software Composition Analysis* que identifique vulnerabilidades conhecidas (CVEs) em dependências diretas e transitivas. Opções comuns:
 
@@ -471,7 +475,7 @@ Defina política por severidade (ver seção 94).
 
 ---
 
-# 30. Falso positivo
+## 30. falso positivo
 
 Scanner não deve ser ignorado nem bloquear cegamente.
 
@@ -486,7 +490,7 @@ documentar
 
 ---
 
-# 31. Secret scanning
+## 31. secret scanning
 
 Automatize busca por:
 
@@ -499,31 +503,24 @@ GitHub possui **secret scanning** nativo (ativado por padrão em repositórios p
 
 ---
 
-# 32. Gitleaks
+## 32. Gitleaks
 
 Gitleaks é opção open source para secret scanning, roda bem como step de CI ou como pre-commit hook local.
 
 ---
 
-# 33. TruffleHog
+## 33. TruffleHog
 
 Outra ferramenta conhecida para descoberta de secrets, com verificação ativa de validade de algumas credenciais encontradas (não só padrão de string).
 
 ---
 
-# 34. Static Analysis (SAST)
+## 34. static analysis (SAST)
 
-JavaScript/TypeScript:
-
-- ESLint (com plugins de segurança, ex. `eslint-plugin-security`);
-- Semgrep;
-- CodeQL.
-
-PHP:
-
-- PHPStan;
-- Psalm;
-- Semgrep.
+| Linguagem | Ferramentas |
+|---|---|
+| JavaScript/TypeScript | ESLint (com plugins de segurança, ex. `eslint-plugin-security`); Semgrep; CodeQL |
+| PHP | PHPStan; Psalm; Semgrep |
 
 **CodeQL** é a ferramenta de SAST nativa do GitHub (gratuita para repositórios públicos, incluída no GitHub Advanced Security para privados). Exemplo mínimo de workflow:
 
@@ -556,7 +553,7 @@ jobs:
 
 ---
 
-# 35. Semgrep
+## 35. Semgrep
 
 Permite regras de análise estática e possui opção open source (`semgrep --config auto` ou registro de regras próprio).
 
@@ -564,7 +561,7 @@ Permite regras de análise estática e possui opção open source (`semgrep --co
 
 ---
 
-# 36. Container scan
+## 36. container scan
 
 Imagens devem ser analisadas antes de ir para o registry de produção.
 
@@ -572,7 +569,7 @@ Ferramentas open source incluem Trivy e Grype.
 
 ---
 
-# 37. Trivy
+## 37. Trivy
 
 Pode verificar:
 
@@ -596,13 +593,13 @@ Integre gradualmente: comece só reportando (`exit-code: '0'`), depois passe a b
 
 ---
 
-# 38. Grype
+## 38. Grype
 
 Alternativa/complemento ao Trivy, também open source (Anchore), focada em SCA de imagens e SBOMs — combina bem com Syft (seção 52), do mesmo projeto.
 
 ---
 
-# 39. Base images
+## 39. base images
 
 Prefira imagens oficiais/confiáveis (`node:20-slim`, `php:8.3-fpm`, imagens publicadas por mantenedores reconhecidos).
 
@@ -616,7 +613,7 @@ sem auditoria.
 
 ---
 
-# 40. Imagens mínimas
+## 40. imagens mínimas
 
 Menor imagem pode reduzir superfície, mas não sacrifique depuração/compatibilidade sem motivo.
 
@@ -624,7 +621,7 @@ Segurança é mais que tamanho.
 
 ---
 
-# 41. Non-root container
+## 41. non-root container
 
 Aplicação deve rodar como usuário não-root sempre que viável:
 
@@ -634,7 +631,7 @@ USER node
 
 ---
 
-# 42. Privileged container
+## 42. privileged container
 
 Evite:
 
@@ -646,19 +643,19 @@ sem necessidade forte.
 
 ---
 
-# 43. Capabilities
+## 43. capabilities
 
 Remova capabilities desnecessárias (`--cap-drop=ALL` e adicione de volta só o estritamente necessário).
 
 ---
 
-# 44. Read-only
+## 44. read-only
 
 Considere filesystem read-only para serviços compatíveis (`read_only: true` no Compose, com volumes explícitos para o que precisa gravar).
 
 ---
 
-# 45. Network segmentation
+## 45. network segmentation
 
 CI não precisa acessar toda LAN.
 
@@ -672,13 +669,13 @@ PROD network
 
 ---
 
-# 46. Firewall
+## 46. firewall
 
 Permita somente tráfego necessário.
 
 ---
 
-# 47. Egress
+## 47. egress
 
 Controle de saída também é relevante para ambientes críticos.
 
@@ -686,7 +683,7 @@ Código comprometido (dependência maliciosa, Action comprometida) pode tentar e
 
 ---
 
-# 48. Registry
+## 48. Registry
 
 Separe permissões:
 
@@ -699,7 +696,7 @@ Um runner de deploy comprometido não deveria conseguir sobrescrever imagens no 
 
 ---
 
-# 49. Imagens imutáveis
+## 49. imagens imutáveis
 
 Use tags por SHA/digest (`registro/app@sha256:...`), não apenas `latest` ou uma tag mutável.
 
@@ -707,13 +704,13 @@ Isso reduz ambiguidade sobre o que está de fato rodando em cada ambiente.
 
 ---
 
-# 50. Artifact integrity
+## 50. artifact integrity
 
 Uma evolução é assinar artifacts/imagens, de forma que o ambiente de destino só aceite artefatos com origem verificável.
 
 ---
 
-# 51. Cosign / Sigstore
+## 51. Cosign / Sigstore
 
 **Cosign** (projeto Sigstore) é a ferramenta open source de referência para assinatura e verificação de imagens de container e outros artefatos.
 
@@ -744,13 +741,13 @@ Isso fecha o ciclo: a imagem só é aceita em produção se foi assinada pelo pr
 
 ---
 
-# 52. SBOM
+## 52. SBOM
 
 Gere inventário dos componentes de cada imagem/build (*Software Bill of Materials*) — útil para responder rapidamente "estamos expostos à CVE X?" sem precisar re-escanear tudo.
 
 ---
 
-# 53. Syft
+## 53. Syft
 
 Gera SBOM para imagens/filesystems em formatos padronizados (SPDX, CycloneDX).
 
@@ -758,7 +755,7 @@ Pode combinar com Grype/Trivy para checar o SBOM gerado contra bases de vulnerab
 
 ---
 
-# 54. Provenance
+## 54. provenance
 
 Registre:
 
@@ -788,7 +785,7 @@ Ajuda investigação e responde "esse artefato realmente veio deste pipeline?".
 
 ---
 
-# 55. OIDC para autenticação com nuvem
+## 55. OIDC para autenticação com nuvem
 
 Ao integrar o pipeline com AWS, Azure ou GCP (deploy de infraestrutura, push para registry gerenciado, etc.), **prefira OIDC a credenciais estáticas de longa duração**.
 
@@ -816,7 +813,7 @@ Quando o provedor de nuvem não suportar OIDC, ao menos: credencial com escopo m
 
 ---
 
-# 56. Branch protection
+## 56. branch protection
 
 `main` protegida:
 
@@ -831,7 +828,7 @@ Configuração em `Settings → Branches → Branch protection rules`. Vale revi
 
 ---
 
-# 57. CODEOWNERS
+## 57. CODEOWNERS
 
 Arquivos sensíveis podem exigir responsável específico como revisor obrigatório.
 
@@ -848,7 +845,7 @@ Combine com "Require review from Code Owners" na branch protection — sem isso,
 
 ---
 
-# 58. Workflow changes
+## 58. workflow changes
 
 Mudanças em workflows merecem revisão rigorosa porque podem alterar:
 
@@ -861,7 +858,7 @@ Um workflow malicioso ou mal revisado pode, por exemplo, exfiltrar secrets adici
 
 ---
 
-# 59. Pull request target
+## 59. pull request target
 
 O evento `pull_request_target` roda com o contexto (e os secrets) do repositório base, mesmo para PRs vindos de forks — diferente de `pull_request`, que roda com contexto restrito.
 
@@ -869,7 +866,7 @@ Isso é privilegiado por design e deve ser usado com extremo cuidado. Nunca faç
 
 ---
 
-# 60. Forks
+## 60. forks
 
 Política deve definir se contribuições externas:
 
@@ -880,7 +877,7 @@ Política deve definir se contribuições externas:
 
 ---
 
-# 61. Logs
+## 61. logs
 
 Secrets podem vazar por:
 
@@ -895,7 +892,7 @@ Evite imprimir ambientes completos. O GitHub mascara valores que batem exatament
 
 ---
 
-# 62. Masking
+## 62. masking
 
 Não confie apenas no mascaramento automático do GitHub Actions.
 
@@ -903,7 +900,7 @@ A melhor defesa é não imprimir o secret em lugar nenhum — nem em `echo`, nem
 
 ---
 
-# 63. Artifacts sensíveis
+## 63. artifacts sensíveis
 
 Relatórios podem conter:
 
@@ -916,7 +913,7 @@ Defina retenção (`retention-days`) e acesso (artifacts de workflow privado nã
 
 ---
 
-# 64. Playwright traces
+## 64. Playwright traces
 
 Podem capturar dados de sessão (cookies, tokens em localStorage, requisições completas).
 
@@ -924,7 +921,7 @@ Não publique artifacts de execução contra produção publicamente, e consider
 
 ---
 
-# 65. Dados reais
+## 65. dados reais
 
 CI deve usar dados sintéticos.
 
@@ -932,13 +929,13 @@ Evite copiar banco PROD integral para testes.
 
 ---
 
-# 66. Anonimização
+## 66. anonimização
 
 Quando dados reais forem necessários em ambientes controlados, anonimize conforme requisitos legais e de negócio (LGPD/GDPR conforme jurisdição).
 
 ---
 
-# 67. Database credentials
+## 67. database credentials
 
 Separe:
 
@@ -952,7 +949,7 @@ Nunca reutilize senha PROD em DEV.
 
 ---
 
-# 68. Database user
+## 68. database user
 
 Aplicação não precisa normalmente de usuário root/admin do banco.
 
@@ -960,19 +957,19 @@ Conceda apenas schema/operações necessárias (SELECT/INSERT/UPDATE/DELETE no s
 
 ---
 
-# 69. Migration user
+## 69. migration user
 
 Pode ser separado do usuário runtime — usuário de migration tem permissão de DDL, usuário da aplicação não.
 
 ---
 
-# 70. Backup credentials
+## 70. backup credentials
 
 Também devem ser segregadas, com acesso restrito a quem realmente opera backup/restore.
 
 ---
 
-# 71. MQTT security
+## 71. MQTT security
 
 Para produção:
 
@@ -985,7 +982,7 @@ CI usa broker isolado, nunca o broker de produção.
 
 ---
 
-# 72. MQTT wildcard
+## 72. MQTT wildcard
 
 Evite permitir:
 
@@ -997,19 +994,19 @@ para qualquer cliente sem necessidade — um cliente comprometido com wildcard t
 
 ---
 
-# 73. Webhooks
+## 73. webhooks
 
 Valide assinatura/autenticidade quando o provedor suporta (ex.: `X-Hub-Signature-256` do GitHub).
 
 ---
 
-# 74. Replay attacks
+## 74. replay attacks
 
 Para webhooks críticos, considere timestamp/nonce/idempotência para impedir reprocessamento de uma requisição capturada.
 
 ---
 
-# 75. API keys
+## 75. API keys
 
 Não colocar no frontend se são secrets de servidor.
 
@@ -1017,7 +1014,7 @@ Código executado no browser não pode guardar secret real — qualquer valor em
 
 ---
 
-# 76. CORS
+## 76. CORS
 
 Não usar:
 
@@ -1029,7 +1026,7 @@ indiscriminadamente quando credenciais/sensibilidade existem.
 
 ---
 
-# 77. Headers
+## 77. headers
 
 Reverse proxy pode adicionar headers de segurança (`Content-Security-Policy`, `Strict-Transport-Security`, `X-Content-Type-Options`).
 
@@ -1037,7 +1034,7 @@ Configuração depende da aplicação.
 
 ---
 
-# 78. Dependency policy
+## 78. dependency policy
 
 Antes de adicionar pacote:
 
@@ -1049,7 +1046,7 @@ Antes de adicionar pacote:
 
 ---
 
-# 79. AI-generated dependencies
+## 79. AI-generated dependencies
 
 Agentes podem sugerir pacotes inexistentes, obsoletos ou desnecessários — inclusive nomes plausíveis que não existem no registro real (risco de *slopsquatting*, quando alguém registra depois o nome sugerido com conteúdo malicioso).
 
@@ -1057,7 +1054,7 @@ Sempre valide antes de instalar o que uma IA sugeriu.
 
 ---
 
-# 80. Prompt injection em repositórios
+## 80. prompt injection em repositórios
 
 Agentes lendo Issues/PRs/docs podem encontrar instruções maliciosas embutidas em conteúdo aparentemente inofensivo (um comentário de issue, um README de dependência).
 
@@ -1065,7 +1062,7 @@ Ferramentas com capacidade de escrita/deploy devem tratar conteúdo do repositó
 
 ---
 
-# 81. IA e secrets
+## 81. IA e secrets
 
 Não copie secrets em chats/prompts de IA.
 
@@ -1073,13 +1070,13 @@ Use conectores/secret stores e referências — nunca cole uma chave de API ou s
 
 ---
 
-# 82. Autonomia da IA
+## 82. autonomia da IA
 
 Produção deve continuar protegida por gate humano e por `permissions:` restritivas, independentemente de quanta autonomia um agente de IA tenha no restante do fluxo.
 
 ---
 
-# 83. Audit log
+## 83. audit log
 
 Registre:
 
@@ -1094,7 +1091,7 @@ O GitHub mantém audit log de organização (`Settings → Audit log`) — vale 
 
 ---
 
-# 84. Incident response
+## 84. incident response
 
 Se pipeline comprometido:
 
@@ -1109,7 +1106,7 @@ Se pipeline comprometido:
 
 ---
 
-# 85. Runner rebuild
+## 85. runner rebuild
 
 Não tente necessariamente "limpar" host comprometido.
 
@@ -1123,13 +1120,13 @@ reinstalar/recriar
 
 ---
 
-# 86. Golden image
+## 86. Golden image
 
 Uma evolução é automatizar criação do runner a partir de imagem conhecida.
 
 ---
 
-# 87. Patch management
+## 87. patch management
 
 Atualize:
 
@@ -1142,19 +1139,19 @@ Atualize:
 
 ---
 
-# 88. Unattended upgrades
+## 88. unattended upgrades
 
 Podem ser úteis para patches de segurança, mas avalie impacto em runners críticos (um reboot automático no meio de um job é pior que o risco que ele mitiga).
 
 ---
 
-# 89. Reboot
+## 89. reboot
 
 Tenha procedimento para reiniciar runner sem deixar pipeline inconsistente.
 
 ---
 
-# 90. Monitoring
+## 90. monitoring
 
 Detecte:
 
@@ -1167,19 +1164,19 @@ Docker failed
 
 ---
 
-# 91. Backups
+## 91. backups
 
 Backup de configuração não deve incluir secrets em texto claro sem proteção.
 
 ---
 
-# 92. Restore test
+## 92. restore test
 
 Teste reconstrução do runner periodicamente — um backup nunca testado é uma suposição, não uma garantia.
 
 ---
 
-# 93. Security Gate PR
+## 93. security gate PR
 
 Sugestão inicial:
 
@@ -1192,7 +1189,7 @@ dependency scan básico (npm audit / Dependabot alerts)
 
 ---
 
-# 94. Security Gate Nightly
+## 94. security gate nightly
 
 ```text
 container scan (Trivy/Grype)
@@ -1202,7 +1199,7 @@ full dependency scan
 
 ---
 
-# 95. Release security
+## 95. release security
 
 Antes de release crítica:
 
@@ -1215,7 +1212,7 @@ assinatura (cosign), se aplicável
 
 ---
 
-# 96. Não bloquear por tudo
+## 96. não bloquear por tudo
 
 Crie política de severidade.
 
@@ -1231,7 +1228,7 @@ A política depende do risco real do projeto, não de um padrão genérico copia
 
 ---
 
-# 97. Exception process
+## 97. exception process
 
 Se vulnerabilidade não pode ser corrigida imediatamente:
 
@@ -1243,7 +1240,7 @@ Se vulnerabilidade não pode ser corrigida imediatamente:
 
 ---
 
-# 98. Security checklist workflow
+## 98. security checklist workflow
 
 - [ ] `permissions:` mínimas, declaradas explicitamente no workflow e por job.
 - [ ] Actions de terceiros confiáveis e, quando crítico, pinadas por SHA.
@@ -1257,7 +1254,7 @@ Se vulnerabilidade não pode ser corrigida imediatamente:
 
 ---
 
-# 99. Security checklist runner
+## 99. security checklist runner
 
 - [ ] usuário dedicado.
 - [ ] SSH por chave dedicada, nunca chave pessoal.
@@ -1270,7 +1267,7 @@ Se vulnerabilidade não pode ser corrigida imediatamente:
 
 ---
 
-# 100. Security checklist deploy
+## 100. security checklist deploy
 
 - [ ] gate humano (aprovação de Environment).
 - [ ] chave dedicada (nunca root, nunca pessoal).
@@ -1283,7 +1280,7 @@ Se vulnerabilidade não pode ser corrigida imediatamente:
 
 ---
 
-# 101. Branch protection e proteção de main — checklist rápido
+## 101. branch protection e proteção de main — checklist rápido
 
 - [ ] PR obrigatório para `main`.
 - [ ] required status checks (CI verde antes do merge).
@@ -1295,7 +1292,7 @@ Se vulnerabilidade não pode ser corrigida imediatamente:
 
 ---
 
-# 102. Arquitetura alvo
+## 102. arquitetura alvo
 
 ```text
 GitHub
@@ -1324,7 +1321,7 @@ PROD
 
 ---
 
-# 103. Próximo volume
+## 103. próximo volume
 
 **Volume 11 — Observabilidade**
 

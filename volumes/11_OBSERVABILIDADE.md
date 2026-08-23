@@ -28,7 +28,7 @@ Neste guia, começaremos por logs e métricas.
 
 ---
 
-# 2. Monitoramento versus observabilidade
+## 2. Monitoramento versus observabilidade
 
 Monitoramento:
 
@@ -48,7 +48,7 @@ qual dependência?
 
 ---
 
-# 3. Pipeline observável
+## 3. Pipeline observável
 
 Acompanhar:
 
@@ -63,7 +63,7 @@ Acompanhar:
 
 ---
 
-# 4. Aplicação observável
+## 4. Aplicação observável
 
 Acompanhar:
 
@@ -79,7 +79,7 @@ Acompanhar:
 
 ---
 
-# 5. Logs estruturados
+## 5. Logs estruturados
 
 Prefira:
 
@@ -96,41 +96,41 @@ a logs livres difíceis de consultar.
 
 Campos recomendados em cada linha de log:
 
-```text
-timestamp (ISO 8601, UTC)
-level
-service
-version (SHA curto ou tag do deploy)
-environment (dev/staging/prod)
-requestId ou traceId
-message
-```
+| Campo | Descrição |
+|---|---|
+| `timestamp` | ISO 8601, UTC |
+| `level` | Nível do log |
+| `service` | Serviço que emitiu o log |
+| `version` | SHA curto ou tag do deploy |
+| `environment` | dev/staging/prod |
+| `requestId` ou `traceId` | Identificador de correlação |
+| `message` | Mensagem do evento |
 
 O formato JSON por linha (NDJSON — um objeto por linha) é o mais fácil de indexar em Loki, Elasticsearch/OpenSearch, CloudWatch Logs Insights ou qualquer coletor. Emitir `console.log` de string livre funciona para debug local, mas não escala para consulta e correlação em produção.
 
 Bibliotecas comuns para logging estruturado:
 
-```text
-Node.js: pino, winston (formatter JSON)
-Python: structlog, logging com JSONFormatter
-Go: slog (stdlib, Go 1.21+), zap, zerolog
-Java: Logback/Log4j2 com encoder JSON
-```
+| Linguagem | Bibliotecas |
+|---|---|
+| Node.js | pino, winston (formatter JSON) |
+| Python | structlog, logging com JSONFormatter |
+| Go | slog (stdlib, Go 1.21+), zap, zerolog |
+| Java | Logback/Log4j2 com encoder JSON |
 
 ---
 
-# 6. Correlação entre pipeline e aplicação
+## 6. Correlação entre pipeline e aplicação
 
 O objetivo prático é responder "esse erro em produção apareceu depois de qual execução do workflow?". Para isso, o identificador do deploy precisa atravessar a fronteira entre CI/CD e aplicação.
 
 Inclua identificadores nos logs da aplicação:
 
-```text
-requestId ou traceId (por requisição)
-deployId / releaseVersion (SHA do commit ou tag)
-job id / run id do GitHub Actions (opcional, para depuração)
-user/session technical id
-```
+| Identificador | Descrição |
+|---|---|
+| `requestId` ou `traceId` | Por requisição |
+| `deployId` / `releaseVersion` | SHA do commit ou tag |
+| Job id / run id do GitHub Actions | Opcional, para depuração |
+| User/session technical id | Identificação técnica do usuário/sessão |
 
 Como propagar o identificador do pipeline para dentro da aplicação:
 
@@ -149,7 +149,7 @@ Sem expor dados pessoais desnecessários (PII) nos logs — nem em nome de "corr
 
 ---
 
-# 7. Níveis
+## 7. Níveis
 
 ```text
 DEBUG
@@ -162,7 +162,7 @@ Produção não deveria depender de DEBUG permanente para funcionar.
 
 ---
 
-# 8. Logs Docker
+## 8. Logs Docker
 
 Aplicação escreve:
 
@@ -176,7 +176,7 @@ Depois podemos encaminhar para sistema central.
 
 ---
 
-# 9. Loki
+## 9. Loki
 
 Grafana Loki é opção open source para agregação de logs.
 
@@ -197,7 +197,7 @@ Grafana
 
 ---
 
-# 10. Agentes de coleta de logs
+## 10. Agentes de coleta de logs
 
 O ecossistema de coleta evolui rápido. O Promtail (agente clássico do Loki) entrou em modo de manutenção, e o Grafana recomenda o Grafana Alloy como substituto para novas instalações — Alloy é um coletor único, compatível com OpenTelemetry, que também sabe enviar dados para Loki, Prometheus e Tempo.
 
@@ -211,7 +211,7 @@ host/container logs -> agente de coleta -> Loki
 
 ---
 
-# 11. Prometheus
+## 11. Prometheus
 
 Prometheus coleta métricas.
 
@@ -229,7 +229,7 @@ Grafana
 
 ---
 
-# 12. Exporters
+## 12. Exporters
 
 Exemplos:
 
@@ -241,7 +241,7 @@ application /metrics
 
 ---
 
-# 13. Node Exporter
+## 13. Node Exporter
 
 Métricas do host:
 
@@ -255,7 +255,7 @@ Métricas do host:
 
 ---
 
-# 14. cAdvisor
+## 14. cAdvisor
 
 Pode fornecer métricas de containers.
 
@@ -263,7 +263,7 @@ Avalie compatibilidade e segurança do ambiente.
 
 ---
 
-# 15. Métricas da aplicação
+## 15. Métricas da aplicação
 
 Exemplos:
 
@@ -276,7 +276,7 @@ mqtt_messages_total
 
 ---
 
-# 16. RED Method
+## 16. RED method
 
 Para serviços:
 
@@ -288,7 +288,7 @@ Duration
 
 ---
 
-# 17. USE Method
+## 17. USE method
 
 Para recursos:
 
@@ -300,7 +300,7 @@ Errors
 
 ---
 
-# 18. Golden Signals
+## 18. Golden signals
 
 ```text
 Latency
@@ -311,7 +311,7 @@ Saturation
 
 ---
 
-# 19. Grafana
+## 19. Grafana
 
 Crie dashboards para:
 
@@ -328,7 +328,7 @@ Evite dashboard com centenas de gráficos sem objetivo.
 
 ---
 
-# 20. Dashboard de runner
+## 20. Dashboard de runner
 
 Painéis:
 
@@ -343,7 +343,7 @@ runner status
 
 ---
 
-# 21. Disk alert
+## 21. Disk alert
 
 Self-hosted runner pode parar por disco cheio.
 
@@ -357,13 +357,13 @@ O limite real depende da capacidade.
 
 ---
 
-# 22. Runner offline
+## 22. Runner offline
 
 Crie verificação para detectar indisponibilidade.
 
 ---
 
-# 23. Health checks
+## 23. Health checks
 
 Endpoint:
 
@@ -375,7 +375,7 @@ deve responder rapidamente.
 
 ---
 
-# 24. Readiness
+## 24. Readiness
 
 ```text
 /ready
@@ -385,7 +385,7 @@ pode indicar capacidade de receber tráfego.
 
 ---
 
-# 25. Version endpoint
+## 25. Version endpoint
 
 ```text
 /version
@@ -395,7 +395,7 @@ ajuda correlação com deploy.
 
 ---
 
-# 26. Deployment marker
+## 26. Deployment marker
 
 Ao fazer deploy, registre evento:
 
@@ -408,7 +408,7 @@ No dashboard, uma linha vertical pode ajudar a correlacionar aumento de erros.
 
 ---
 
-# 27. Alertas
+## 27. Alertas
 
 Um alerta deve ser:
 
@@ -432,18 +432,18 @@ quando isso realmente requer ação.
 
 ---
 
-# 27a. Notificações de falha de pipeline e deploy
+## 27a. Notificações de falha de pipeline e deploy
 
 Além de alertas de infraestrutura (Prometheus/Alertmanager), o pipeline deve notificar diretamente quando falha, sem depender de alguém checar a aba Actions manualmente.
 
 Opções mais comuns:
 
-```text
-e-mail: notificação padrão do GitHub para quem disparou o workflow (ativado por padrão em Settings -> Notifications)
-Slack: webhook de entrada + step dedicado no job
-Microsoft Teams: webhook de entrada, formato similar ao Slack
-GitHub: status check + comentário automático no PR
-```
+| Canal | Descrição |
+|---|---|
+| E-mail | Notificação padrão do GitHub para quem disparou o workflow (ativado por padrão em Settings -> Notifications) |
+| Slack | Webhook de entrada + step dedicado no job |
+| Microsoft Teams | Webhook de entrada, formato similar ao Slack |
+| GitHub | Status check + comentário automático no PR |
 
 Exemplo de step em Slack usando um webhook, disparado apenas em falha:
 
@@ -462,24 +462,22 @@ Exemplo de step em Slack usando um webhook, disparado apenas em falha:
 
 Pontos de atenção:
 
-```text
-não commite a URL do webhook — use secrets;
-notifique falha, não sucesso repetitivo (evita ruído — ver Alert fatigue);
-inclua link direto para o run (github.server_url/github.repository/actions/runs/github.run_id);
-diferencie canal de falha de CI (build/test) do canal de falha de deploy em produção — severidades diferentes.
-```
+- não commite a URL do webhook — use secrets;
+- notifique falha, não sucesso repetitivo (evita ruído — ver Alert fatigue);
+- inclua link direto para o run (github.server_url/github.repository/actions/runs/github.run_id);
+- diferencie canal de falha de CI (build/test) do canal de falha de deploy em produção — severidades diferentes.
 
 Para falhas de deploy especificamente, é comum um canal com resposta mais rápida (ex.: canal de on-call) separado do canal de CI geral.
 
 ---
 
-# 28. Alert fatigue
+## 28. Alert fatigue
 
 Muitos alertas inúteis fazem a equipe ignorar todos.
 
 ---
 
-# 29. SLI
+## 29. SLI
 
 Service Level Indicator.
 
@@ -491,7 +489,7 @@ percentual de requests bem-sucedidas
 
 ---
 
-# 30. SLO
+## 30. SLO
 
 Service Level Objective.
 
@@ -503,7 +501,7 @@ Exemplo:
 
 ---
 
-# 31. SLA
+## 31. SLA
 
 Acordo externo/contratual.
 
@@ -511,7 +509,7 @@ Não confunda com SLO interno.
 
 ---
 
-# 32. Error budget
+## 32. Error budget
 
 Se SLO permite 0,1% de falha, isso define orçamento.
 
@@ -519,7 +517,7 @@ Pode orientar ritmo de mudanças.
 
 ---
 
-# 33. Latência
+## 33. Latência
 
 Use percentis:
 
@@ -533,7 +531,7 @@ Média pode esconder caudas.
 
 ---
 
-# 34. Banco
+## 34. Banco
 
 Observe:
 
@@ -546,7 +544,7 @@ Observe:
 
 ---
 
-# 35. MQTT
+## 35. MQTT
 
 Observe:
 
@@ -559,7 +557,7 @@ Observe:
 
 ---
 
-# 36. Logs de deploy
+## 36. Logs de deploy
 
 Registre:
 
@@ -573,7 +571,7 @@ result
 
 ---
 
-# 37. Logs de CI
+## 37. Logs de CI
 
 GitHub já possui logs de Actions, disponíveis pela UI, pelo `gh run view --log` (GitHub CLI) e pela API REST/GraphQL.
 
@@ -581,7 +579,7 @@ Para análise de longo prazo, métricas agregadas podem ser úteis, já que os l
 
 ---
 
-# 37a. GitHub Actions: métricas via API e insights nativos
+## 37a. GitHub Actions: métricas via API e insights nativos
 
 O próprio GitHub expõe dados de execução que dispensam, em boa parte dos casos, montar uma stack própria só para observar o pipeline:
 
@@ -632,7 +630,7 @@ Comece pelos Insights nativos do GitHub; monte coleta própria só quando precis
 
 ---
 
-# 38. Test duration
+## 38. Test duration
 
 Registre tendências.
 
@@ -645,7 +643,7 @@ Isso sinaliza necessidade de otimização.
 
 ---
 
-# 39. Flaky rate
+## 39. Flaky rate
 
 Métrica:
 
@@ -655,7 +653,7 @@ testes que passam após retry / total
 
 ---
 
-# 40. Mean Time To Detect
+## 40. Mean time to detect
 
 MTTD:
 
@@ -665,7 +663,7 @@ quanto tempo até perceber falha
 
 ---
 
-# 41. Mean Time To Recover
+## 41. Mean time to recover
 
 MTTR:
 
@@ -677,7 +675,7 @@ CI/CD e rollback devem reduzir MTTR.
 
 ---
 
-# 42. Synthetic monitoring
+## 42. Synthetic monitoring
 
 Execute fluxos seguros periodicamente.
 
@@ -689,7 +687,7 @@ logout
 
 ---
 
-# 43. Uptime check
+## 43. Uptime check
 
 Teste HTTP simples de fora da infraestrutura.
 
@@ -697,7 +695,7 @@ Ajuda detectar falha de rede/proxy.
 
 ---
 
-# 44. Black-box versus white-box
+## 44. Black-box versus white-box
 
 Black-box:
 
@@ -715,7 +713,7 @@ Use ambos.
 
 ---
 
-# 45. Alertas por deploy
+## 45. Alertas por deploy
 
 Se erro cresce imediatamente após deploy, correlacione.
 
@@ -723,7 +721,7 @@ Uma evolução é automatizar rollback para falhas muito claras, com cautela.
 
 ---
 
-# 46. Logs sensíveis
+## 46. Logs sensíveis
 
 Não grave:
 
@@ -734,7 +732,7 @@ Não grave:
 
 ---
 
-# 47. Retenção
+## 47. Retenção
 
 Defina quanto tempo guardar:
 
@@ -748,19 +746,19 @@ com base em custo e necessidade.
 
 ---
 
-# 48. Backup do observability stack
+## 48. Backup do observability stack
 
 Dashboards e configurações também devem ser versionados quando possível.
 
 ---
 
-# 49. Grafana provisioning
+## 49. Grafana provisioning
 
 Dashboards/datasources podem ser provisionados por arquivos versionados.
 
 ---
 
-# 50. Prometheus configuration
+## 50. Prometheus configuration
 
 Versione:
 
@@ -773,7 +771,7 @@ sem secrets.
 
 ---
 
-# 51. Alertmanager
+## 51. Alertmanager
 
 Prometheus Alertmanager organiza e encaminha alertas.
 
@@ -781,7 +779,7 @@ Pode agrupar, silenciar e rotear.
 
 ---
 
-# 52. Silences
+## 52. Silences
 
 Durante manutenção planejada, use silences controlados.
 
@@ -789,7 +787,7 @@ Não desligue monitoramento indefinidamente.
 
 ---
 
-# 53. Runbooks
+## 53. Runbooks
 
 Alerta deve apontar para procedimento.
 
@@ -802,7 +800,7 @@ RunnerDiskLow
 
 ---
 
-# 54. Runbook
+## 54. Runbook
 
 Conteúdo:
 
@@ -818,7 +816,7 @@ escalonamento
 
 ---
 
-# 55. Dashboard DEV
+## 55. Dashboard DEV
 
 Mostrar:
 
@@ -830,13 +828,13 @@ Mostrar:
 
 ---
 
-# 56. Dashboard PROD
+## 56. Dashboard PROD
 
 Priorize sinais operacionais, não métricas decorativas.
 
 ---
 
-# 57. CI dashboard
+## 57. CI dashboard
 
 Exemplo:
 
@@ -850,13 +848,13 @@ E2E duration
 
 ---
 
-# 58. Observabilidade no post-mortem
+## 58. Observabilidade no post-mortem
 
 Use dados objetivos para reconstruir timeline.
 
 ---
 
-# 59. Tracing
+## 59. Tracing
 
 Tracing distribuído mostra o caminho completo de uma requisição atravessando múltiplos serviços, com o tempo gasto em cada etapa (chamado de "span").
 
@@ -878,7 +876,7 @@ Cada span carrega o mesmo `traceId`, permitindo reconstruir a linha do tempo com
 
 ---
 
-# 60. OpenTelemetry
+## 60. OpenTelemetry
 
 OpenTelemetry (OTel) é o projeto open source (CNCF) que padronizou coleta de métricas, logs e traces através de uma API e um formato comuns, independentes de fornecedor. Hoje é o padrão de facto — a maioria dos backends de observabilidade (Grafana, Datadog, New Relic, Honeycomb, etc.) aceita dados no formato OTLP (OpenTelemetry Protocol) nativamente.
 
@@ -906,13 +904,13 @@ Muitas linguagens oferecem instrumentação automática (auto-instrumentation) q
 
 ---
 
-# 60a. Correlação entre deploy e tracing
+## 60a. Correlação entre deploy e tracing
 
 O mesmo identificador de versão usado nos logs (seção 6) deve aparecer também nos traces, como atributo do span (`service.version` ou `deployment.environment` no padrão de atributos semânticos do OpenTelemetry). Isso permite, ao investigar um span lento ou com erro, saber imediatamente em qual deploy ele ocorreu — fechando o ciclo pipeline -> deploy -> log -> métrica -> trace com o mesmo identificador em todas as camadas.
 
 ---
 
-# 61. Não instrumentar tudo de uma vez
+## 61. Não instrumentar tudo de uma vez
 
 Comece por:
 
@@ -927,7 +925,7 @@ Depois tracing.
 
 ---
 
-# 62. Stack inicial sugerida
+## 62. Stack inicial sugerida
 
 ```text
 Prometheus
@@ -940,7 +938,7 @@ Adicionar outros componentes conforme necessidade.
 
 ---
 
-# 63. Docker Compose observability
+## 63. Docker Compose observability
 
 Pode existir stack separado:
 
@@ -952,13 +950,13 @@ Não misture volumes de aplicação com monitoring sem planejamento.
 
 ---
 
-# 64. Segurança
+## 64. Segurança
 
 Grafana/Prometheus não devem ficar expostos publicamente sem autenticação e proteção de rede.
 
 ---
 
-# 65. Checklist
+## 65. Checklist
 
 - [ ] Logs estruturados (JSON) com versão/deploy no payload.
 - [ ] Sem secrets nos logs.
@@ -976,7 +974,7 @@ Grafana/Prometheus não devem ficar expostos publicamente sem autenticação e p
 
 ---
 
-# 66. Próximo volume
+## 66. Próximo volume
 
 **Volume 12 — Infraestrutura do Servidor CI/CD**
 
