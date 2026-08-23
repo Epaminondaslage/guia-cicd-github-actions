@@ -926,4 +926,29 @@ Muito mais importantes que CI.
 
 ---
 
+## Fontes
+
+### Branches, PRs e CODEOWNERS
+
+- [About rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) — comprova bypass list granular e aplicação em nível de organização (seção 3); modo "evaluate" citado no texto não aparece explicitamente nesta página e deve ser tratado como detalhe operacional adicional a confirmar na interface.
+- [About protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches) — sustenta a configuração mínima de proteção de `main` (required status checks, required reviews, CODEOWNERS review) da seção 3 e a distinção required checks x required reviews da seção 9.
+- [About code owners](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners) — confirma local do arquivo (`.github/CODEOWNERS`, raiz, `docs/`), sintaxe baseada em `.gitignore`, regra "última linha que casa vence" e a necessidade de combinar com "Require review from Code Owners" (seção 46).
+
+### Commits, versionamento e changelog
+
+- [Conventional Commits v1.0.0](https://www.conventionalcommits.org/en/v1.0.0/) — especifica os prefixos `feat:`/`fix:` e a marcação de breaking change (`!` ou `BREAKING CHANGE:`), base da convenção de commit da seção 13 e do mapeamento de bump da seção 15.
+- [Semantic Versioning 2.0.0](https://semver.org/) — define formalmente MAJOR.MINOR.PATCH e a sintaxe de pré-release/build metadata (seção 15).
+- [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) — origem das seções fixas Added/Changed/Deprecated/Removed/Fixed/Security usadas na seção 16.
+
+### Deploy, ambientes e auditoria
+
+- [Using environments for deployment](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment) — comprova required reviewers, wait timer e restrição de branches em Environments, base do "approval" e da auditoria de deploy da seção 18.1.
+- [REST API: Deployments](https://docs.github.com/en/rest/deployments/deployments) — confirma o endpoint `GET /repos/{owner}/{repo}/deployments` citado na seção 18.1.
+- [Reviewing the audit log for your organization](https://docs.github.com/en/organizations/keeping-your-organization-secure/managing-security-settings-for-your-organization/reviewing-the-audit-log-for-your-organization) — sustenta o uso do audit log para registrar mudanças em proteção de branch, secrets e membros (seção 18.1); a página não restringe explicitamente a planos Team/Enterprise, ponto que vale revalidar antes de reafirmar essa restrição no texto.
+- [About security hardening with OpenID Connect](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect) — confirma a troca de secrets de longa duração por tokens OIDC de curta duração validados por claims (repo/branch/environment), base da seção 18.2 e da recomendação da seção 35.
+
+### Métricas de engenharia
+
+- [DORA — Guides: DORA Metrics](https://dora.dev/guides/dora-metrics-four-keys/) — fonte oficial do programa DORA para deployment frequency, lead time for changes, change failure rate e MTTR (hoje evoluído para um modelo de cinco métricas), citadas na seção 56.
+
 **Fim do Volume 15 — Governança e Operação**

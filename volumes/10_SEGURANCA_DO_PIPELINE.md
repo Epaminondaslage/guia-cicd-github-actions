@@ -1339,4 +1339,52 @@ Cobrirá:
 
 ---
 
+## Fontes
+
+### Tokens, permissions e secrets
+
+- [Use GITHUB_TOKEN for authentication in workflows](https://docs.github.com/en/actions/security-guides/automatic-token-authentication) — comprova o comportamento do `GITHUB_TOKEN` e o uso do bloco `permissions` por workflow/job (seção 7).
+- [Using secrets in GitHub Actions](https://docs.github.com/en/actions/security-guides/encrypted-secrets) — comprova o funcionamento dos GitHub Secrets (seções 8 a 10).
+
+### Secret scanning
+
+- [Secret scanning](https://docs.github.com/en/code-security/secret-scanning/about-secret-scanning) — comprova o funcionamento do secret scanning nativo do GitHub (seção 31).
+- [Push protection](https://docs.github.com/en/code-security/secret-scanning/push-protection-for-repositories-and-organizations) — comprova o bloqueio de push antes de um segredo entrar no histórico (seção 31).
+
+### Hardening de Actions (pinning, pull_request_target, forks)
+
+- [Secure use reference](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions) — comprova a recomendação de pinning por SHA de commit e os riscos de `pull_request_target`/`workflow_run` com checkout de PR não confiável (seções 23, 59, 60).
+- [Events that trigger workflows](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows) — comprova a definição e o comportamento do evento `pull_request_target` (seção 59).
+
+### Dependências e SAST/SCA (Dependabot, CodeQL)
+
+- [Dependabot options reference](https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference) — comprova as opções de configuração do `dependabot.yml` (seção 24).
+- [Code scanning with CodeQL](https://docs.github.com/en/code-security/code-scanning/introduction-to-code-scanning/about-code-scanning-with-codeql) — comprova o funcionamento do CodeQL como SAST nativo do GitHub (seção 34).
+
+### Container scan (Trivy/Grype)
+
+- [Trivy — The All-in-One Security Scanner](https://trivy.dev/) — comprova o escopo do Trivy (imagem, filesystem, dependências, configuração) usado nas seções 29, 36 e 37.
+- [Grype (anchore/grype)](https://github.com/anchore/grype) — comprova o escopo do Grype como scanner de vulnerabilidades para imagens e SBOMs (seções 29, 36, 38).
+
+### Assinatura e proveniência (Cosign/Sigstore, SBOM, attestations)
+
+- [Cosign — Keyless signing overview (Sigstore docs)](https://docs.sigstore.dev/cosign/signing/overview/) — comprova o fluxo de keyless signing via OIDC usado na seção 51.
+- [Syft (anchore/syft)](https://github.com/anchore/syft) — comprova o papel do Syft na geração de SBOM (seções 52, 53).
+- [Using artifact attestations to establish provenance for builds](https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds) — comprova o uso de `actions/attest-build-provenance` para proveniência nativa (seção 54).
+
+### OIDC para nuvem
+
+- [OpenID Connect](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect) — comprova o uso de OIDC do GitHub Actions para autenticação com AWS/Azure/GCP em vez de credenciais estáticas (seção 55).
+
+### Branch protection e CODEOWNERS
+
+- [About rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) — comprova o mecanismo de rulesets como evolução da proteção de branch (seções 56, 101).
+- [About code owners](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners) — comprova o funcionamento do arquivo `CODEOWNERS` e da revisão obrigatória de code owners (seção 57).
+
+### OWASP CI/CD Security
+
+- [OWASP Top 10 CI/CD Security Risks](https://owasp.org/www-project-top-10-ci-cd-security-risks/) — referência geral para o modelo de ameaças e as superfícies de ataque tratadas neste volume (seções 3, 4, 25).
+
+---
+
 **Fim do Volume 10 — Segurança do Pipeline CI/CD**

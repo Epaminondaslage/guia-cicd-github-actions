@@ -1374,4 +1374,38 @@ O próximo volume aprofundará:
 
 ---
 
+## Fontes
+
+### Branching, switch e worktree
+
+- [Git - git-switch Documentation](https://git-scm.com/docs/git-switch) — comando recomendado para criar/trocar branch (seção 7), em substituição parcial ao `git checkout`.
+- [Git - git-worktree Documentation](https://git-scm.com/docs/git-worktree) — criação de diretórios de trabalho adicionais ligados ao mesmo `.git`, usado na seção 10 para desenvolvimento paralelo sem `stash`.
+- [3.2 Git Branching - Basic Branching and Merging (Pro Git)](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging) — modelo conceitual de branch como linha de desenvolvimento paralela, base das seções 7 a 10.
+
+### Merge, fast-forward e rebase
+
+- [Git - git-merge Documentation](https://git-scm.com/docs/git-merge) — comportamento de fast-forward (`--ff`) e merge commit ("TRUE MERGE"), usado nas seções 17 a 19.
+- [Git - git-rebase Documentation](https://git-scm.com/docs/git-rebase) — reposicionamento de commits sobre outra base e recriação de hashes, referenciado nas seções 21 e 22.
+- [Pull request merges (GitHub Docs)](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges) — estratégias de merge no GitHub, incluindo squash merge, usado na seção 20.
+
+### Desfazer alterações
+
+- [Git - git-restore Documentation](https://git-scm.com/docs/git-restore) — descarte de alterações na working tree e remoção da staging area, usado na seção 27.
+- [Git - git-stash Documentation](https://git-scm.com/docs/git-stash) — guarda temporária de alterações sem commit, usado na seção 28.
+- [Git - git-revert Documentation](https://git-scm.com/docs/git-revert) — criação de commit inverso preservando histórico, usado na seção 38.
+- [Git - git-reset Documentation](https://git-scm.com/docs/git-reset) — modos `--soft`, `--mixed` e `--hard`, usado na seção 39.
+- [Git - git-bisect Documentation](https://git-scm.com/docs/git-bisect) — busca binária de regressões no histórico, usado na seção 37.
+
+### Tags, .gitignore e versionamento
+
+- [Git - git-tag Documentation](https://git-scm.com/docs/git-tag) — tags leves e anotadas, usado na seção 29.
+- [Git - gitignore Documentation](https://git-scm.com/docs/gitignore) — arquivos ignorados pelo controle de versão, usado na seção 31.
+- [Semantic Versioning 2.0.0](https://semver.org/) — especificação formal de MAJOR.MINOR.PATCH, usado na seção 30.
+
+### GitHub e Pull Requests
+
+- [About pull requests (GitHub Docs)](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) — conceito de Pull Request como proposta de integração entre branches, referenciado nas seções 16, 33 e 34.
+
+---
+
 **Fim do Volume 01 — Fundamentos de Git e Controle de Versão**

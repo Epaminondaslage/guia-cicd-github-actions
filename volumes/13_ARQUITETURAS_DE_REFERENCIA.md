@@ -1082,3 +1082,30 @@ rollback
 ---
 
 **Fim do Volume 13 — Arquiteturas de Referência**
+
+---
+
+## Fontes
+
+### GitHub Actions — Reusable Workflows e Composite Actions
+
+- [Reusing workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows) — GitHub Docs oficial: sustenta `workflow_call`, a exigência de repassar `secrets:` explicitamente (não há herança automática entre chamador e workflow reusável, salvo `secrets: inherit`) e o limite de aninhamento de workflows reusáveis (a documentação atual indica até 9 níveis de workflows reusáveis mais o chamador, valor a conferir/ajustar no texto que hoje cita "4 níveis").
+- [Creating a composite action](https://docs.github.com/en/actions/sharing-automations/creating-actions/creating-a-composite-action) — GitHub Docs oficial: confirma que uma composite action agrupa vários steps em uma única action, executada como um único step dentro do job chamador (seção 11.1).
+
+### GitHub Actions — Matrix e Environments
+
+- [Using a build matrix for your jobs](https://docs.github.com/en/actions/using-jobs/using-a-build-matrix-for-your-jobs) — GitHub Docs oficial: sustenta `strategy.matrix`, `fail-fast`, `max-parallel`, `include`/`exclude` e `continue-on-error` combinados com matrix (seção 17.1).
+- [Using environments for deployment](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment) — GitHub Docs oficial: sustenta secrets/variáveis por Environment, required reviewers, wait timer e restrição de deployment branches (seção 25.1).
+
+### Ferramenta de Terceiros — paths-filter
+
+- [dorny/paths-filter](https://github.com/dorny/paths-filter) — repositório oficial da action: sustenta o uso de `paths-filter` para disparar CI condicionalmente por pacote em monorepo (seção 11).
+
+### Traefik
+
+- [Docker provider (Traefik)](https://doc.traefik.io/traefik/reference/install-configuration/providers/docker/) — documentação oficial do Traefik: sustenta a descoberta dinâmica de serviços via labels do Docker, sem necessidade de restart manual (seções 21 e 21.1).
+- [HTTP load balancing services (Traefik)](https://doc.traefik.io/traefik/reference/routing-configuration/http/load-balancing/service/) — documentação oficial do Traefik: sustenta o *weighted round robin* entre serviços via peso (`server.weight`), base da estratégia de canary deploy descrita na seção 21.2.
+
+### Coolify
+
+- [Traefik (Coolify Docs)](https://coolify.io/docs/knowledge-base/proxy/traefik) — documentação oficial do Coolify: confirma que o Coolify usa Traefik como proxy reverso padrão na borda, sustentando a descrição do fluxo `build → deploy → healthcheck → troca de tráfego` da seção 21.2.

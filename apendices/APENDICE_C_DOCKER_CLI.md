@@ -113,4 +113,11 @@ Não execute `docker system prune -a --volumes` nem `docker builder prune -a` em
 
 Prefira `--password-stdin` em automações.
 
+## Fontes
+
+- [docker compose CLI reference](https://docs.docker.com/reference/cli/docker/compose/) — comandos `up`, `down`, `ps`, `logs`, `exec`, `build`, `restart`, `-p`/`-f`.
+- [docker buildx build](https://docs.docker.com/reference/cli/docker/buildx/build/) — `--platform`, `--cache-from`, `--cache-to` e build multi-arquitetura.
+- [Multi-stage builds](https://docs.docker.com/build/building/multi-stage/) — `FROM ... AS` e `COPY --from` para reduzir tamanho da imagem final.
+- [docker system prune](https://docs.docker.com/reference/cli/docker/system/prune/) — remoção de containers/imagens/cache não utilizados e impacto em host compartilhado.
+
 **Fim do Apêndice C**

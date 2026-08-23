@@ -191,4 +191,10 @@
 - [ ] Backups.
 - [ ] Documentação.
 
+## Fontes
+
+- [Security hardening for GitHub Actions](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions) — pin de actions por SHA e `permissions:` mínimas do `GITHUB_TOKEN`, base dos itens de "Novo workflow" e "Segurança periódica".
+- [Workflow syntax for GitHub Actions](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions) — `permissions`, `timeout-minutes`, `concurrency` e `runs-on` citados no checklist "Novo workflow".
+- [Caching dependencies to speed up workflows](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows) — uso de lockfile e `npm ci` para dependências reproduzíveis.
+
 **Fim do Apêndice H**

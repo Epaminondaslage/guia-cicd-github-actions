@@ -100,4 +100,11 @@ gh pr create --fill
 gh pr checks --watch
 ```
 
+## Fontes
+
+- [GitHub CLI Manual](https://cli.github.com/manual/) — índice oficial dos comandos `gh` (repo, pr, issue, workflow, run, secret, variable, release, api).
+- [gh secret set](https://cli.github.com/manual/gh_secret_set) — confirma entrada via stdin (`gh secret set MYSECRET < arquivo`) em vez de valor em texto puro na linha de comando.
+- [gh workflow run](https://cli.github.com/manual/gh_workflow_run) — sintaxe de `gh workflow run NOME.yml -f input1=valor`.
+- [gh run rerun](https://cli.github.com/manual/gh_run_rerun) — `gh run rerun RUN_ID` e `--failed`.
+
 **Fim do Apêndice B**

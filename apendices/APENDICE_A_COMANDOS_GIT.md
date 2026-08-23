@@ -124,4 +124,10 @@ git commit -m "feat: implementa x"
 git push -u origin feature/x
 ```
 
+## Fontes
+
+- [git-status Documentation](https://git-scm.com/docs/git-status) — sintaxe de `git status` e leitura de working directory/staging area.
+- [git-rebase Documentation](https://git-scm.com/docs/git-rebase) — `git rebase`, `--continue`, `--abort` e reaplicação de commits.
+- [git-worktree Documentation](https://git-scm.com/docs/git-worktree) — `git worktree add`, `list`, `remove` e `prune`.
+
 **Fim do Apêndice A**

@@ -801,3 +801,30 @@ ephemeral/autoscaling
 ---
 
 **Fim do Volume 14 — Otimização e Escalabilidade do CI/CD**
+
+---
+
+## Fontes
+
+### Cache de dependências (npm, Composer)
+
+- [Caching dependencies to speed up workflows](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows) — comprova o uso de `actions/cache@v4`, `hashFiles` para chave, `restore-keys` para fallback parcial, e os limites de 10 GB por repositório com eviction de entradas não acessadas há mais de 7 dias (seção 5).
+- [actions/setup-node](https://github.com/actions/setup-node) — comprova o input `cache: 'npm'` (e yarn/pnpm) como alternativa mais simples ao `actions/cache` manual para cache de gerenciador de pacotes (seção 5).
+
+### Docker layer cache e BuildKit
+
+- [docker/build-push-action](https://github.com/docker/build-push-action) — comprova os inputs `cache-from`/`cache-to` usados com buildx no exemplo YAML (seção 7).
+- [Docker Build cache backends](https://docs.docker.com/build/cache/backends/) — comprova os backends de cache `gha`, `registry` e `local`, e a diferença entre modo `min` (padrão) e `max` (todas as camadas intermediárias) citada na seção 7.
+- [docker buildx prune CLI reference](https://docs.docker.com/reference/cli/docker/buildx/prune/) — comprova a sintaxe `docker buildx prune --filter "until=<duração>"` usada na seção 39.
+
+### Checkout e workspace
+
+- [actions/checkout](https://github.com/actions/checkout) — comprova o padrão `fetch-depth: 1` (raso), a opção `fetch-depth: 0` para histórico completo, e o comportamento padrão `clean: true` citados na seção 36-A.
+
+### Concurrency
+
+- [Using concurrency (GitHub Actions)](https://docs.github.com/en/actions/using-jobs/using-concurrency) — comprova a opção `cancel-in-progress: true` para cancelar execuções em andamento no mesmo grupo de concorrência (seção 11).
+
+### Runners self-hosted e autoscaling
+
+- [actions/actions-runner-controller](https://github.com/actions/actions-runner-controller) — comprova que o Actions Runner Controller (ARC) é a solução para autoscaling de runners self-hosted em Kubernetes, com o modo `RunnerScaleSet` (autoscaling runner scale sets) atual e suportado pela GitHub substituindo os modos legados (`RunnerDeployment`), e a natureza efêmera dos runners provisionados (seção 33).

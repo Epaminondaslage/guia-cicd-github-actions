@@ -317,4 +317,11 @@ erro
 
 Isso torna investigação reproduzível.
 
+## Fontes
+
+- [Troubleshooting workflows](https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/troubleshooting-workflows) — abordagem geral de diagnóstico de workflow, triggers, labels de runner e problemas de rede.
+- [Caching dependencies to speed up workflows](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows) — comportamento de `actions/cache`, chave/`restore-keys` e limite de 10 GB por repositório citados no item 30.
+- [Rate limits for the REST API](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api) — limites de requisições referenciados no item 31 sobre `gh api rate_limit`.
+- [journalctl(1) — Linux man page](https://man7.org/linux/man-pages/man1/journalctl.1.html) — uso de `journalctl -u docker` e `journalctl -k | grep -i oom` nos itens 5 e 7.
+
 **Fim do Apêndice G**

@@ -1170,3 +1170,46 @@ Cada expansão poderá alterar este índice mestre.
 Próximo documento sugerido:
 
 **Volume 04 — Self-Hosted Runners: instalação profissional de um runner Linux Ubuntu com Docker e integração ao GitHub Actions.**
+
+---
+
+## Fontes
+
+### GitHub Actions — conceitos, workflows e permissões
+
+- [About security hardening with OpenID Connect](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect) — documenta o uso de OIDC para obter tokens de curta duração de provedores cloud (AWS, Azure, GCP) sem armazenar credenciais permanentes como secrets, base do Capítulo 03.7 e do princípio de menor privilégio (Capítulo 10.4).
+- [Automatic token authentication (GITHUB_TOKEN)](https://docs.github.com/en/actions/security-guides/automatic-token-authentication) — descreve o bloco `permissions:` para restringir o `GITHUB_TOKEN` no nível de workflow e de job, sustentando o Capítulo 03.13 e o princípio 13.
+- [Using secrets in GitHub Actions](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions) — comprova a gestão segura de credenciais em repositório, ambiente e organização, referenciada no Capítulo 03.7 e no Capítulo 10.2.
+- [Store information in variables](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables) — documenta variáveis de configuração não secretas (`vars`), base do Capítulo 03.8.
+- [Reusing workflows (workflow_call)](https://docs.github.com/en/actions/using-workflows/reusing-workflows) — comprova o mecanismo de workflows reutilizáveis citado no Capítulo 03.12.
+- [Creating a composite action](https://docs.github.com/en/actions/creating-actions/creating-a-composite-action) — documenta composite actions locais, também referenciadas no Capítulo 03.12.
+- [Workflow commands for GitHub Actions](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions) — detalha os arquivos de ambiente `$GITHUB_OUTPUT`, `$GITHUB_ENV` e `$GITHUB_STATE` que substituem os comandos legados, sustentando o Capítulo 03.14.
+- [GitHub Changelog — Deprecating save-state and set-output commands](https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/) — registra oficialmente a depreciação de `::set-output::` e `::save-state::`, citada no Capítulo 03.14 (nota: a remoção completa foi posteriormente adiada pelo GitHub, mas o uso dos arquivos de ambiente permanece a prática recomendada).
+- [Caching dependencies to speed up workflows](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows) — comprova o mecanismo de cache (npm e dependências em geral) do Capítulo 03.10 e 14.2.
+- [Security hardening for GitHub Actions](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions) — cobre o padrão de `permissions:` restritivas e os riscos de `pull_request_target` combinado com checkout de código não confiável, sustentando os Capítulos 03.13, 04.10 e o princípio 14.
+
+### Self-hosted runners
+
+- [Security hardening for GitHub Actions — self-hosted runners e forks](https://docs.github.com/en/actions/reference/security/secure-use) — afirma que self-hosted runners não têm garantia de isolamento efêmero e "quase nunca devem ser usados em repositórios públicos" sem controles adicionais, base direta do Capítulo 04.10.
+- [Node.js Releases](https://nodejs.org/en/about/previous-releases) — confirma o fim de suporte (EOL) do Node.js 16 e as versões atualmente suportadas (Node 20+), citado no Capítulo 04.11.
+
+### Docker
+
+- [Dockerfile best practices](https://docs.docker.com/build/building/best-practices/) — sustenta as recomendações de imagens reproduzíveis do Capítulo 05.3, incluindo pin de versões e multi-stage builds.
+- [Docker Compose overview](https://docs.docker.com/compose/) — documenta a orquestração multi-container usada nos Capítulos 05.4 e 05.11.
+
+### Banco de dados
+
+- [MySQL Reference Manual — Deploying MySQL Server with Docker](https://dev.mysql.com/doc/refman/8.4/en/docker-mysql-more-topics.html) — comprova as práticas de execução de MySQL em container para testes, base do Capítulo 05.7 e 07.5.
+
+### Testes
+
+- [Playwright — Continuous Integration](https://playwright.dev/docs/ci) — documenta a execução do Playwright em CI, incluindo GitHub Actions, referenciada nos Capítulos 06.6 e 16.6.
+- [PHPUnit Manual](https://docs.phpunit.de/en/12.4/) — documentação oficial do framework citado nos Capítulos 06.8 e 07.3.
+
+### Segurança e supply chain
+
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/) — referência consensual de riscos de segurança em aplicações web, relevante para o Threat Model do Capítulo 10.1.
+- [Sigstore Documentation](https://docs.sigstore.dev/) — projeto open source para assinatura e verificação de artefatos de software sem chaves de longa duração, sustentando o Capítulo 10.10 (Supply Chain Security).
+- [About Dependabot version updates](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/about-dependabot-version-updates) — comprova o mecanismo de atualização automática de dependências do Capítulo 10.7.
+- [About secret scanning](https://docs.github.com/en/code-security/secret-scanning/about-secret-scanning) — documenta a detecção automática de credenciais expostas do Capítulo 10.8.

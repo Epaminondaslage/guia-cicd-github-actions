@@ -991,3 +991,28 @@ Aplicaremos o conjunto em projetos Node.js, PHP, MySQL/MariaDB, MQTT e frontend/
 ---
 
 **Fim do Volume 12 — Infraestrutura do Servidor CI/CD**
+
+## Fontes
+
+### GitHub Actions — self-hosted runners e rede
+
+- [About self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners) — descreve os modelos de hospedagem possíveis para um runner (física, VM, container, on-premises, cloud), base da seção 2.
+- [Self-hosted runners reference](https://docs.github.com/en/actions/reference/runners/self-hosted-runners) — confirma que o runner abre conexão HTTPS de saída (porta 443) para o GitHub e lista os domínios necessários (github.com, api.github.com, *.actions.githubusercontent.com, ghcr.io, etc.), sustentando as seções 15 e 16 (firewall de saída e ausência de porta pública).
+- [Security hardening for GitHub Actions](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions) — afirma que "self-hosted runners should almost never be used for public repositories" e alerta sobre `pull_request_target`/`workflow_run` com PRs não confiáveis, sustentando a seção 2.1 sobre PRs de forks externos.
+- [Managing access to self-hosted runners using groups](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/managing-access-to-self-hosted-runners-using-groups) — documenta runner groups e políticas de acesso por repositório, base da seção 73.1.
+- [Using labels with self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/using-labels-with-self-hosted-runners) — documenta a criação e atribuição de labels a runners, base da seção 73.
+- [Autoscaling with self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/autoscaling-with-self-hosted-runners) — descreve o Actions Runner Controller (ARC) como "the recommended Kubernetes-based solution for autoscaling self-hosted runners", base da seção 54.2.
+
+### Docker
+
+- [Runtime options with Memory, CPUs, and GPUs (resource constraints)](https://docs.docker.com/config/containers/resource_constraints/) — documentação oficial sobre limites de CPU/memória por container, relevante ao dimensionamento (seção 4) e à convivência de múltiplos runners no mesmo host (seção 54).
+- [Docker build cache](https://docs.docker.com/build/cache/) — explica o funcionamento do cache de camadas/BuildKit, sustentando a seção 5 (Storage) sobre cache de build e `docker builder prune`.
+
+### systemd
+
+- [systemd.service(5)](https://man7.org/linux/man-pages/man5/systemd.service.5.html) — man page oficial (espelhado do repositório upstream do systemd) sobre unidades de serviço, base da seção 51 (gestão de Docker/runner via systemd).
+- [journalctl(1)](https://man7.org/linux/man-pages/man1/journalctl.1.html) — man page oficial do comando usado para inspecionar logs de serviços (`journalctl -u SERVICO`), base da seção 50.
+
+### VPN
+
+- [WireGuard — site oficial](https://www.wireguard.com/) — descreve o WireGuard como "an extremely simple yet fast and modern VPN that utilizes state-of-the-art cryptography", sustentando as seções 59 e 60.

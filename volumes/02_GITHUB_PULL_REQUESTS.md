@@ -2315,4 +2315,41 @@ Conteúdo previsto:
 
 ---
 
+## Fontes
+
+### Pull Requests — conceito, anatomia e ciclo de vida
+
+- [About pull requests](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) — definição oficial de PR como proposta de integração entre branches (base/compare), usada nas seções 4 a 8.
+- [Changing the stage of a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request) — comprova o comportamento de Draft PR, o botão de merge desabilitado e a possibilidade de reverter para Draft (seção 15).
+- [Linking a pull request to an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue) — sustenta o uso de palavras-chave como `Fixes #81` para fechar Issues automaticamente ao integrar a PR (seção 39).
+
+### Code Review e aprovação
+
+- [About pull request reviews](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews) — base para os conceitos de comentário, aprovação, "request changes" e exigência de aprovações antes do merge (seções 21 a 23, 37).
+
+### Branch Protection e Rulesets
+
+- [About protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches) — lista oficial das regras de proteção citadas (exigir PR, aprovações, dismiss de aprovações antigas, commits assinados, histórico linear, bloqueio de force push, restrição de push direto, aplicação a administradores) e a seção "Require status checks before merging" usada nas seções 34 a 36.
+- [About rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) — sustenta a comparação entre Rulesets e branch protection clássica (múltiplos padrões, auditoria, camadas, reuso via API) na seção 34.
+
+### CODEOWNERS
+
+- [About code owners](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners) — confirma localização do arquivo (`.github/`, raiz, `docs/`), exigência de permissão de write, dependência da opção "Require review from Code Owners" e a regra de que a última linha que casar prevalece (seção 44).
+
+### Merge, Auto-merge e Merge Queue
+
+- [About pull request merges](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges) — descreve as três estratégias (merge commit, squash and merge, rebase and merge) usadas nas seções 26 a 29.
+- [Automatically merging a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/automatically-merging-a-pull-request) — sustenta o comportamento de auto-merge (agendamento automático após checks e aprovações, sem ignorar branch protection) na seção 26.
+- [Managing a merge queue](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue) — base para o funcionamento da merge queue (merge temporário testado contra `main` + PRs anteriores na fila) na seção 73.
+
+### Templates de PR
+
+- [Creating a pull request template for your repository](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/creating-a-pull-request-template-for-your-repository) — confirma o caminho `.github/pull_request_template.md` usado na seção 43.
+
+### GitHub CLI
+
+- [GitHub CLI manual](https://cli.github.com/manual/) — documentação oficial do `gh`, referência dos comandos `gh pr create`, `gh pr list`, `gh pr view`, `gh pr checks` usados na seção 48.
+
+---
+
 **Fim do Volume 02 — GitHub e Pull Requests**

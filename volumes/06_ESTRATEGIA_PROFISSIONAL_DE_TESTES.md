@@ -2231,3 +2231,30 @@ O próximo volume consolidará:
 ---
 
 **Fim do Volume 06 — Estratégia Profissional de Testes**
+
+---
+
+## Fontes
+
+### Pirâmide e Testing Trophy (seção 3)
+
+- [The Practical Test Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html) — artigo de Ham Vocke publicado no site de Martin Fowler que descreve as camadas clássicas da pirâmide de testes (unitários, serviço/integração, UI/E2E) e o princípio de mais testes na base, menos no topo, referenciado na seção 3.
+- [Write tests. Not too many. Mostly integration.](https://kentcdodds.com/blog/write-tests) — artigo original de Kent C. Dodds em que o autor propõe o "testing trophy", redistribuindo peso para os testes de integração; base direta da subseção "Variações modernas".
+
+### Playwright — tags, execução e paralelismo (seções 16, 22, 23, 45)
+
+- [Annotations](https://playwright.dev/docs/test-annotations) — documentação oficial sobre marcar testes com tags (`@smoke`) e filtrar execução com `--grep`, usada na seção 16.
+- [Parallelism](https://playwright.dev/docs/test-parallel) — documentação oficial da opção `--workers` para controlar o número de processos paralelos, referenciada na seção 22.
+- [Sharding](https://playwright.dev/docs/test-sharding) — documentação oficial da opção `--shard=x/y` para dividir a suíte entre múltiplos executores, referenciada nas seções 23 e 24; a mesma página documenta o comando `npx playwright merge-reports` citado ao final da seção 23.
+- [Browsers](https://playwright.dev/docs/browsers) — documentação oficial de `npx playwright install --with-deps`, incluindo instalação seletiva por navegador e a lista Chromium/Firefox/WebKit, referenciada nas seções 23 e 45.
+
+### Playwright — seletores, espera e evidências de falha (seções 28, 29, 70-72)
+
+- [Locators](https://playwright.dev/docs/locators) — documentação oficial que recomenda `getByRole` e seletores baseados em atributos de usuário em vez de CSS/XPath frágil, base da seção 28.
+- [Auto-waiting](https://playwright.dev/docs/actionability) — documentação oficial sobre os checks de "actionability" que o Playwright executa automaticamente antes de cada ação, sustentando a recomendação da seção 29 contra `waitForTimeout` fixo.
+- [Retries](https://playwright.dev/docs/test-retries) — documentação oficial sobre a configuração de retries e como o relatório sinaliza testes "flaky", referenciada nas seções 26 e 72.
+- [Trace viewer](https://playwright.dev/docs/trace-viewer-intro) — documentação oficial da opção `trace: 'on-first-retry'`, referenciada na seção 71.
+
+### GitHub Actions — services e health check (seções 9, 23)
+
+- [Creating PostgreSQL service containers](https://docs.github.com/en/actions/using-containerized-services/creating-postgresql-service-containers) — documentação oficial do GitHub que demonstra a configuração de `options` com `--health-cmd`, `--health-interval`, `--health-timeout` e `--health-retries` para containers de serviço, mesmo padrão aplicado ao serviço MySQL usado nas seções 9 e 23.

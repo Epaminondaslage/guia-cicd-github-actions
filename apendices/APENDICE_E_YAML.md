@@ -151,4 +151,10 @@ actionlint
 ## Regra prática
 Se YAML ficou difícil de entender, mova lógica complexa para scripts versionados.
 
+## Fontes
+
+- [YAML Specification 1.2.2](https://yaml.org/spec/1.2.2/) — sintaxe base de mapeamentos, sequências, escalares de bloco (`|`), aspas e anchors/aliases.
+- [Workflow syntax for GitHub Actions](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions) — estrutura de `jobs`, `strategy.matrix`, `needs`, `env` e `outputs` usada nos exemplos.
+- [Workflow commands for GitHub Actions](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions) — confirma que `$GITHUB_OUTPUT` substitui o antigo `::set-output`.
+
 **Fim do Apêndice E**

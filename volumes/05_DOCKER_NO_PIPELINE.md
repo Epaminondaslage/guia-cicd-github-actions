@@ -4157,4 +4157,43 @@ Conteúdo previsto:
 
 ---
 
+## Fontes
+
+### Dockerfile, instruções e boas práticas
+
+- [Dockerfile reference](https://docs.docker.com/reference/dockerfile/) — documenta todas as instruções usadas no arquivo (`FROM`, `RUN`, `COPY`, `USER`, `HEALTHCHECK`, `ARG`, multi-stage com múltiplos `FROM`, `--mount` em `RUN`), base das seções 5, 27, 28, 77 e 120.
+- [Building best practices](https://docs.docker.com/build/building/best-practices/) — sustenta a recomendação de `USER` não-root (seção 28) e o uso de `.dockerignore` para reduzir contexto de build (seção 11).
+
+### Multi-stage build e cache
+
+- [Multi-stage builds](https://docs.docker.com/build/building/multi-stage/) — confirma o mecanismo de múltiplas etapas `FROM ... AS <nome>`, `COPY --from` e `--target`, base das seções 27, 50, 51 e 52.
+- [Optimize cache usage in builds](https://docs.docker.com/build/cache/optimize/) — documenta `RUN --mount=type=cache` para caches de `npm`/`pip` que persistem entre builds sem entrar na imagem final, sustentando a seção 27 (cache mount).
+
+### Contexto de build e .dockerignore
+
+- [Build context — .dockerignore files](https://docs.docker.com/build/building/context/#dockerignore-files) — documenta sintaxe, negação (`!`) e comportamento do `.dockerignore`, base da seção 11.
+
+### BuildKit, Buildx e builds multi-plataforma
+
+- [Multi-platform builds](https://docs.docker.com/build/building/multi-platform/) — confirma o uso de `docker buildx build --platform linux/amd64,linux/arm64`, base das seções 167 e 168.
+
+### Secrets de build
+
+- [Build secrets](https://docs.docker.com/build/building/secrets/) — documenta `docker build --secret` e `RUN --mount=type=secret`, sustentando a recomendação das seções 121 e 122 de não usar `ARG`/`ENV` para credenciais.
+
+### Tags, digests e identificação de imagem
+
+- [docker image tag](https://docs.docker.com/reference/cli/docker/image/tag/) — documenta a estrutura de referência de imagem (registry/namespace/repositório/tag), base das seções 7, 65 a 68.
+- [docker images (digests)](https://docs.docker.com/engine/reference/commandline/images/) — confirma o conceito de digest de conteúdo (`sha256:...`) como identificador imutável, base da seção 89.
+
+### Docker Compose
+
+- [Compose file reference](https://docs.docker.com/reference/compose-file/) — especificação oficial usada como base dos exemplos de `services`, `volumes`, `healthcheck` e `environment` das seções 14 a 26, 79 e 95.
+
+### Publicação em registry a partir do GitHub Actions
+
+- [Publishing Docker images (GitHub Docs)](https://docs.github.com/en/actions/publishing-packages/publishing-docker-images) — documenta autenticação no GitHub Container Registry (`ghcr.io`) via Actions com `GITHUB_TOKEN`, sustentando as seções 61, 63 e 64 sobre registry e login.
+
+---
+
 **Fim do Volume 05 — Docker no Pipeline de CI/CD**

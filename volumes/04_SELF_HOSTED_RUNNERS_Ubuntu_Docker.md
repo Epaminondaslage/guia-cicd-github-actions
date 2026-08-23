@@ -2300,4 +2300,32 @@ Este capítulo também assume que, sempre que possível, repositórios públicos
 
 ---
 
+## Fontes
+
+### Self-hosted runners — conceitos, instalação e labels
+
+- [Self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners) — define o que é um runner próprio e a diferença em relação aos runners hospedados pelo GitHub (seções 2, 3 e 4).
+- [Adding self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/adding-self-hosted-runners) — comprova o fluxo de registro via `config.sh`/token temporário exibido pela interface (seções 17 a 19).
+- [Using labels with self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/using-labels-with-self-hosted-runners) — sustenta o uso de labels (`self-hosted`, `linux`, `docker`, `e2e`) para direcionar jobs a runners específicos (seção 20).
+- [Managing access to self-hosted runners using groups](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/managing-access-to-self-hosted-runners-using-groups) — confirma o mecanismo de runner groups para restringir quais repositórios/orgs podem usar um runner (seção 20.1).
+- [Configuring the self-hosted runner application as a service](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/configuring-the-self-hosted-runner-application-as-a-service) — confirma o uso do `svc.sh` para instalar o runner como serviço `systemd` no Linux (seção 22).
+- [Self-hosted runners reference](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/autoscaling-with-self-hosted-runners) — referencia o Actions Runner Controller (ARC) como solução recomendada de autoscaling baseada em Kubernetes (seção 39.1).
+
+### Segurança de self-hosted runners
+
+- [Secure use reference](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions) — página oficial de hardening que declara explicitamente que "self-hosted runners should almost never be used for public repositories" e detalha o uso de runners efêmeros/JIT como mitigação (seções 5, 5.1 e 5.2).
+- [`pull_request_target`](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request_target) — documenta que esse trigger roda no contexto do repositório base (com acesso a secrets), mesmo para PRs de forks não confiáveis, sustentando o alerta sobre combinar o trigger com checkout do `head` do fork (seção 5.1, "Cuidado especial com `pull_request_target`").
+
+### Docker Engine e Docker Compose
+
+- [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/) — base oficial para a instalação via repositório apt do Docker com chaves em `/etc/apt/keyrings` (seção 12).
+- [Linux post-installation steps for Docker Engine](https://docs.docker.com/engine/install/linux-postinstall/) — confirma que o grupo `docker` concede privilégios equivalentes a root no host, sustentando o alerta da seção 13.
+- [Docker Compose](https://docs.docker.com/compose/) — documentação oficial do Docker Compose, usado nos exemplos de bancos de teste e orquestração local (seções 28 e 29).
+
+### Ubuntu Server
+
+- [Ubuntu Server documentation](https://ubuntu.com/server/docs) — documentação oficial do Ubuntu Server, base do sistema operacional recomendado para o runner (seções 8 e 9).
+
+---
+
 **Fim do Volume 04 — Self-Hosted Runners com Ubuntu e Docker**

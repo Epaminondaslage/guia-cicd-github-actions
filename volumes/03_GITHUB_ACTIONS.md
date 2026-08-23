@@ -3528,4 +3528,35 @@ Depois dele, o próximo aprofundamento recomendado é:
 
 ---
 
+## Fontes
+
+### Conceitos gerais: workflows, jobs, steps, actions
+
+- [Workflows](https://docs.github.com/en/actions/writing-workflows/about-workflows) — sustenta as seções 4 a 7 (workflow, anatomia, `name`), confirmando a estrutura workflow → job → runner → step usada ao longo do documento.
+- [Events that trigger workflows](https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows) — referência oficial para `pull_request`, `push`, `workflow_dispatch` e `schedule` (seções 8 a 14).
+- [Running variations of jobs in a workflow](https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs) — base para a seção 48-49 sobre `strategy.matrix` e o custo de combinações.
+- [Control the concurrency of workflows and jobs](https://docs.github.com/en/actions/using-jobs/using-concurrency) — sustenta as seções 63-64 sobre `concurrency` e `cancel-in-progress`.
+- [Contexts reference](https://docs.github.com/en/actions/learn-github-actions/contexts) — confirma o contexto `github` (`github.ref`, `github.sha`, `github.actor`, `github.event_name`) e a sintaxe `${{ }}` usados nas seções 82-84.
+
+### Permissões, secrets e ambientes
+
+- [Use GITHUB_TOKEN for authentication in workflows](https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication) — sustenta as seções 41-42 sobre o bloco `permissions:` e o princípio de menor privilégio aplicado ao `GITHUB_TOKEN`.
+- [Using secrets in GitHub Actions](https://docs.github.com/en/actions/how-tos/security-hardening-your-deployments/using-secrets-in-github-actions) — confirma o uso de `secrets.*`, a proibição de valores em texto puro e a regra de que secrets de repositório não são passados a workflows disparados por forks (seções 39-40).
+- [Managing environments for deployment](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment) — sustenta as seções 72-74 e 116-117 sobre GitHub Environments, secrets por ambiente e aprovação humana (required reviewers) como gate de produção.
+
+### Cache e artifacts
+
+- [Dependency caching reference](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows) — sustenta a seção 43 sobre `cache: npm` no `actions/setup-node` e o objetivo de reduzir tempo de instalação.
+- [Store and share data with workflow artifacts](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts) — confirma `actions/upload-artifact` e a distinção cache/artifact das seções 44-47.
+
+### Self-hosted runners e segurança de forks
+
+- [Self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners) — referência geral para as seções 20 e 28 sobre modelo, vantagens e desvantagens do self-hosted runner.
+- [Security hardening for GitHub Actions](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions) — página oficial que recomenda não usar self-hosted runners em repositórios públicos ("Self-hosted runners should almost never be used for public repositories on GitHub, because any user can open pull requests against the repository and compromise the environment"), sustentando os alertas das seções 20, 28, 50, 89 e 141.
+
+### `pull_request_target` e supply chain
+
+- [Secure use reference](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions) — cobre explicitamente o risco de `pull_request_target` combinado com checkout de código não confiável ("expose the repository to security compromises"), sustentando a seção 90, e recomenda fixar Actions por SHA completo como única forma de release imutável, sustentando a seção 88.
+- [Keeping your actions up to date with Dependabot](https://docs.github.com/en/code-security/dependabot/working-with-dependabot/keeping-your-actions-up-to-date-with-dependabot) — confirma o `package-ecosystem: "github-actions"` em `dependabot.yml` e a atualização automática de SHAs fixados, sustentando as seções 88 e 124.
+
 **Fim do Volume 03 — GitHub Actions: CI, Testes e Automação**

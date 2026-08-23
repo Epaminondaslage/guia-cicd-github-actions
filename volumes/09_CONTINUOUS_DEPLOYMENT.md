@@ -1275,4 +1275,24 @@ Cobrirá:
 
 ---
 
+## Fontes
+
+### GitHub Environments e gate humano
+
+- [Managing environments for deployment](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment) — comprova o mecanismo de `required reviewers` e demais deployment protection rules do environment `production` descritos nas Seções 2 e 19.
+- [Using secrets in GitHub Actions](https://docs.github.com/en/actions/security-guides/encrypted-secrets#environment-secrets) — comprova a existência de secrets por environment (seção "Creating secrets for an environment"), usados na Seção 7.
+
+### workflow_dispatch e concorrência
+
+- [Manually running a workflow](https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow) — comprova o evento `workflow_dispatch` com inputs usado nas Seções 21 e 80 para disparo manual de PROD.
+- [Control the concurrency of workflows and jobs](https://docs.github.com/en/actions/using-jobs/using-concurrency) — comprova a sintaxe `concurrency.group` e `cancel-in-progress` usada na Seção 31 (deploy locking) e no exemplo da Seção 80.
+
+### Estratégias de release: blue/green, canary, expand/contract
+
+- [Blue Green Deployment](https://martinfowler.com/bliki/BlueGreenDeployment.html) (Martin Fowler) — comprova a arquitetura BLUE/GREEN com troca de proxy e rollback descrita na Seção 53.
+- [Canary Release](https://martinfowler.com/bliki/CanaryRelease.html) (Danilo Sato) — comprova o conceito de liberar tráfego parcial e observar métricas antes do rollout completo, descrito na Seção 56.
+- [Evolutionary Database Design](https://martinfowler.com/articles/evodb.html) (Pramod Sadalage e Martin Fowler) — comprova a estratégia de transição em fases do schema (equivalente ao expand/contract descrito na Seção 29), com suporte simultâneo ao padrão antigo e novo durante a migração.
+
+---
+
 **Fim do Volume 09 — Continuous Deployment**

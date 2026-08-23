@@ -138,5 +138,11 @@ Ao depurar contextos, não imprima objetos inteiros que possam conter dados sens
 
 Uma expressão deve tomar decisão de orquestração; lógica de negócio complexa pertence a scripts/código testável.
 
+## Fontes
+
+- [Evaluate expressions in workflows and actions](https://docs.github.com/en/actions/learn-github-actions/expressions) — sintaxe `${{ }}`, operadores e funções `contains`, `startsWith`, `endsWith`, `format`, `toJSON`, `fromJSON`, `join`, além de `success()`, `failure()`, `always()`, `cancelled()`.
+- [Access contextual information about workflow runs](https://docs.github.com/en/actions/learn-github-actions/contexts) — contextos `github`, `secrets`, `vars`, `inputs`, `matrix`, `needs`, `steps`, `env`.
+- [Control the concurrency of workflows and jobs](https://docs.github.com/en/actions/using-jobs/using-concurrency) — `concurrency.group` e `cancel-in-progress`.
+
 **Fim do Apêndice F**
 </content>

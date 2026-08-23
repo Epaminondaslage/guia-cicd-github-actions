@@ -1683,4 +1683,38 @@ Abordará:
 
 ---
 
+## Fontes
+
+### Matrix e paralelismo
+
+- [Running variations of jobs in a workflow](https://docs.github.com/en/actions/using-jobs/using-a-build-matrix-for-your-jobs) — comprova a sintaxe de `strategy.matrix`, `fail-fast` e `max-parallel` usada na seção 7.1.
+
+### Cache
+
+- [Dependency caching reference](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows) — referência oficial de cache de dependências citada na seção 34.
+- [actions/cache](https://github.com/actions/cache) — repositório oficial da action usada em 34.4 e 35 para cache genérico com chave baseada em hash de lockfile e `restore-keys`.
+
+### Artifacts e outputs entre jobs
+
+- [actions/upload-artifact](https://github.com/actions/upload-artifact) — confirma a mudança de comportamento na v4: nomes de artifact precisam ser únicos por run, base da observação em 33.
+- [actions/download-artifact](https://github.com/actions/download-artifact) — confirma que omitir `name` baixa todos os artifacts do run, usado em 33.1.
+- [Defining outputs for jobs](https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs) — comprova a sintaxe `outputs:` do job e `needs.<job>.outputs` usada em 33.2.
+- [Workflow commands for GitHub Actions](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions) — comprova o uso de `GITHUB_OUTPUT`/`GITHUB_ENV` como substitutos dos comandos depreciados `set-output`/`set-env` citados em 33.2.
+
+### Reusable workflows e composite actions
+
+- [Reusing workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows) — comprova a sintaxe `workflow_call`, inputs/secrets e `secrets: inherit` da seção 69.
+- [Creating a composite action](https://docs.github.com/en/actions/creating-actions/creating-a-composite-action) — comprova a estrutura `runs: using: composite` usada no exemplo da seção 70.
+
+### Docker build cache
+
+- [GitHub Actions cache for Docker builds](https://docs.docker.com/build/ci/github-actions/cache/) — comprova `cache-from`/`cache-to` com `type=gha` e `type=registry` usados na seção 36.
+
+### Lint de workflows/scripts
+
+- [actionlint](https://github.com/rhysd/actionlint) — repositório oficial da ferramenta citada na seção 74.
+- [ShellCheck](https://www.shellcheck.net/) — site oficial da ferramenta citada na seção 72.
+
+---
+
 **Fim do Volume 07 — Pipeline CI Profissional**

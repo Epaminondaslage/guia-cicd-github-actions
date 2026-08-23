@@ -982,4 +982,43 @@ Cobrirá host, VM, Ubuntu, SSH, firewall, storage, rede, backup e disponibilidad
 
 ---
 
+## Fontes
+
+### Logs (Loki, Promtail/Alloy)
+
+- [Grafana Loki documentation](https://grafana.com/docs/loki/latest/) — confirma Loki como stack de logs open source referenciada na seção 9.
+- [Grafana Alloy documentation](https://grafana.com/docs/alloy/latest/) — confirma Alloy como coletor unificado (compatível com OpenTelemetry, Prometheus, Loki e Tempo) citado na seção 10.
+- [Promtail documentation](https://grafana.com/docs/loki/latest/send-data/promtail/) — confirma que Promtail está em fim de vida (EOL em 02/03/2026) e que a migração recomendada é para o Alloy, citado na seção 10.
+
+### Métricas (Prometheus, exporters, Alertmanager)
+
+- [Prometheus overview](https://prometheus.io/docs/introduction/overview/) — confirma Prometheus como toolkit de monitoramento e alerta usado na seção 11.
+- [prometheus/node_exporter (GitHub)](https://github.com/prometheus/node_exporter) — confirma o Node Exporter como exporter oficial de métricas de host (CPU, RAM, filesystem, network), citado na seção 13.
+- [google/cadvisor (GitHub)](https://github.com/google/cadvisor) — confirma cAdvisor como ferramenta oficial do Google para métricas de containers, citado na seção 14.
+- [Prometheus Alertmanager documentation](https://prometheus.io/docs/alerting/latest/alertmanager/) — confirma o papel de deduplicação, agrupamento e roteamento de alertas descrito na seção 51.
+
+### Grafana
+
+- [About Grafana](https://grafana.com/docs/grafana/latest/introduction/) — confirma Grafana como ferramenta de visualização/dashboard usada nas seções 19, 49 e 55-57.
+
+### Tracing e OpenTelemetry
+
+- [Grafana Tempo documentation](https://grafana.com/docs/tempo/latest/) — confirma Tempo como backend de tracing distribuído open source citado nas seções 59 e 60.
+- [What is OpenTelemetry?](https://opentelemetry.io/docs/what-is-opentelemetry/) — confirma a definição de OpenTelemetry como framework de observabilidade vendor-neutral usado na seção 60.
+- [OpenTelemetry Collector documentation](https://opentelemetry.io/docs/collector/) — confirma o Collector como componente que recebe, processa e exporta telemetria, citado na seção 60.
+- [Resource semantic conventions — OpenTelemetry](https://opentelemetry.io/docs/specs/semconv/resource/) — confirma o atributo `service.version` usado na seção 60a.
+- [Deployment environment — OpenTelemetry semantic conventions](https://opentelemetry.io/docs/specs/semconv/resource/deployment-environment/) — confirma o atributo `deployment.environment.name` usado na seção 60a.
+
+### Métricas de pipeline via GitHub API
+
+- [About GitHub Actions metrics](https://docs.github.com/en/actions/administering-github-actions/viewing-github-actions-metrics) — confirma o acesso via aba Insights (Actions Usage/Performance Metrics) citado na seção 37a.
+- [REST API endpoints for GitHub Actions workflow runs](https://docs.github.com/en/rest/actions/workflow-runs) — confirma os endpoints `GET /repos/{owner}/{repo}/actions/runs` e `.../runs/{run_id}/timing` usados na seção 37a.
+- [REST API endpoints for GitHub Actions workflow jobs](https://docs.github.com/en/rest/actions/workflow-jobs) — confirma o endpoint de listagem de jobs com campos de timing (`started_at`, `completed_at`) usado no exemplo de script da seção 37a.
+
+### Notificação de falhas (Slack)
+
+- [slackapi/slack-github-action (GitHub)](https://github.com/slackapi/slack-github-action) — confirma a action oficial e o suporte a incoming webhook usado no exemplo da seção 27a.
+
+---
+
 **Fim do Volume 11 — Observabilidade**

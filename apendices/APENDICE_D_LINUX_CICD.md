@@ -157,4 +157,10 @@ Evite `chmod 777` como correção genérica.
 
 Altere regras de firewall apenas com plano para evitar perda de acesso remoto.
 
+## Fontes
+
+- [systemctl(1) — Linux man page](https://man7.org/linux/man-pages/man1/systemctl.1.html) — `enable --now`, `daemon-reload` e demais subcomandos de gerenciamento de serviços.
+- [journalctl(1) — Linux man page](https://man7.org/linux/man-pages/man1/journalctl.1.html) — `-u`, `--since`, `-p err`, `--disk-usage` e `--vacuum-time`.
+- [Configuring the self-hosted runner application as a service](https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/configure-the-application) — `./svc.sh install/start/stop/status` como wrapper de systemd para o runner self-hosted.
+
 **Fim do Apêndice D**

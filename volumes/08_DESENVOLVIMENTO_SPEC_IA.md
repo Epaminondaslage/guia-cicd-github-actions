@@ -1764,4 +1764,27 @@ Abordará:
 
 ---
 
+## Fontes
+
+### Claude Code — fluxo geral
+
+- [Overview](https://code.claude.com/docs/en/overview) — descreve o Claude Code como ferramenta agêntica que lê o código, edita arquivos e roda comandos; base para o fluxo de implementação assistida deste volume (seções 1, 16-22, 39, 95).
+- [Common workflows](https://code.claude.com/docs/en/common-workflows) — cobre planejamento antes de editar ("Plan before editing"), execução paralela com worktrees e delegação de pesquisa a subagentes; sustenta as seções 15 (revisão humana da SPEC/plano), 73 (worktrees) e 74-78 (paralelismo de agentes).
+- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices) — recomenda "Explore first, then plan, then code", dar a Claude uma forma de verificar o próprio trabalho, revisão adversarial por subagente antes de considerar a tarefa pronta, e padrões Writer/Reviewer; base direta das seções 3-4 (brainstorm/entrevista), 25-26 (revisão do diff e revisão humana obrigatória) e 40 (separar geração e validação).
+
+### Prompt engineering e contexto mínimo
+
+- [Prompt engineering overview](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview) — introduz a prática de engenharia de prompt e remete ao guia de boas práticas de prompting; embasa a seção 35 (prompt operacional).
+- [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices) — referência viva de técnicas de clareza, exemplos e estruturação de prompts; sustenta a seção 36 (contexto mínimo necessário) e a seção 37 (exemplos e critérios de aceite no prompt), que seguem o princípio de instruções específicas e exemplos concretos descrito nessa página e reforçado em "Best practices for Claude Code" (seção "Provide specific context in your prompts").
+
+### Instruções de projeto (memory)
+
+- [How Claude remembers your project](https://code.claude.com/docs/en/memory) — documenta os arquivos `CLAUDE.md`/`AGENTS.md` como mecanismo de instruções persistentes de projeto (stack, comandos, convenções, proibições); base da seção 51 (AGENTS.md / instruções do projeto) e da seção 50 (context window / documentação estruturada).
+
+### Subagentes e paralelismo
+
+- [Create custom subagents](https://code.claude.com/docs/en/sub-agents) — explica subagentes rodando em contexto isolado, delegação explícita e execução paralela de múltiplos agentes; sustenta as seções 25 (revisão do diff por um agente diferente do que escreveu o código), 73-78 (worktrees, paralelismo, ownership temporário e integração de trabalhos paralelos).
+
+---
+
 **Fim do Volume 08 — Desenvolvimento Orientado por Especificação e IA**

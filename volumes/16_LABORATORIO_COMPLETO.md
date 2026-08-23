@@ -1053,3 +1053,38 @@ reversíveis
 ---
 
 **Fim do Volume 16 — Laboratório Completo**
+
+---
+
+## Fontes
+
+### Self-hosted runners
+
+- [Adding self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/adding-self-hosted-runners) — comprova o fluxo de registro do runner com `config.sh` e o token de registro gerado automaticamente com validade limitada (passo 14).
+- [Configuring the self-hosted runner application as a service](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/configuring-the-self-hosted-runner-application-as-a-service) — comprova os comandos `sudo ./svc.sh install/start/status` para rodar o runner como serviço systemd persistente (passo 14, exercício 53).
+- [Using labels with self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/using-labels-with-self-hosted-runners) — comprova o uso de labels em runners self-hosted para roteamento de jobs (passo 15, `runs-on: [self-hosted, linux, ci]`).
+
+### Workflows e sintaxe do GitHub Actions
+
+- [Using concurrency](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/using-concurrency) — comprova a chave `concurrency` com `group` e `cancel-in-progress: true` usada no workflow de CI (passo 13).
+- [Storing workflow data as artifacts](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts) — comprova o uso de `actions/upload-artifact@v4` para publicar relatórios do Playwright em caso de falha (passo 24, passo 57).
+- [Events that trigger workflows — schedule](https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#schedule) — comprova a sintaxe `on.schedule` com cron para o workflow nightly de E2E (passo 57).
+- [Automatic token authentication (GITHUB_TOKEN)](https://docs.github.com/en/actions/security-guides/automatic-token-authentication) — comprova o uso da chave `permissions` (`contents: read`, `packages: write`) e o token automático `GITHUB_TOKEN` usado no login do registry (passos 13, 26).
+- [Using environments for deployment](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment) — comprova a criação de *environments* no GitHub com *required reviewers* que gateiam a execução do job antes de rodar, base do `environment: production` no workflow de deploy (passos 34 e 36).
+
+### Branch protection
+
+- [About protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches) — comprova a exigência de PR e de status checks (CI PASS) antes do merge em `main` (passo 17).
+
+### Build e push de imagens Docker
+
+- [docker/build-push-action](https://github.com/docker/build-push-action) — comprova os inputs `context`, `push`, `tags`, `cache-from` e `cache-to` usados no workflow de build (passo 26), incluindo o uso recomendado em conjunto com `docker/setup-buildx-action`.
+- [docker/login-action](https://github.com/docker/login-action) — comprova o login no `ghcr.io` usando `github.actor` e `secrets.GITHUB_TOKEN` (passo 26).
+- [GitHub Actions cache for Buildx](https://docs.docker.com/build/ci/github-actions/cache/) — comprova a sintaxe `cache-from: type=gha` e `cache-to: type=gha,mode=max` usada no build oficial (passo 26).
+- [docker buildx build (Docker CLI reference)](https://docs.docker.com/reference/cli/docker/buildx/build/) — comprova as flags `--tag` e `--push` do comando manual equivalente ao workflow (passo 26).
+- [Working with the Container registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry) — comprova o uso do GitHub Container Registry (`ghcr.io`), o formato de tag `ghcr.io/OWNER/IMAGE` e a autenticação via `GITHUB_TOKEN` (passo 27).
+
+### Segurança: scanning de segredos e de imagens
+
+- [gitleaks/gitleaks-action](https://github.com/gitleaks/gitleaks-action) — comprova a action usada para detecção de segredos hardcoded no workflow de CI (passo 50).
+- [aquasecurity/trivy-action](https://github.com/aquasecurity/trivy-action) — comprova os inputs `image-ref`, `severity` e `exit-code` usados para escanear a imagem publicada (passo 50).
