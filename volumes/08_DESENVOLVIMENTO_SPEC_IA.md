@@ -1743,7 +1743,29 @@ PROD
 
 ---
 
-## 96. Próximo volume
+## 96. Vibe coding vs. o fluxo deste volume
+
+"Vibe coding" é o termo popularizado para descrever aceitar o que o agente de IA produz sem revisar linha a linha — pedir, rodar, ver que "funciona" na tela e seguir em frente. Funciona para protótipo descartável. Não deveria ser aceito como prática para código que vai para produção.
+
+O fluxo deste volume (seção 95) existe justamente como antídoto estrutural ao vibe coding, mantendo a velocidade de gerar código com IA sem herdar seu principal risco: aceitar código que ninguém entende de fato.
+
+Diferenças concretas:
+
+| Vibe coding | Fluxo deste volume |
+|---|---|
+| Prompt vago, direto para o código | Brainstorm + entrevista antes de especificar (seções 2-4) |
+| Sem spec; requisito vive só no prompt | SPEC escrita e revisada por humano (seções 5-15) |
+| Implementação sem plano | Plano de implementação revisado antes de codar (seções 16-24) |
+| Aceitar o diff porque "rodou" | Revisão humana obrigatória, linha a linha, antes do merge (seção 26) — nunca dispensada, nem quando os testes passam |
+| Um agente escreve e aprova a si mesmo | Separação escritor/revisor: revisão do diff por um agente diferente do que implementou, ou por subagente adversarial (seção 25) |
+| Sem rastro do porquê | PR como unidade de auditoria; SPEC e plano documentam a decisão (seção 27) |
+| Erro descoberto em produção | Gate humano antes de produção, validação em DEV, rollback documentado (Volume 09) |
+
+Consequência prática: o tempo "economizado" pulando revisão humana costuma reaparecer depois, como incidente em produção, dependência inventada pelo agente que não existe, ou lógica que passou nos testes mas não faz o que a spec pedia — os riscos que a checklist da seção 26 lista explicitamente. O fluxo deste guia é mais lento por PR do que vibe coding puro, mas o custo médio por linha de código que chega em produção é menor, porque o erro é pego na revisão humana e não no chamado de suporte.
+
+---
+
+## 97. Próximo volume
 
 **Volume 09 — Continuous Deployment e Deploy DEV → PROD**
 
