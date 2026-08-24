@@ -34,8 +34,8 @@ Este guia adota IA no desenvolvimento de forma deliberada, não pelo hype: agent
 | 03 | GitHub Actions | [volumes/03_GITHUB_ACTIONS.md](volumes/03_GITHUB_ACTIONS.md) |
 | 04 | Self-Hosted Runners (Ubuntu/Docker) | [volumes/04_SELF_HOSTED_RUNNERS_Ubuntu_Docker.md](volumes/04_SELF_HOSTED_RUNNERS_Ubuntu_Docker.md) |
 | 05 | Docker no Pipeline | [volumes/05_DOCKER_NO_PIPELINE.md](volumes/05_DOCKER_NO_PIPELINE.md) |
-| 06 | Estratégia Profissional de Testes | [volumes/06_ESTRATEGIA_PROFISSIONAL_DE_TESTES.md](volumes/06_ESTRATEGIA_PROFISSIONAL_DE_TESTES.md) |
-| 07 | Pipeline CI Profissional | [volumes/07_PIPELINE_CI_PROFISSIONAL.md](volumes/07_PIPELINE_CI_PROFISSIONAL.md) |
+| 06 | Estratégia Pessoal de Testes | [volumes/06_ESTRATEGIA_PESSOAL_DE_TESTES.md](volumes/06_ESTRATEGIA_PESSOAL_DE_TESTES.md) |
+| 07 | Pipeline CI Pessoal | [volumes/07_PIPELINE_CI_PESSOAL.md](volumes/07_PIPELINE_CI_PESSOAL.md) |
 | 08 | Desenvolvimento com Spec + IA | [volumes/08_DESENVOLVIMENTO_SPEC_IA.md](volumes/08_DESENVOLVIMENTO_SPEC_IA.md) |
 | 09 | Continuous Deployment | [volumes/09_CONTINUOUS_DEPLOYMENT.md](volumes/09_CONTINUOUS_DEPLOYMENT.md) |
 | 10 | Segurança do Pipeline | [volumes/10_SEGURANCA_DO_PIPELINE.md](volumes/10_SEGURANCA_DO_PIPELINE.md) |

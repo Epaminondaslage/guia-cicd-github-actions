@@ -4132,7 +4132,7 @@ PROD
 
 ## 208. Próximo volume
 
-**Volume 06 — Estratégia Profissional de Testes**
+**Volume 06 — Estratégia Pessoal de Testes**
 
 Conteúdo previsto:
 

@@ -1,7 +1,7 @@
-# Volume 07 — Pipeline CI Profissional
+# Volume 07 — Pipeline CI Pessoal
 
 **Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
-**Documento:** 07_PIPELINE_CI_PROFISSIONAL.md  
+**Documento:** 07_PIPELINE_CI_PESSOAL.md  
 **Versão:** 0.1.0  
 **Pré-requisitos:** Volumes 01 a 06
 
@@ -1641,7 +1641,7 @@ runners efêmeros
 
 ---
 
-## 83. Checklist CI profissional
+## 83. Checklist CI pessoal
 
 - [ ] PR dispara CI.
 - [ ] `main` está protegida.
@@ -1717,4 +1717,4 @@ Abordará:
 
 ---
 
-**Fim do Volume 07 — Pipeline CI Profissional**
+**Fim do Volume 07 — Pipeline CI Pessoal**

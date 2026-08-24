@@ -359,7 +359,7 @@ Ambiente descartável por execução.
 
 ---
 
-### Volume 06 — Estratégia Profissional de Testes
+### Volume 06 — Estratégia Pessoal de Testes
 
 #### Capítulo 06.1 — Pirâmide de testes
 

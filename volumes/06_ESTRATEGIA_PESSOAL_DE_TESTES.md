@@ -1,7 +1,7 @@
-# Volume 06 — Estratégia Profissional de Testes
+# Volume 06 — Estratégia Pessoal de Testes
 
 **Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
-**Documento:** 06_ESTRATEGIA_PROFISSIONAL_DE_TESTES.md  
+**Documento:** 06_ESTRATEGIA_PESSOAL_DE_TESTES.md  
 **Versão:** 0.1.0  
 **Pré-requisitos:** Volumes 01 a 05
 
@@ -2212,7 +2212,7 @@ devem ser adicionados apenas quando trouxerem valor mensurável.
 
 ## 117. Próximo volume
 
-**Volume 07 — Pipeline CI Profissional**
+**Volume 07 — Pipeline CI Pessoal**
 
 O próximo volume consolidará:
 
@@ -2230,7 +2230,7 @@ O próximo volume consolidará:
 
 ---
 
-**Fim do Volume 06 — Estratégia Profissional de Testes**
+**Fim do Volume 06 — Estratégia Pessoal de Testes**
 
 ---
 
