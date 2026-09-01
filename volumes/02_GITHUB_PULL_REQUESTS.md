@@ -1,4 +1,4 @@
-# Volume 02 — GitHub e Pull Requests
+# Volume 02: GitHub e Pull Requests
 
 **Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 02_GITHUB_PULL_REQUESTS.md  
@@ -103,7 +103,7 @@ feature/dashboard
        main
 ```
 
-A PR não é simplesmente “o código novo que substituirá o antigo”.
+A PR não é simplesmente "o código novo que substituirá o antigo".
 
 Ela é um objeto de colaboração que reúne:
 
@@ -261,7 +261,7 @@ Sim, é possível desenvolver várias PRs antes de fazer merge.
 
 Porém, existem dois cenários.
 
-### Cenário A — PRs independentes
+### Cenário A: PRs independentes
 
 ```text
 main
@@ -275,7 +275,7 @@ main
 
 As três podem ser integradas independentemente.
 
-### Cenário B — PRs dependentes
+### Cenário B: PRs dependentes
 
 ```text
 main
@@ -556,7 +556,7 @@ merge
 
 ## 19. Alteração posterior da SPEC
 
-Uma implementação já integrada não deve normalmente ser “reativada” alterando silenciosamente a PR antiga.
+Uma implementação já integrada não deve normalmente ser "reativada" alterando silenciosamente a PR antiga.
 
 Crie uma nova unidade de mudança:
 
@@ -1003,9 +1003,9 @@ Uma regra pode exigir:
 
 ou mais, e pode combinar com:
 
-- `Dismiss stale pull request approvals when new commits are pushed` — qualquer novo commit invalida aprovações anteriores, forçando nova revisão;
-- `Require review from Code Owners` — quando o caminho alterado tem dono definido em CODEOWNERS, a aprovação daquele dono é obrigatória além (ou no lugar) da aprovação genérica;
-- `Require approval of the most recent reviewable push` — impede que o próprio autor aprove sua última alteração usando uma conta secundária.
+- `Dismiss stale pull request approvals when new commits are pushed`: qualquer novo commit invalida aprovações anteriores, forçando nova revisão;
+- `Require review from Code Owners`: quando o caminho alterado tem dono definido em CODEOWNERS, a aprovação daquele dono é obrigatória além (ou no lugar) da aprovação genérica;
+- `Require approval of the most recent reviewable push`: impede que o próprio autor aprove sua última alteração usando uma conta secundária.
 
 Para um desenvolvedor individual, exigir aprovação de terceiros pode não ser necessário em todos os projetos. Mas isso **não dispensa a PR**. Mesmo sozinho, a proteção da `main` continua ativa: push direto bloqueado, PR obrigatória, checks obrigatórios. O que muda é apenas o número de aprovações humanas exigidas (podendo ser zero), nunca a obrigatoriedade do fluxo branch → PR → merge.
 
@@ -2286,7 +2286,7 @@ PROD
 
 ## 84. Próximo volume
 
-**Volume 03 — GitHub Actions**
+**Volume 03: GitHub Actions**
 
 Conteúdo previsto:
 
@@ -2317,7 +2317,7 @@ Conteúdo previsto:
 
 ## Fontes
 
-### Pull Requests — conceito, anatomia e ciclo de vida
+### Pull Requests: conceito, anatomia e ciclo de vida
 
 - [About pull requests](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) — definição oficial de PR como proposta de integração entre branches (base/compare), usada nas seções 4 a 8.
 - [Changing the stage of a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request) — comprova o comportamento de Draft PR, o botão de merge desabilitado e a possibilidade de reverter para Draft (seção 15).
@@ -2352,4 +2352,4 @@ Conteúdo previsto:
 
 ---
 
-**Fim do Volume 02 — GitHub e Pull Requests**
+**Fim do Volume 02: GitHub e Pull Requests**

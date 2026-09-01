@@ -1,4 +1,4 @@
-# Volume 01 — Fundamentos de Git e Controle de Versão
+# Volume 01: Fundamentos de Git e Controle de Versão
 
 **Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 01_FUNDAMENTOS_GIT.md  
@@ -1354,7 +1354,7 @@ Criar um repositório de treinamento e executar:
 
 ## 52. Próximo volume
 
-**Volume 02 — GitHub e Pull Requests**
+**Volume 02: GitHub e Pull Requests**
 
 O próximo volume aprofundará:
 
@@ -1408,4 +1408,4 @@ O próximo volume aprofundará:
 
 ---
 
-**Fim do Volume 01 — Fundamentos de Git e Controle de Versão**
+**Fim do Volume 01: Fundamentos de Git e Controle de Versão**

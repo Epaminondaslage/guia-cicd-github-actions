@@ -1,4 +1,4 @@
-# Volume 03 — GitHub Actions: CI, Testes e Automação
+# Volume 03: GitHub Actions (CI, Testes e Automação)
 
 **Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 03_GITHUB_ACTIONS.md  
@@ -1664,7 +1664,7 @@ jobs:
 
 A marcação `@smoke` depende da organização adotada nos testes.
 
-Assim como no workflow anterior, este job roda em self-hosted disparado por `pull_request`. Em repositório público, isso expõe o runner a PRs de forks não confiáveis — veja o alerta de segurança na seção 50 (runners efêmeros, cuidado redobrado com `pull_request_target`).
+Assim como no workflow anterior, este job roda em self-hosted disparado por `pull_request`. Em repositório público, isso expõe o runner a PRs de forks não confiáveis: veja o alerta de segurança na seção 50 (runners efêmeros, cuidado redobrado com `pull_request_target`).
 
 ---
 
@@ -3503,7 +3503,7 @@ PROD
 
 ## 149. Próximo volume
 
-**Volume 04 — Self-Hosted Runners com Ubuntu e Docker**
+**Volume 04: Self-Hosted Runners com Ubuntu e Docker**
 
 Esse volume já foi preparado separadamente e detalha:
 
@@ -3524,7 +3524,7 @@ Esse volume já foi preparado separadamente e detalha:
 
 Depois dele, o próximo aprofundamento recomendado é:
 
-**Volume 05 — Docker no Pipeline.**
+**Volume 05: Docker no Pipeline.**
 
 ---
 
@@ -3559,4 +3559,4 @@ Depois dele, o próximo aprofundamento recomendado é:
 - [Secure use reference](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions) — cobre explicitamente o risco de `pull_request_target` combinado com checkout de código não confiável ("expose the repository to security compromises"), sustentando a seção 90, e recomenda fixar Actions por SHA completo como única forma de release imutável, sustentando a seção 88.
 - [Keeping your actions up to date with Dependabot](https://docs.github.com/en/code-security/dependabot/working-with-dependabot/keeping-your-actions-up-to-date-with-dependabot) — confirma o `package-ecosystem: "github-actions"` em `dependabot.yml` e a atualização automática de SHAs fixados, sustentando as seções 88 e 124.
 
-**Fim do Volume 03 — GitHub Actions: CI, Testes e Automação**
+**Fim do Volume 03: GitHub Actions (CI, Testes e Automação)**

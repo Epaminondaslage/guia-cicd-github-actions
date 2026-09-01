@@ -1087,17 +1087,17 @@ rollback
 
 ## Fontes
 
-### GitHub Actions — Reusable Workflows e Composite Actions
+### GitHub Actions: Reusable Workflows e Composite Actions
 
 - [Reusing workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows) — GitHub Docs oficial: sustenta `workflow_call`, a exigência de repassar `secrets:` explicitamente (não há herança automática entre chamador e workflow reusável, salvo `secrets: inherit`) e o limite de aninhamento de 9 níveis de workflows reusáveis mais o chamador.
 - [Creating a composite action](https://docs.github.com/en/actions/sharing-automations/creating-actions/creating-a-composite-action) — GitHub Docs oficial: confirma que uma composite action agrupa vários steps em uma única action, executada como um único step dentro do job chamador (seção 11.1).
 
-### GitHub Actions — Matrix e Environments
+### GitHub Actions: Matrix e Environments
 
 - [Using a build matrix for your jobs](https://docs.github.com/en/actions/using-jobs/using-a-build-matrix-for-your-jobs) — GitHub Docs oficial: sustenta `strategy.matrix`, `fail-fast`, `max-parallel`, `include`/`exclude` e `continue-on-error` combinados com matrix (seção 17.1).
 - [Using environments for deployment](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment) — GitHub Docs oficial: sustenta secrets/variáveis por Environment, required reviewers, wait timer e restrição de deployment branches (seção 25.1).
 
-### Ferramenta de Terceiros — paths-filter
+### Ferramenta de Terceiros: paths-filter
 
 - [dorny/paths-filter](https://github.com/dorny/paths-filter) — repositório oficial da action: sustenta o uso de `paths-filter` para disparar CI condicionalmente por pacote em monorepo (seção 11).
 

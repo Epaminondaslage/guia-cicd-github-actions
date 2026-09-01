@@ -1,4 +1,4 @@
-# Volume 05 — Docker no Pipeline de CI/CD
+# Volume 05: Docker no Pipeline de CI/CD
 
 **Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 05_DOCKER_NO_PIPELINE.md  
@@ -4132,7 +4132,7 @@ PROD
 
 ## 208. Próximo volume
 
-**Volume 06 — Estratégia Pessoal de Testes**
+**Volume 06: Estratégia Pessoal de Testes**
 
 Conteúdo previsto:
 
@@ -4196,4 +4196,4 @@ Conteúdo previsto:
 
 ---
 
-**Fim do Volume 05 — Docker no Pipeline de CI/CD**
+**Fim do Volume 05: Docker no Pipeline de CI/CD**

@@ -1,4 +1,4 @@
-# Volume 08 — Desenvolvimento Orientado por Especificação e IA
+# Volume 08: Desenvolvimento Orientado por Especificação e IA
 
 **Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 08_DESENVOLVIMENTO_SPEC_IA.md  
@@ -1767,7 +1767,7 @@ Consequência prática: o tempo "economizado" pulando revisão humana costuma re
 
 ## 97. Próximo volume
 
-**Volume 09 — Continuous Deployment e Deploy DEV → PROD**
+**Volume 09: Continuous Deployment e Deploy DEV → PROD**
 
 Abordará:
 
@@ -1809,4 +1809,4 @@ Abordará:
 
 ---
 
-**Fim do Volume 08 — Desenvolvimento Orientado por Especificação e IA**
+**Fim do Volume 08: Desenvolvimento Orientado por Especificação e IA**

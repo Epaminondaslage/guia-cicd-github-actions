@@ -1,4 +1,4 @@
-# Volume 09 — Continuous Deployment: DEV, Aprovação e Produção
+# Volume 09 · Continuous Deployment: DEV, Aprovação e Produção
 
 **Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 09_CONTINUOUS_DEPLOYMENT.md  
@@ -1256,7 +1256,7 @@ Tudo deve ser respondível.
 
 ## 83. Próximo volume
 
-**Volume 10 — Segurança do Pipeline**
+**Volume 10 · Segurança do Pipeline**
 
 Cobrirá:
 
@@ -1295,4 +1295,4 @@ Cobrirá:
 
 ---
 
-**Fim do Volume 09 — Continuous Deployment**
+**Fim do Volume 09 · Continuous Deployment**

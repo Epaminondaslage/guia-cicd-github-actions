@@ -1,4 +1,4 @@
-# Volume 07 — Pipeline CI Pessoal
+# Volume 07: Pipeline CI Pessoal
 
 **Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 07_PIPELINE_CI_PESSOAL.md  
@@ -1665,7 +1665,7 @@ runners efêmeros
 
 ## 84. Próximo volume
 
-**Volume 08 — Desenvolvimento Orientado por Especificação e IA**
+**Volume 08: Desenvolvimento Orientado por Especificação e IA**
 
 Abordará:
 
@@ -1717,4 +1717,4 @@ Abordará:
 
 ---
 
-**Fim do Volume 07 — Pipeline CI Pessoal**
+**Fim do Volume 07: Pipeline CI Pessoal**

@@ -1,4 +1,4 @@
-# Volume 04 — Self-Hosted Runners com Ubuntu e Docker
+# Volume 04: Self-Hosted Runners com Ubuntu e Docker
 
 **Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 04_SELF_HOSTED_RUNNERS.md  
@@ -567,7 +567,7 @@ Portanto:
 
 Existem duas estratégias.
 
-### Estratégia A — Actions configuram Node por job
+### Estratégia A: Actions configuram Node por job
 
 Preferencial para CI:
 
@@ -583,7 +583,7 @@ Vantagens:
 - fácil alternar versões;
 - reduz dependência da instalação global.
 
-### Estratégia B — Node global no runner
+### Estratégia B: Node global no runner
 
 Útil para ferramentas administrativas.
 
@@ -1452,7 +1452,7 @@ Cada runner terá diretório próprio.
 
 Manter runners fixos ligados 24/7 desperdiça recursos quando a demanda de CI é irregular (picos durante o horário comercial, ociosidade à noite). Duas abordagens comuns:
 
-#### Opção A — actions-runner-controller (ARC) no Kubernetes
+#### Opção A: actions-runner-controller (ARC) no Kubernetes
 
 O projeto oficial mantido pelo GitHub (`actions/actions-runner-controller`) roda um operador Kubernetes que cria e destrói **pods de runner efêmeros** sob demanda, conforme jobs são enfileirados. Conceito:
 
@@ -1486,7 +1486,7 @@ Desvantagens/custos:
 
 Para laboratórios pequenos ou uma única VPS, o ARC costuma ser desproporcional ao ganho. Vale considerar quando o volume de jobs realmente justificar um cluster dedicado.
 
-#### Opção B — scale-up/down manual ou por script em VPS/LXC
+#### Opção B: scale-up/down manual ou por script em VPS/LXC
 
 Alternativa mais simples para ambientes menores: manter um número mínimo de runners sempre ativos e provisionar runners adicionais sob demanda por script, usando a API do provedor (Proxmox, provedor de VPS, etc.) ou simplesmente ligando containers/LXCs adicionais em horários de pico.
 
@@ -2302,7 +2302,7 @@ Este capítulo também assume que, sempre que possível, repositórios públicos
 
 ## Fontes
 
-### Self-hosted runners — conceitos, instalação e labels
+### Self-hosted runners: conceitos, instalação e labels
 
 - [Self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners) — define o que é um runner próprio e a diferença em relação aos runners hospedados pelo GitHub (seções 2, 3 e 4).
 - [Adding self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/adding-self-hosted-runners) — comprova o fluxo de registro via `config.sh`/token temporário exibido pela interface (seções 17 a 19).
@@ -2328,4 +2328,4 @@ Este capítulo também assume que, sempre que possível, repositórios públicos
 
 ---
 
-**Fim do Volume 04 — Self-Hosted Runners com Ubuntu e Docker**
+**Fim do Volume 04: Self-Hosted Runners com Ubuntu e Docker**

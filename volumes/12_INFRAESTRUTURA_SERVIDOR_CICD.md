@@ -1,4 +1,4 @@
-# Volume 12 — Infraestrutura do Servidor CI/CD
+# Volume 12: Infraestrutura do Servidor CI/CD
 
 **Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 12_INFRAESTRUTURA_SERVIDOR_CICD.md  
@@ -984,17 +984,17 @@ Mantenha inventário versionado sem secrets.
 
 ## 79. Próximo volume
 
-**Volume 13 — Arquiteturas de Referência**
+**Volume 13: Arquiteturas de Referência**
 
 Aplicaremos o conjunto em projetos Node.js, PHP, MySQL/MariaDB, MQTT e frontend/backend.
 
 ---
 
-**Fim do Volume 12 — Infraestrutura do Servidor CI/CD**
+**Fim do Volume 12: Infraestrutura do Servidor CI/CD**
 
 ## Fontes
 
-### GitHub Actions — self-hosted runners e rede
+### GitHub Actions: self-hosted runners e rede
 
 - [About self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners) — descreve os modelos de hospedagem possíveis para um runner (física, VM, container, on-premises, cloud), base da seção 2.
 - [Self-hosted runners reference](https://docs.github.com/en/actions/reference/runners/self-hosted-runners) — confirma que o runner abre conexão HTTPS de saída (porta 443) para o GitHub e lista os domínios necessários (github.com, api.github.com, *.actions.githubusercontent.com, ghcr.io, etc.), sustentando as seções 15 e 16 (firewall de saída e ausência de porta pública).

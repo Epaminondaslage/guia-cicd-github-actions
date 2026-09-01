@@ -1,4 +1,4 @@
-# Volume 10 — segurança do pipeline CI/CD
+# Volume 10: segurança do pipeline CI/CD
 
 **Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 10_SEGURANCA_DO_PIPELINE.md  
@@ -1280,7 +1280,7 @@ Se vulnerabilidade não pode ser corrigida imediatamente:
 
 ---
 
-## 101. branch protection e proteção de main — checklist rápido
+## 101. branch protection e proteção de main (checklist rápido)
 
 - [ ] PR obrigatório para `main`.
 - [ ] required status checks (CI verde antes do merge).
@@ -1323,7 +1323,7 @@ PROD
 
 ## 103. próximo volume
 
-**Volume 11 — Observabilidade**
+**Volume 11: Observabilidade**
 
 Cobrirá:
 
@@ -1387,4 +1387,4 @@ Cobrirá:
 
 ---
 
-**Fim do Volume 10 — Segurança do Pipeline CI/CD**
+**Fim do Volume 10: Segurança do Pipeline CI/CD**

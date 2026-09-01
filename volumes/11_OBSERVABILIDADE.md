@@ -1,4 +1,4 @@
-# Volume 11 — Observabilidade do Pipeline e das Aplicações
+# Volume 11: Observabilidade do Pipeline e das Aplicações
 
 **Projeto:** Guia Pessoal de CI/CD com GitHub Actions, Self-Hosted Runners e IA  
 **Documento:** 11_OBSERVABILIDADE.md  
@@ -976,7 +976,7 @@ Grafana/Prometheus não devem ficar expostos publicamente sem autenticação e p
 
 ## 66. Próximo volume
 
-**Volume 12 — Infraestrutura do Servidor CI/CD**
+**Volume 12: Infraestrutura do Servidor CI/CD**
 
 Cobrirá host, VM, Ubuntu, SSH, firewall, storage, rede, backup e disponibilidade.
 
@@ -1021,4 +1021,4 @@ Cobrirá host, VM, Ubuntu, SSH, firewall, storage, rede, backup e disponibilidad
 
 ---
 
-**Fim do Volume 11 — Observabilidade**
+**Fim do Volume 11: Observabilidade**
